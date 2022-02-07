@@ -1,0 +1,309 @@
+Successful Game Output
+
+Shall we play a game? (Y/N)
+Y
+Huzzah! Welcome to Dungeon Adventure!
+What is your name, brave adventurer?
+Effington the Effluent
+Oh my. Your parents had some strange ideas, Sir Effington the Effluent.
+
+Very well then, you have entered a Dungeon, in which there is a Maze.
+There are perilous Pits, potent Potions to purloin, and four Pillars to perceive.
++-----+
+| i@  =
++-----+
+
+Here are your options...
+- Show (I)nventory or (M)ap
+- Move (N)orth, (S)outh, (E)ast, or (W)est
+- Use (V)ision Potion or (H)ealing Potion
+- (Q)uit game in disgust
+- (?) show these options again
+
+What would you like to do, brave Sir Effington the Effluent?
+W
+You take a step to the West... but are thwarted.
+Brave Sir Effington the Effluent didst stare defiantly at his shoes.
+
+What would you like to do, brave Sir Effington the Effluent?
+E
+You take a step to the East... sailing gracefully into the next room.
++-----+
+= E   |
++--H--+
+
+You find the Pillar 'E'. Good job, you!
+
+What would you like to do, brave Sir Effington the Effluent?
+S
+You take a step to the South... sailing gracefully into the next room.
++--H--+
+= I   |
++--H--+
+
+You find the Pillar 'I'. Good job, you!
+
+What would you like to do, brave Sir Effington the Effluent?
+S
+You take a step to the South... sailing gracefully into the next room.
++--H--+
+=     =
++-----+
+
+
+What would you like to do, brave Sir Effington the Effluent?
+E
+You take a step to the East... sailing gracefully into the next room.
++-----+
+=     =
++-----+
+
+
+What would you like to do, brave Sir Effington the Effluent?
+E
+You take a step to the East... sailing gracefully into the next room.
++--H--+
+=     |
++-----+
+
+
+What would you like to do, brave Sir Effington the Effluent?
+N
+You take a step to the North... sailing gracefully into the next room.
++--H--+
+= O   |
++--H--+
+
+Dilly Dilly! Brave Sir Effington the Effluent has found the Exit!
+But the mission is not complete! Find the remaining Pillars,
+then return here to the Exit... if you can!
+
+What would you like to do, brave Sir Effington the Effluent?
+W
+You take a step to the West... sailing gracefully into the next room.
++-----+
+| H   =
++-----+
+
+You find a Healing Potion. Use this to restore some lost hit-points.
+
+What would you like to do, brave Sir Effington the Effluent?
+E
+You take a step to the East... sailing gracefully into the next room.
++--H--+
+= O   |
++--H--+
+
+Brave Sir Effington the Effluent once again arrives at the exit.
+But the mission is not complete! Find the remaining Pillars,
+then return here to the Exit... if you can!
+
+What would you like to do, brave Sir Effington the Effluent?
+N
+You take a step to the North... sailing gracefully into the next room.
++-----+
+= M   |
++--H--+
+
+You find a Healing Potion. Use this to restore some lost hit-points.
+You find a Vision Potion. Use this to see surrounding rooms.
+
+What would you like to do, brave Sir Effington the Effluent?
+
+
+These words that you are using...
+I do not think they mean what you think they mean.
+Perhaps your response should be in the form of a '?'...
+
+What would you like to do, brave Sir Effington the Effluent?
+W
+You take a step to the West... sailing gracefully into the next room.
++--H--+
+| P   =
++-----+
+
+You find the Pillar 'P'. Good job, you!
+
+What would you like to do, brave Sir Effington the Effluent?
+N
+You take a step to the North... sailing gracefully into the next room.
++-----+
+=     =
++--H--+
+
+
+What would you like to do, brave Sir Effington the Effluent?
+W
+You take a step to the West... sailing gracefully into the next room.
++-----+
+=     =
++-----+
+
+
+What would you like to do, brave Sir Effington the Effluent?
+W
+You take a step to the West... sailing gracefully into the next room.
++-----+
+| A   =
++-----+
+
+You find the Pillar 'A'. Good job, you!
+
+What would you like to do, brave Sir Effington the Effluent?
+E
+You take a step to the East... sailing gracefully into the next room.
++-----+
+=     =
++-----+
+
+
+What would you like to do, brave Sir Effington the Effluent?
+E
+You take a step to the East... sailing gracefully into the next room.
++-----+
+=     =
++--H--+
+
+
+What would you like to do, brave Sir Effington the Effluent?
+E
+You take a step to the East... sailing gracefully into the next room.
++-----+
+= H   |
++-----+
+
+You find a Healing Potion. Use this to restore some lost hit-points.
+
+What would you like to do, brave Sir Effington the Effluent?
+W
+You take a step to the West... sailing gracefully into the next room.
++-----+
+=     =
++--H--+
+
+
+What would you like to do, brave Sir Effington the Effluent?
+S
+You take a step to the South... sailing gracefully into the next room.
++--H--+
+| P   =
++-----+
+
+Oh look, the Pillar 'P'. Already seen it. So boring.
+
+What would you like to do, brave Sir Effington the Effluent?
+I
+Thine Bag of Holding doth weigh upon you most ponderously...
+Name:    Effington the Effluent
+Health:  20
+Pillars: A, P, I, E
+Potions...
+Healing: 3
+Vision:  1
+
+What would you like to do, brave Sir Effington the Effluent?
+S
+You take a step to the South... but are thwarted.
+Brave Sir Effington the Effluent didst stare defiantly at his shoes.
+
+What would you like to do, brave Sir Effington the Effluent?
+E
+You take a step to the East... sailing gracefully into the next room.
++-----+
+= V   |
++--H--+
+
+You find a Vision Potion. Use this to see surrounding rooms.
+
+What would you like to do, brave Sir Effington the Effluent?
+S
+You take a step to the South... sailing gracefully into the next room.
++--H--+
+= O   |
++--H--+
+
+Brave Sir Effington the Effluent once again arrives at the exit.
+And with all of the Pillars collected. Bravo!
+Brave Sir Effington the Effluent is at The End.
+
+Process finished with exit code 0
+
+
+_______________________________________________________________________
+
+Unsuccessful Game Output
+
+Shall we play a game? (Y/N)
+N
+Commence global thermonuclear war in 3... 2... 1...
+.....haha, not really! That is scheduled for tomorrow.
+
+Huzzah! Welcome to Dungeon Adventure!
+What is your name, brave adventurer?
+Bilbo the Billious
+Oh my. Your parents had some strange ideas, Sir Bilbo the Billious.
+
+Very well then, you have entered a Dungeon, in which there is a Maze.
+There are perilous Pits, potent Potions to purloin, and four Pillars to perceive.
++-----+
+| i@  =
++-----+
+
+Here are your options...
+- Show (I)nventory or (M)ap
+- Move (N)orth, (S)outh, (E)ast, or (W)est
+- Use (V)ision Potion or (H)ealing Potion
+- (Q)uit game in disgust
+- (?) show these options again
+
+What would you like to do, brave Sir Bilbo the Billious?
+W
+You take a step to the West... but are thwarted.
+Brave Sir Bilbo the Billious didst stare defiantly at his shoes.
+
+What would you like to do, brave Sir Bilbo the Billious?
+E
+You take a step to the East... sailing gracefully into the next room.
++-----+
+= X   =
++-----+
+
+You fall into a Pit. The fall is merely frightening... but the landing hurts. Oof!  >_<
+You now have 10 hit-points.
+
+What would you like to do, brave Sir Bilbo the Billious?
+E
+You take a step to the East... sailing gracefully into the next room.
++--H--+
+=     =
++-----+
+
+
+What would you like to do, brave Sir Bilbo the Billious?
+E
+You take a step to the East... sailing gracefully into the next room.
++-----+
+= E   |
++-----+
+
+You find the Pillar 'E'. Good job, you!
+
+What would you like to do, brave Sir Bilbo the Billious?
+W
+You take a step to the West... sailing gracefully into the next room.
++--H--+
+=     =
++-----+
+
+
+What would you like to do, brave Sir Bilbo the Billious?
+W
+You take a step to the West... sailing gracefully into the next room.
++-----+
+= X   =
++-----+
+
+You fall into a Pit. The fall is merely frightening... but the landing is fatal.  x_x
+Brave Sir Bilbo the Billious is at The End.
+
+Process finished with exit code 0
