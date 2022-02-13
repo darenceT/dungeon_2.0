@@ -2,24 +2,16 @@ import pygame
 import sys
 import math
 
+from GuiSettings import *
 from Maze import Maze
-
-SCREEN_HEIGHT = 720
-SCREEN_WIDTH = 720
-MAP_SIZE = 4 * 2 + 1        # (input here, 4 for 4x4 rooms) * 2 + 1
-
-TILE_SIZE = int((SCREEN_WIDTH) / MAP_SIZE)
-MAX_DEPTH = int(MAP_SIZE * TILE_SIZE)
-FOV = math.pi / 3
-HALF_FOV = FOV / 2
-CASTED_RAYS = 120
-STEP_ANGLE = FOV / CASTED_RAYS
-SCALE = (SCREEN_WIDTH) / CASTED_RAYS
+from Raycast3D import Raycast
+from Drawing import Drawing
 
 
 class GameScreen:
     """
-    Credit https://github.com/maksimKorzh/raycasting-tutorials
+    In-game screen
+    Intro screen to be added later
     """
     def __init__(self):
         self.entrance_loc = None
@@ -30,6 +22,7 @@ class GameScreen:
         self.player_x = None
         self.player_y = None 
         self.player_angle = math.pi
+        self.drawing = None
         self.initialize_screen()   
 
     def obtain_map_data(self):
@@ -50,11 +43,14 @@ class GameScreen:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption('Dungeon 2.0')
         self.clock = pygame.time.Clock()
+        self.drawing = Drawing(self.screen)
         self.game_loop()
 
     def mini_map(self):
         """
-        Creates map with player's position and the direction player is facing on map
+        Creates map top left corner with player's position and 
+        the direction player is facing on map
+        Hold Tab during game to view map
         """
         for row in range(MAP_SIZE):
             for col in range(MAP_SIZE):
@@ -81,59 +77,12 @@ class GameScreen:
         pygame.draw.line(self.screen, (0, 255, 0), (map_x, map_y),
                                            (map_x - math.sin(self.player_angle + HALF_FOV) * 10,
                                             map_y + math.cos(self.player_angle + HALF_FOV) * 10), 2)
-
-    def view_3D(self):
-        """
-        Create 3D view of walls, floor and ceiling using raycasting algorithm
-        Again, credit to https://github.com/maksimKorzh/raycasting-tutorials
-        """
-        # define left most angle of FOV
-        start_angle = self.player_angle - HALF_FOV
-
-        # loop over casted rays
-        for ray in range(CASTED_RAYS):
-            # cast ray step by step
-            for depth in range(MAX_DEPTH):
-                # get ray target coordinates
-                target_x = self.player_x - math.sin(start_angle) * depth
-                target_y = self.player_y + math.cos(start_angle) * depth
-
-                # covert target X, Y coordinate to map col, row
-                col = int(target_x / TILE_SIZE)
-                row = int(target_y / TILE_SIZE)
-
-                # calculate map square index
-                #square = row * MAP_SIZE + col
-                index = row*25 + col*3
-
-                # ray hits the condition
-                if self.map[index] == '+' or self.map[index] == '-' or self.map[index] == '|':
-
-                    # wall shading
-                    color = 255 / (1 + depth * depth * 0.0001)
-
-                    # fix fish eye effect
-                    depth *= math.cos(self.player_angle - start_angle)
-
-                    # calculate wall height
-                    wall_height = 21000 / (depth + 0.0001)
-
-                    # fix stuck at the wall
-                    if wall_height > SCREEN_HEIGHT: wall_height = SCREEN_HEIGHT 
-
-                    # draw 3D projection (rectangle by rectangle...)
-                    pygame.draw.rect(self.screen, (color, color, color), (ray * SCALE, 
-                        (SCREEN_HEIGHT / 2) - wall_height / 2, SCALE, wall_height))
-
-                    break
-
-            # increment angle by a single step
-            start_angle += STEP_ANGLE
-
     
     def game_loop(self):
         # moving direction
         forward = True
+        # lateral_strafe = False
+        # left_move = False
 
         while True:
             for event in pygame.event.get():
@@ -150,40 +99,70 @@ class GameScreen:
             index = row*25 + col*3
 
             # player hits the wall (collision detection)
+            player_speed = 5
+            sin = -math.sin(self.player_angle) * player_speed
+            cos = math.cos(self.player_angle) * player_speed
+
             if self.map[index] == '+' or self.map[index] == '-' or self.map[index] == '|':
                 if forward:
-                    self.player_x -= -math.sin(self.player_angle) * 5
-                    self.player_y -= math.cos(self.player_angle) * 5
+                    self.player_x -= sin
+                    self.player_y -= cos
                 else:
-                    self.player_x += -math.sin(self.player_angle) * 5
-                    self.player_y += math.cos(self.player_angle) * 5
+                    self.player_x += sin
+                    self.player_y += cos
+                #TODO Fix bug sometimes go through wall
+                # if lateral_strafe and left_move:     
+                #     self.player_x -= cos
+                #     self.player_y -= -sin
+                # elif lateral_strafe:
+                #     self.player_x -= -cos
+                #     self.player_y -= sin
+
 
             # update 3D background
-            pygame.draw.rect(self.screen, (100, 100, 100), (0, SCREEN_HEIGHT / 2, SCREEN_HEIGHT, SCREEN_HEIGHT))
-            pygame.draw.rect(self.screen, (200, 200, 200), (0, -SCREEN_HEIGHT / 2, SCREEN_HEIGHT, SCREEN_HEIGHT))
+            self.drawing.background(self.player_angle)
 
             # raycasting for 3D view
-            self.view_3D()
+            Raycast.view_3D(self.player_x, self.player_y, self.player_angle, self.map, self.screen)
 
             # User input
             keys = pygame.key.get_pressed()
-            if keys[pygame.K_LEFT] or keys[pygame.K_a]: self.player_angle -= 0.1
-            if keys[pygame.K_RIGHT] or keys[pygame.K_d]: self.player_angle += 0.1
+            if keys[pygame.K_LEFT]: self.player_angle -= 0.1
+            if keys[pygame.K_RIGHT]: self.player_angle += 0.1
             if keys[pygame.K_UP] or keys[pygame.K_w]:
                 forward = True
-                self.player_x += -math.sin(self.player_angle) * 5
-                self.player_y += math.cos(self.player_angle) * 5
+                self.player_x += sin
+                self.player_y += cos
             if keys[pygame.K_DOWN] or keys[pygame.K_s]:
                 forward = False
-                self.player_x -= -math.sin(self.player_angle) * 5
-                self.player_y -= math.cos(self.player_angle) * 5
-            # if keys[pygame.K_d] TODO for strafe
-            #     if MAP[target_x] in ' e': player_x += offset_x
-            #     if MAP[target_y] in ' e': player_y += offset_y
+                self.player_x -= sin
+                self.player_y -= cos
+            # if keys[pygame.K_a]:      # TODO fix above wall collision
+            #     lateral_strafe = True
+            #     left_move = True
+            #     self.player_x += cos
+            #     self.player_y += -sin
+            # if keys[pygame.K_d]: 
+            #     lateral_strafe = True
+            #     self.player_x += -cos
+            #     self.player_y += sin
             if keys[pygame.K_TAB]:
                 self.mini_map()
             # set FPS
-            self.clock.tick(30)
+            self.clock.tick(FPS)
+
+
+            # display FPS
+            fps = str(int(self.clock.get_fps()))
+            
+            # pick up the font
+            font = pygame.font.SysFont('Monospace Regular', 30)
+            
+            # create font surface
+            fps_surface = font.render(fps, False, (255, 255, 255))
+            
+            # print FPS to screen
+            self.screen.blit(fps_surface, (480, 0))
 
             # update display
             pygame.display.flip()
