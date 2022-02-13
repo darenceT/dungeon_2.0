@@ -54,7 +54,7 @@ class GameScreen:
         self.clock = pygame.time.Clock()
         self.game_loop()
 
-    def draw_mini_map(self):
+    def mini_map(self):
         # loop over map rows
         for row in range(MAP_SIZE):
             # loop over map columns
@@ -76,22 +76,17 @@ class GameScreen:
                     (col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE - 2, TILE_SIZE - 2)
                 )
 
-        # draw player on 2D board
+        # draw player on map
         pygame.draw.circle(self.screen, (255, 0, 0), (self.player_x, self.player_y), 8)
 
-        # draw player direction
+        # draw map FOV
         pygame.draw.line(self.screen, (0, 255, 0), (self.player_x, self.player_y),
-                                           (self.player_x - math.sin(self.player_angle) * 50,
-                                            self.player_y + math.cos(self.player_angle) * 50), 3)
-
-        # draw player FOV
-        pygame.draw.line(self.screen, (0, 255, 0), (self.player_x, self.player_y),
-                                           (self.player_x - math.sin(self.player_angle - HALF_FOV) * 50,
-                                            self.player_y + math.cos(self.player_angle - HALF_FOV) * 50), 3)
+                                           (self.player_x - math.sin(self.player_angle - HALF_FOV) * 25,
+                                            self.player_y + math.cos(self.player_angle - HALF_FOV) * 25), 4)
 
         pygame.draw.line(self.screen, (0, 255, 0), (self.player_x, self.player_y),
-                                           (self.player_x - math.sin(self.player_angle + HALF_FOV) * 50,
-                                            self.player_y + math.cos(self.player_angle + HALF_FOV) * 50), 3)
+                                           (self.player_x - math.sin(self.player_angle + HALF_FOV) * 25,
+                                            self.player_y + math.cos(self.player_angle + HALF_FOV) * 25), 4)
 
     # raycasting algorithm
     def cast_rays(self):
@@ -116,14 +111,6 @@ class GameScreen:
 
                 # ray hits the condition
                 if self.map[index] == '+' or self.map[index] == '-' or self.map[index] == '|':
-                    # highlight wall that has been hit by a casted ray
-                    pygame.draw.rect(self.screen, (0, 255, 0), (col * TILE_SIZE,
-                                                        row * TILE_SIZE,
-                                                        TILE_SIZE - 2,
-                                                        TILE_SIZE - 2))
-
-                    # draw casted ray
-                    pygame.draw.line(self.screen, (255, 255, 0), (self.player_x, self.player_y), (target_x, target_y))
 
                     # wall shading
                     color = 255 / (1 + depth * depth * 0.0001)
@@ -185,7 +172,7 @@ class GameScreen:
             pygame.draw.rect(self.screen, (200, 200, 200), (480, -SCREEN_HEIGHT / 2, SCREEN_HEIGHT, SCREEN_HEIGHT))
 
             # draw 2D map
-            self.draw_mini_map()
+            # self.draw_mini_map()
 
             # apply raycasting
             self.cast_rays()
@@ -204,7 +191,8 @@ class GameScreen:
                 forward = False
                 self.player_x -= -math.sin(self.player_angle) * 5
                 self.player_y -= math.cos(self.player_angle) * 5
-
+            if keys[pygame.K_TAB]:
+                self.mini_map()
             # set FPS
             self.clock.tick(30)
             
