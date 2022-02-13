@@ -123,7 +123,7 @@ class GameScreen:
             self.drawing.background(self.player_angle)
 
             # raycasting for 3D view
-            Raycast.view_3D(self.player_x, self.player_y, self.player_angle, self.map, self.screen)
+            Raycast.view_3D(self.screen, (self.player_x, self.player_y), self.player_angle, self.map, )
 
             # User input
             keys = pygame.key.get_pressed()
