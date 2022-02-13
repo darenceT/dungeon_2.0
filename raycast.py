@@ -4,25 +4,23 @@ import math
 
 from Maze import Maze
 
-# global constants
-SCREEN_HEIGHT = 480
-SCREEN_WIDTH = SCREEN_HEIGHT * 2
-MAP_SIZE = 4 * 2 + 1        # (input here) * 2 + 1
-TILE_SIZE = int((SCREEN_WIDTH / 2) / MAP_SIZE)
+SCREEN_HEIGHT = 720
+SCREEN_WIDTH = 720
+MAP_SIZE = 4 * 2 + 1        # (input here, 4 for 4x4 rooms) * 2 + 1
+
+TILE_SIZE = int((SCREEN_WIDTH) / MAP_SIZE)
 MAX_DEPTH = int(MAP_SIZE * TILE_SIZE)
 FOV = math.pi / 3
 HALF_FOV = FOV / 2
 CASTED_RAYS = 120
 STEP_ANGLE = FOV / CASTED_RAYS
-SCALE = (SCREEN_WIDTH / 2) / CASTED_RAYS
+SCALE = (SCREEN_WIDTH) / CASTED_RAYS
 
 
 class GameScreen:
     """
     Credit https://github.com/maksimKorzh/raycasting-tutorials
     """
-
-
     def __init__(self):
         self.entrance_loc = None
         self.exit_loc = None
@@ -43,8 +41,8 @@ class GameScreen:
         self.entrance_loc = maze.ingress.coords
         self.exit_loc = maze.egress.coords
         self.map = maze.str().replace('\n', '').strip()
-        self.player_x = 80 
-        self.player_y = int(SCREEN_WIDTH / 9 * self.entrance_loc[1]) + 80
+        self.player_x = 120         # Constant value since entrance always starts at column 0
+        self.player_y = int(SCREEN_WIDTH / 9 * 2 * self.entrance_loc[1]) + 120  # row location of entrance
 
     def initialize_screen(self):
         pygame.init()
@@ -55,41 +53,40 @@ class GameScreen:
         self.game_loop()
 
     def mini_map(self):
-        # loop over map rows
+        """
+        Creates map with player's position and the direction player is facing on map
+        """
         for row in range(MAP_SIZE):
-            # loop over map columns
             for col in range(MAP_SIZE):
-                # calculate index
                 index = row*25 + col*3       #TODO improve calculation
-
-                # draw map in the game window
                 map_color = None
-                # whitish = (200, 200, 200)   # pathway color
                 if self.map[index] == '+' or self.map[index] == '-' or self.map[index] == '|':
                     map_color = 'black'
                 else:
-                    map_color = 'brown'
+                    map_color = 'orange'
 
-                pygame.draw.rect(
-                    self.screen,
-                    map_color,
-                    (col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE - 2, TILE_SIZE - 2)
-                )
+                square = TILE_SIZE / 4
+                pygame.draw.rect(self.screen, map_color,
+                    (col * square, row * square, square, square))
 
-        # draw player on map
-        pygame.draw.circle(self.screen, (255, 0, 0), (self.player_x, self.player_y), 8)
+        # draw player
+        map_x = self.player_x/4
+        map_y = self.player_y/4
+        pygame.draw.circle(self.screen, 'green', (map_x, map_y), 4)
 
-        # draw map FOV
-        pygame.draw.line(self.screen, (0, 255, 0), (self.player_x, self.player_y),
-                                           (self.player_x - math.sin(self.player_angle - HALF_FOV) * 25,
-                                            self.player_y + math.cos(self.player_angle - HALF_FOV) * 25), 4)
+        # draw player field of vision
+        pygame.draw.line(self.screen, (0, 255, 0), (map_x, map_y),
+                                           (map_x - math.sin(self.player_angle - HALF_FOV) * 10,
+                                            map_y + math.cos(self.player_angle - HALF_FOV) * 10), 2)
+        pygame.draw.line(self.screen, (0, 255, 0), (map_x, map_y),
+                                           (map_x - math.sin(self.player_angle + HALF_FOV) * 10,
+                                            map_y + math.cos(self.player_angle + HALF_FOV) * 10), 2)
 
-        pygame.draw.line(self.screen, (0, 255, 0), (self.player_x, self.player_y),
-                                           (self.player_x - math.sin(self.player_angle + HALF_FOV) * 25,
-                                            self.player_y + math.cos(self.player_angle + HALF_FOV) * 25), 4)
-
-    # raycasting algorithm
-    def cast_rays(self):
+    def view_3D(self):
+        """
+        Create 3D view of walls, floor and ceiling using raycasting algorithm
+        Again, credit to https://github.com/maksimKorzh/raycasting-tutorials
+        """
         # define left most angle of FOV
         start_angle = self.player_angle - HALF_FOV
 
@@ -125,10 +122,8 @@ class GameScreen:
                     if wall_height > SCREEN_HEIGHT: wall_height = SCREEN_HEIGHT 
 
                     # draw 3D projection (rectangle by rectangle...)
-                    pygame.draw.rect(self.screen, (color, color, color), (
-                        SCREEN_HEIGHT + ray * SCALE,
-                        (SCREEN_HEIGHT / 2) - wall_height / 2,
-                         SCALE, wall_height))
+                    pygame.draw.rect(self.screen, (color, color, color), (ray * SCALE, 
+                        (SCREEN_HEIGHT / 2) - wall_height / 2, SCALE, wall_height))
 
                     break
 
@@ -137,14 +132,13 @@ class GameScreen:
 
     
     def game_loop(self):
-
         # moving direction
         forward = True
 
         while True:
-            # escape condition
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+                if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN \
+                    and event.key == pygame.K_ESCAPE):
                     pygame.quit()
                     sys.exit(0)
 
@@ -164,47 +158,32 @@ class GameScreen:
                     self.player_x += -math.sin(self.player_angle) * 5
                     self.player_y += math.cos(self.player_angle) * 5
 
-            # update 2D background
-            pygame.draw.rect(self.screen, (0, 0, 0), (0, 0, SCREEN_HEIGHT, SCREEN_HEIGHT))
-
             # update 3D background
-            pygame.draw.rect(self.screen, (100, 100, 100), (480, SCREEN_HEIGHT / 2, SCREEN_HEIGHT, SCREEN_HEIGHT))
-            pygame.draw.rect(self.screen, (200, 200, 200), (480, -SCREEN_HEIGHT / 2, SCREEN_HEIGHT, SCREEN_HEIGHT))
+            pygame.draw.rect(self.screen, (100, 100, 100), (0, SCREEN_HEIGHT / 2, SCREEN_HEIGHT, SCREEN_HEIGHT))
+            pygame.draw.rect(self.screen, (200, 200, 200), (0, -SCREEN_HEIGHT / 2, SCREEN_HEIGHT, SCREEN_HEIGHT))
 
-            # draw 2D map
-            # self.draw_mini_map()
+            # raycasting for 3D view
+            self.view_3D()
 
-            # apply raycasting
-            self.cast_rays()
-
-            # get user input
+            # User input
             keys = pygame.key.get_pressed()
-
-            # handle user input
-            if keys[pygame.K_LEFT]: self.player_angle -= 0.1
-            if keys[pygame.K_RIGHT]: self.player_angle += 0.1
-            if keys[pygame.K_UP]:
+            if keys[pygame.K_LEFT] or keys[pygame.K_a]: self.player_angle -= 0.1
+            if keys[pygame.K_RIGHT] or keys[pygame.K_d]: self.player_angle += 0.1
+            if keys[pygame.K_UP] or keys[pygame.K_w]:
                 forward = True
                 self.player_x += -math.sin(self.player_angle) * 5
                 self.player_y += math.cos(self.player_angle) * 5
-            if keys[pygame.K_DOWN]:
+            if keys[pygame.K_DOWN] or keys[pygame.K_s]:
                 forward = False
                 self.player_x -= -math.sin(self.player_angle) * 5
                 self.player_y -= math.cos(self.player_angle) * 5
+            # if keys[pygame.K_d] TODO for strafe
+            #     if MAP[target_x] in ' e': player_x += offset_x
+            #     if MAP[target_y] in ' e': player_y += offset_y
             if keys[pygame.K_TAB]:
                 self.mini_map()
             # set FPS
             self.clock.tick(30)
-            
-            # # DELETE FPS DISPLAY ???
-            # # display FPS
-            # fps = str(int(self.clock.get_fps()))
-            # # pick up the font
-            # font = pygame.font.SysFont('Monospace Regular', 30)
-            # # create font surface
-            # fps_surface = font.render(fps, False, (255, 255, 255))
-            # # print FPS to screen
-            # self.screen.blit(fps_surface, (480, 0))
 
             # update display
             pygame.display.flip()
