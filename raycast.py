@@ -29,12 +29,12 @@ class GameScreen:
         self.map = None
         self.screen = None
         self.clock = None
-        self.player_x = (SCREEN_WIDTH / 2) / 2
-        self.player_y = (SCREEN_WIDTH / 2) / 2
+        self.player_x = None
+        self.player_y = None 
         self.player_angle = math.pi
         self.initialize_screen()   
 
-    def obtain_map(self):
+    def obtain_map_data(self):
         '''
         TODO pass Maze() into here. For now we create Maze() instance
         set entrance and exit loc
@@ -43,13 +43,14 @@ class GameScreen:
         self.entrance_loc = maze.ingress.coords
         self.exit_loc = maze.egress.coords
         self.map = maze.str().replace('\n', '').strip()
+        self.player_x = 80 
+        self.player_y = int(SCREEN_WIDTH / 9 * self.entrance_loc[1]) + 80
 
     def initialize_screen(self):
         pygame.init()
-        self.obtain_map()
-        # create game window
+        self.obtain_map_data()
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-        pygame.display.set_caption('Dungeon')
+        pygame.display.set_caption('Dungeon 2.0')
         self.clock = pygame.time.Clock()
         self.game_loop()
 
@@ -76,7 +77,7 @@ class GameScreen:
                 )
 
         # draw player on 2D board
-        pygame.draw.circle(self.screen, (255, 0, 0), self.entrance_loc, 8)
+        pygame.draw.circle(self.screen, (255, 0, 0), (self.player_x, self.player_y), 8)
 
         # draw player direction
         pygame.draw.line(self.screen, (0, 255, 0), (self.player_x, self.player_y),
@@ -165,7 +166,6 @@ class GameScreen:
             row = int(self.player_y / TILE_SIZE)
 
             # calculate map square index
-            #square = row * MAP_SIZE + col
             index = row*25 + col*3
 
             # player hits the wall (collision detection)
@@ -207,18 +207,16 @@ class GameScreen:
 
             # set FPS
             self.clock.tick(30)
-
-            # display FPS
-            fps = str(int(self.clock.get_fps()))
-
-            # pick up the font
-            font = pygame.font.SysFont('Monospace Regular', 30)
-
-            # create font surface
-            fps_surface = font.render(fps, False, (255, 255, 255))
-
-            # print FPS to screen
-            self.screen.blit(fps_surface, (480, 0))
+            
+            # # DELETE FPS DISPLAY ???
+            # # display FPS
+            # fps = str(int(self.clock.get_fps()))
+            # # pick up the font
+            # font = pygame.font.SysFont('Monospace Regular', 30)
+            # # create font surface
+            # fps_surface = font.render(fps, False, (255, 255, 255))
+            # # print FPS to screen
+            # self.screen.blit(fps_surface, (480, 0))
 
             # update display
             pygame.display.flip()
