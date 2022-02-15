@@ -1,11 +1,11 @@
 import pygame
-from GuiSettings import *
+from Settings import *
 
 
 class Raycast:
 
     @staticmethod
-    def view_3D(screen, player_pos, player_angle, map):
+    def view_3D(screen, player_pos, player_angle, world_raw):
         """
         Raycasting algorithm to display 3D view of walls, ceiling, floor
         Credit: https://github.com/StanislavPetrovV/Raycasting-3d-game-tutorial/blob/master/part%20%232/ray_casting.py
@@ -13,32 +13,33 @@ class Raycast:
         ox, oy = player_pos
 
         def mapping(a, b):
-            return (a // TILE_SIZE) * TILE_SIZE, (b // TILE_SIZE) * TILE_SIZE
+            return (a // TILE) * TILE, (b // TILE) * TILE
+        
         xm, ym = mapping(ox, oy)
         cur_angle = player_angle - HALF_FOV
-        for ray in range(CASTED_RAYS):
+        for ray in range(NUM_RAYS):
             sin_a = math.sin(cur_angle)
             cos_a = math.cos(cur_angle)
             sin_a = sin_a if sin_a else 0.000001
             cos_a = cos_a if cos_a else 0.000001
 
             # verticals
-            x, dx = (xm + TILE_SIZE, 1) if cos_a >= 0 else (xm, -1)
-            for i in range(0, SCREEN_WIDTH, TILE_SIZE):
+            x, dx = (xm + TILE, 1) if cos_a >= 0 else (xm, -1)
+            for i in range(0, WIDTH, TILE):
                 depth_v = (x - ox) / cos_a
                 y = oy + depth_v * sin_a
-                if mapping((x + dx), y) in map:     #TODO map likely wrong variable
+                if mapping(x + dx, y) in world_raw:
                     break
-                x += dx * TILE_SIZE
+                x += dx * TILE
 
             # horizontals
-            y, dy = (ym + TILE_SIZE, 1) if sin_a >= 0 else (ym, -1)
-            for i in range(0, SCREEN_HEIGHT, TILE_SIZE):
+            y, dy = (ym + TILE, 1) if sin_a >= 0 else (ym, -1)
+            for i in range(0, HEIGHT, TILE):
                 depth_h = (y - oy) / sin_a
                 x = ox + depth_h * cos_a
-                if mapping(x, y + dy) in map:
+                if mapping(x, y + dy) in world_raw:
                     break
-                y += dy * TILE_SIZE
+                y += dy * TILE
 
             # projection
             depth = depth_v if depth_v < depth_h else depth_h
@@ -46,12 +47,30 @@ class Raycast:
             proj_height = PROJ_COEFF / depth
             c = 255 / (1 + depth * depth * 0.00002)
             color = (c, c // 2, c // 3)
-            pygame.draw.rect(screen, color, (ray * SCALE, SCREEN_HEIGHT/2 - proj_height // 2, SCALE, proj_height))
-            cur_angle += STEP_ANGLE
-
+            pygame.draw.rect(screen, color, (ray * SCALE, HALF_HEIGHT - proj_height // 2, SCALE, proj_height))
+            cur_angle += DELTA_ANGLE
 
     @staticmethod
-    def view_3D(screen, player_pos, player_angle, map):
+    def view_3D_old(screen, player_pos, player_angle, world_map):
+        cur_angle = player_angle - HALF_FOV
+        xo, yo = player_pos
+        for ray in range(CASTED_RAYS):
+            sin_a = math.sin(cur_angle)
+            cos_a = math.cos(cur_angle)
+            for depth in range(MAX_DEPTH):
+                x = xo + depth * cos_a
+                y = yo + depth * sin_a
+                # pygame.draw.line(sc, DARKGRAY, player_pos, (x, y), 2)
+                if (x // TILE_SIZE * TILE_SIZE, y // TILE_SIZE * TILE_SIZE) in world_map:
+                    depth *= math.cos(player_angle - cur_angle)
+                    proj_height = min(PROJ_COEFF / (depth + 0.0001), SCREEN_HEIGHT)
+                    c = 255 / (1 + depth * depth * 0.0001)
+                    color = (c // 2, c, c // 3)
+                    pygame.draw.rect(screen, color, (ray * SCALE, SCREEN_HEIGHT/2 - proj_height // 2, SCALE, proj_height))
+                    break
+            cur_angle += STEP_ANGLE
+        
+    def view_3D_diff(screen, player_pos, player_angle, map):
         """
         Create 3D view of walls, floor and ceiling using raycasting algorithm
         Algorithm credit to https://github.com/maksimKorzh/raycasting-tutorials
