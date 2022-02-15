@@ -1,5 +1,9 @@
 Group 1
 
-Darence Thong - hours
-Jennifer Boutell - hours
-JP Montagnet - hours
+Darence Thong 
+Jennifer Boutell 
+JP Montagnet 
+
+First Iteration
+
+No issues encountered
