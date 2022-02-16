@@ -17,6 +17,7 @@ class MainGame:
         self.clock = None
         self.player = None
         self.drawing = None
+        self.collision_walls = []
         self.load_game()   
 
     def load_game(self):
@@ -24,7 +25,7 @@ class MainGame:
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.clock = pygame.time.Clock()
         self.obtain_map_data()
-        self.player = Player(self.entrance_loc, self.screen, self.world_coords)
+        self.player = Player(self.entrance_loc, self.screen, self.world_coords, self.collision_walls)
         self.drawing = Drawing(self.screen, self.mini_map_coords)
         self.game_loop()
 
@@ -56,7 +57,8 @@ class MainGame:
             for j, row in enumerate(map_parsed):
                 for i, char in enumerate(row):
                     if char == '---' or '+' in char or '|' in char:
-                        self.world_coords[(i * TILE, j * TILE)] = '1'
+                        self.collision_walls.append(pygame.Rect(i * TILE, j * TILE, TILE, TILE))
+                        self.world_coords[(i * TILE, j * TILE)] = 'wall'
                         self.mini_map_coords.add((i * MAP_TILE, j * MAP_TILE))
 
         parse_map(self.maze)
@@ -68,17 +70,13 @@ class MainGame:
                 if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN \
                     and event.key == pygame.K_ESCAPE):
                     exit()
-            
-            # self.screen.fill('black')
 
             pygame.draw.rect(self.screen, 'blue', (0, 0, WIDTH, HALF_HEIGHT))
             pygame.draw.rect(self.screen, 'gray', (0, HALF_HEIGHT, WIDTH, HALF_HEIGHT))
-
+            self.drawing.background(self.player.angle)
             self.drawing.world(self.screen, self.player.pos, self.player.angle, self.world_coords)
             self.player.movement()  
-            # drawing.background()
-
-
+            
             if pygame.key.get_pressed()[pygame.K_TAB]:
                 self.drawing.mini_map(self.player)
 

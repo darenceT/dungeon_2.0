@@ -7,22 +7,19 @@ class Drawing:
     def __init__(self, screen, map_coords) -> None:
         self.screen = screen
         self.map_coords = map_coords
-        self.textures = {'1': pygame.image.load('img/wall1.jpg').convert(),
+        self.textures = {'wall': pygame.image.load('img/wall1.jpg').convert(),
+                         '2': pygame.image.load('img/wall1.jpg').convert(),
                          'floor': pygame.image.load('img/floor.jpg').convert(),
                          'ceiling': pygame.image.load('img/ceiling.jfif').convert()
                          }
     
     def background(self, angle):
-        # Ceiling
-        ceiling_offset = -5 * math.degrees(angle) % SCREEN_HEIGHT
-        self.screen.blit(self.textures['ceiling'], (ceiling_offset, 0))
-        self.screen.blit(self.textures['ceiling'], (ceiling_offset - SCREEN_HEIGHT, 0))
-        self.screen.blit(self.textures['ceiling'], (ceiling_offset + SCREEN_HEIGHT, 0))
-        pygame.draw.rect(self.screen, (100, 100, 100), (0, SCREEN_HEIGHT / 2, SCREEN_HEIGHT, SCREEN_HEIGHT))
-        
-        # Floor
-        pygame.draw.rect(self.screen, (200, 200, 200), (0, -SCREEN_HEIGHT / 2, SCREEN_HEIGHT, SCREEN_HEIGHT))
-    
+        sky_offset = -5 * math.degrees(angle) % WIDTH
+        self.screen.blit(self.textures['ceiling'], (sky_offset, 0))
+        self.screen.blit(self.textures['ceiling'], (sky_offset - WIDTH, 0))
+        self.screen.blit(self.textures['ceiling'], (sky_offset + WIDTH, 0))
+        pygame.draw.rect(self.screen, 'darkgray', (0, HALF_HEIGHT, WIDTH, HALF_HEIGHT))
+
     def world(self, screen, player_pos, player_angle, world_coords): 
         Raycast.view_3D(screen, player_pos, player_angle, world_coords, self.textures)
 
