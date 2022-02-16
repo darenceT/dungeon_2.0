@@ -3,15 +3,16 @@ import math
 from Settings import *
 from Player import Player
 from Maze import Maze
-from Raycast3D import Raycast
-
+#from Raycast3D import Raycast
+from Drawing import Drawing
 
 class MainGame:
     def __init__(self):
         self.entrance_loc = None
         self.exit_loc = None
         self.maze = None
-        self.world_raw = set()
+        self.world_coords = {}
+        self.mini_map_coords = set()
         self.screen = None
         self.clock = None
         self.player = None
@@ -23,13 +24,15 @@ class MainGame:
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.clock = pygame.time.Clock()
         self.obtain_map_data()
-        self.player = Player(self.entrance_loc, self.screen, self.world_raw)
+        self.player = Player(self.entrance_loc, self.screen, self.world_coords)
+        self.drawing = Drawing(self.screen, self.mini_map_coords)
         self.game_loop()
 
     def obtain_map_data(self):
         self.maze = Maze()
         self.entrance_loc = self.maze.ingress.coords
         self.exit_loc = self.maze.egress.coords
+        print(self.maze)
 
         def parse_map(maze):
             map_text = maze.str().splitlines()
@@ -50,14 +53,13 @@ class MainGame:
                 map_parsed.append(row)
                 row = []
             
-            world_map = set()
             for j, row in enumerate(map_parsed):
                 for i, char in enumerate(row):
                     if char == '---' or '+' in char or '|' in char:
-                        world_map.add((i * TILE, j * TILE))
-            return world_map
+                        self.world_coords[(i * TILE, j * TILE)] = '1'
+                        self.mini_map_coords.add((i * MAP_TILE, j * MAP_TILE))
 
-        self.world_raw = parse_map(self.maze)
+        parse_map(self.maze)
         
 
     def game_loop(self):
@@ -66,25 +68,25 @@ class MainGame:
                 if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN \
                     and event.key == pygame.K_ESCAPE):
                     exit()
-            self.player.movement()
+            
             # self.screen.fill('black')
 
             pygame.draw.rect(self.screen, 'blue', (0, 0, WIDTH, HALF_HEIGHT))
             pygame.draw.rect(self.screen, 'gray', (0, HALF_HEIGHT, WIDTH, HALF_HEIGHT))
 
-            Raycast.view_3D(self.screen, self.player.pos, self.player.angle, self.world_raw)
+            self.drawing.world(self.screen, self.player.pos, self.player.angle, self.world_coords)
+            self.player.movement()  
+            # drawing.background()
 
-            self.player.map()
 
-            self.fps_display()
+            if pygame.key.get_pressed()[pygame.K_TAB]:
+                self.drawing.mini_map(self.player)
+
+            self.drawing.fps_display(self.clock)
             pygame.display.flip()
             self.clock.tick(FPS)
 
-    def fps_display(self):
-        fps = str(int(self.clock.get_fps()))
-        font = pygame.font.SysFont('Monospace Regular', 30)
-        fps_surface = font.render(fps, False, (255, 255, 255))
-        self.screen.blit(fps_surface, (480, 0))
+
 
 if __name__ == '__main__':
     MainGame()
