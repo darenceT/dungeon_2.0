@@ -13,7 +13,7 @@ FPS_POS = (WIDTH - 65, 5)
 # minimap settings
 MAP_SCALE = 5
 MAP_TILE = TILE // MAP_SCALE
-MAP_POS = (0, HEIGHT - HEIGHT // MAP_SCALE)
+MAP_POS = (0, 0) # (0, HEIGHT - HEIGHT // MAP_SCALE) # bottom left
 
 # raycast settings
 FOV = math.pi / 3
