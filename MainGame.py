@@ -1,16 +1,14 @@
 import pygame
-import math
+
+from DungeonAdventure import DungeonAdventure
 from Settings import *
 from Player import Player
-from Maze import Maze
-#from Raycast3D import Raycast
 from Drawing import Drawing
 
 class MainGame:
     def __init__(self):
-        self.entrance_loc = None
-        self.exit_loc = None
-        self.maze = None
+        self.game_data = None
+        self.dungeon = None
         self.world_coords = {}
         self.mini_map_coords = set()
         self.screen = None
@@ -24,16 +22,18 @@ class MainGame:
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.clock = pygame.time.Clock()
-        self.obtain_map_data()
-        self.player = Player(self.entrance_loc, self.screen, self.world_coords, self.collision_walls)
+        self.obtain_game_data()
+        self.player = Player(self.game_data, self.screen, self.world_coords, self.collision_walls)
         self.drawing = Drawing(self.screen, self.mini_map_coords)
         self.game_loop()
 
-    def obtain_map_data(self):
-        self.maze = Maze()
-        self.entrance_loc = self.maze.ingress.coords
-        self.exit_loc = self.maze.egress.coords
-        print(self.maze)
+    def obtain_game_data(self):
+        self.game_data = DungeonAdventure()
+        self.dungeon = self.game_data.maze
+        # Extract more dungeon data here e.g. rooms, objects, etc.
+        # self.entrance_loc = self.dungeon.ingress.coords
+        # self.exit_loc = self.maze.egress.coords
+        print(self.dungeon)
 
         def parse_map(maze):
             map_text = maze.str().splitlines()
@@ -54,16 +54,16 @@ class MainGame:
                 map_parsed.append(row)
                 row = []
             
-            for j, row in enumerate(map_parsed):
-                for i, char in enumerate(row):
+            for j, line in enumerate(map_parsed):
+                for i, char in enumerate(line):
                     if char == '---' or '+' in char or '|' in char:
                         self.collision_walls.append(pygame.Rect(i * TILE, j * TILE, TILE, TILE))
                         self.world_coords[(i * TILE, j * TILE)] = 'wall'
                         self.mini_map_coords.add((i * MAP_TILE, j * MAP_TILE))
                     if '=' in char or 'H' in char:
-                        self.world_coords[(i * TILE, j * TILE)] = 'door_closed'
+                        self.world_coords[(i * TILE, j * TILE)] = 'door'
 
-        parse_map(self.maze)
+        parse_map(self.dungeon)
         
 
     def game_loop(self):
@@ -73,13 +73,11 @@ class MainGame:
                     and event.key == pygame.K_ESCAPE):
                     exit()
 
-            pygame.draw.rect(self.screen, 'blue', (0, 0, WIDTH, HALF_HEIGHT))
-            pygame.draw.rect(self.screen, 'gray', (0, HALF_HEIGHT, WIDTH, HALF_HEIGHT))
             self.drawing.background(self.player.angle)
             self.drawing.world(self.screen, self.player.pos, self.player.angle, self.world_coords)
             self.player.movement()  
             
-            if pygame.key.get_pressed()[pygame.K_TAB]:
+            if self.player.show_map:
                 self.drawing.mini_map(self.player)
 
             self.drawing.fps_display(self.clock)
