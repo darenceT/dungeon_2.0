@@ -2,28 +2,31 @@ import pygame
 
 from Settings import *
 
-class Player:
+class PlayerControls:
     """
-    game_data is instance of DungeonAdventure for "enter_room" method.
+    game_data is object of DungeonAdventure to access "enter_room" method.
     """
     def __init__(self, game_data, screen, world_raw, collision_walls):
+        self.angle = 0
+        self.player_speed = 4
+   
         self.cur_room = game_data.maze.ingress
         self.x = int(120 + WIDTH / 9 * 2 * self.cur_room.coords[0])  
         self.y = int(120 + HEIGHT / 9 * 2 * self.cur_room.coords[1])
-        self.angle = 0
-        self.player_speed = 4
+
         self.screen = screen
-        self.map_visited = set()
-        self.show_map = False
         self.game_data = game_data
         self.rooms = game_data.maze.rooms
         self.world_raw = world_raw
+
+        self.map_visited = set()
+        self.show_map = False             
         self.side = 50
         self.rect = pygame.Rect(*(self.x, self.y), self.side, self.side)
         # self.collision_sprites = [pygame.Rect(*obj.pos, obj.side, obj.side) for obj in
         #                           self.sprites.list_of_objects if obj.blocked]
         self.collision_list = collision_walls #+ self.collision_sprites
-        print(self.rooms)
+        # print(self.rooms)
 
     @property
     def pos(self):
@@ -61,9 +64,12 @@ class Player:
         # self.mouse_control()
         self.rect.center = self.x, self.y
         self.angle %= DOUBLE_PI
+
+        # update room location
         next_x = int((self.x - 120) / 160)
         next_y = int((self.y - 120) / 160)
-        self.game_data.enter_room(self.rooms[next_y][next_x])
+        self.cur_room = self.rooms[next_y][next_x]
+        self.game_data.enter_room(self.cur_room)
         self.map_visited.add((self.x // MAP_TILE * 3, self.y // MAP_TILE * 3)) # TODO optimize
 
     def keys_control(self):
