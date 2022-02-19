@@ -2,7 +2,7 @@ import pygame
 
 from DungeonAdventure import DungeonAdventure
 from Settings import *
-from Player import Player
+from PlayerControls import PlayerControls
 from Drawing import Drawing
 
 class MainGame:
@@ -12,30 +12,28 @@ class MainGame:
         self.world_coords = {}
         self.mini_map_coords = set()
         self.screen = None
-        self.clock = None
-        self.player = None
+        self.player_controls = None
         self.drawing = None
         self.collision_walls = []
-        self.load_game()   
+        self.__load_game()   
 
-    def load_game(self):
+    def __load_game(self):
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
-        self.clock = pygame.time.Clock()
-        self.obtain_game_data()
-        self.player = Player(self.game_data, self.screen, self.world_coords, self.collision_walls)
+        self.__obtain_game_data()
+        self.player_controls = PlayerControls(self.game_data, self.screen, self.world_coords, self.collision_walls)
         self.drawing = Drawing(self.screen, self.mini_map_coords)
-        self.game_loop()
+        self.__game_loop()
 
-    def obtain_game_data(self):
+    def __obtain_game_data(self):
         self.game_data = DungeonAdventure()
         self.dungeon = self.game_data.maze
         # Extract more dungeon data here e.g. rooms, objects, etc.
         # self.entrance_loc = self.dungeon.ingress.coords
         # self.exit_loc = self.maze.egress.coords
-        print(self.dungeon)
+        print(self.dungeon)                         # DELETE
 
-        def parse_map(maze):
+        def __parse_map(maze):
             map_text = maze.str().splitlines()
             map_parsed = []
             row = []
@@ -63,26 +61,26 @@ class MainGame:
                     if '=' in char or 'H' in char:
                         self.world_coords[(i * TILE, j * TILE)] = 'door'
 
-        parse_map(self.dungeon)
+        __parse_map(self.dungeon)
         
 
-    def game_loop(self):
+    def __game_loop(self):
+        clock = pygame.time.Clock()
         while True:
             for event in pygame.event.get():
-                if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN \
-                    and event.key == pygame.K_ESCAPE):
+                if event.type == pygame.QUIT:
                     exit()
 
-            self.drawing.background(self.player.angle)
-            self.drawing.world(self.screen, self.player.pos, self.player.angle, self.world_coords)
-            self.player.movement()  
+            self.drawing.background(self.player_controls.angle)
+            self.drawing.world(self.screen, self.player_controls.pos, self.player_controls.angle, self.world_coords)
+            self.player_controls.movement()  
             
-            if self.player.show_map:
-                self.drawing.mini_map(self.player)
+            if self.player_controls.show_map:
+                self.drawing.mini_map(self.player_controls)
 
-            self.drawing.fps_display(self.clock)
+            self.drawing.fps_display(clock)
             pygame.display.flip()
-            self.clock.tick(FPS)
+            clock.tick(FPS)
 
 
 
