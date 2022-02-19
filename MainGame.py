@@ -60,6 +60,8 @@ class MainGame:
                         self.collision_walls.append(pygame.Rect(i * TILE, j * TILE, TILE, TILE))
                         self.world_coords[(i * TILE, j * TILE)] = 'wall'
                         self.mini_map_coords.add((i * MAP_TILE, j * MAP_TILE))
+                    if '=' in char or 'H' in char:
+                        self.world_coords[(i * TILE, j * TILE)] = 'door_closed'
 
         parse_map(self.maze)
         
