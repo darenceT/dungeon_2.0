@@ -7,10 +7,12 @@ class Drawing:
     def __init__(self, screen, map_coords) -> None:
         self.screen = screen
         self.map_coords = map_coords
-        self.textures = {'wall': pygame.image.load('img/wall1.jpg').convert(),
-                         '2': pygame.image.load('img/wall1.jpg').convert(),
+        self.textures = {'wall': pygame.image.load('img/wall2b.png').convert(),
                          'floor': pygame.image.load('img/floor.jpg').convert(),
-                         'ceiling': pygame.image.load('img/ceiling.jfif').convert()
+                         'ceiling': pygame.image.load('img/ceiling.jfif').convert(),
+                         'door_closed': pygame.image.load('img/door_portal.png').convert(),
+                         'door_openv': pygame.image.load('img/wall1.jpg').convert(),
+                         'door_openh': pygame.image.load('img/wall1.jpg').convert()
                          }
     
     def background(self, angle):
@@ -18,7 +20,7 @@ class Drawing:
         self.screen.blit(self.textures['ceiling'], (sky_offset, 0))
         self.screen.blit(self.textures['ceiling'], (sky_offset - WIDTH, 0))
         self.screen.blit(self.textures['ceiling'], (sky_offset + WIDTH, 0))
-        pygame.draw.rect(self.screen, 'darkgray', (0, HALF_HEIGHT, WIDTH, HALF_HEIGHT))
+        pygame.draw.rect(self.screen, (53, 40, 30), (0, HALF_HEIGHT, WIDTH, HALF_HEIGHT))
 
     def world(self, screen, player_pos, player_angle, world_coords): 
         Raycast.view_3D(screen, player_pos, player_angle, world_coords, self.textures)
