@@ -1,12 +1,14 @@
 # Dungeon 2.0
 
 
-This is an expansion of previous project by JP Montagnet and Jennifer Boutell. Darence Thong joined this team.
+This is an expansion of previous project v1.0 by JP Montagnet and Jennifer Boutell.  
+Darence Thong joined for v2.0  
 
 v2.0 Features:  
   
 Pygame "3D" GUI  
 SQLite database  
+Model view controller design   
 Hero classes  
 Monster classes  
 More to come...  
