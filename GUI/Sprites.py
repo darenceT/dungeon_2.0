@@ -7,7 +7,7 @@ class Sprites:
     def __init__(self, game_data):
         """
         Pass in game_data primarily for object_coords, and potentially for Room objects also.
-        Potion and trap images from www.pngegg.com
+        images from www.pngegg.com
         """
         self.game_data = game_data.maze
         # self.object_coords = self.game_data.object_coords
@@ -25,7 +25,8 @@ class Sprites:
             'E': [(2, 1)],
             'I': [(2, 2)],
             'P': [(0, 3)],
-            'O': [self.game_data.egress.coords]
+            'O': [self.game_data.egress.coords],
+            'M': [(1, 1), (1, 0), (2, 2), (3, 2)]
         }
 
         self.sprite_types = {
@@ -36,7 +37,8 @@ class Sprites:
             'E': pygame.image.load('GUI/img/pillar.png').convert_alpha(),
             'I': pygame.image.load('GUI/img/pillar.png').convert_alpha(),
             'P': pygame.image.load('GUI/img/pillar.png').convert_alpha(),
-            'O': pygame.image.load('GUI/img/exit.png').convert_alpha()
+            'O': pygame.image.load('GUI/img/exit.png').convert_alpha(),
+            'M': pygame.image.load('GUI/img/monster.png').convert_alpha()
             }
 
         scale = 0.4
@@ -46,14 +48,17 @@ class Sprites:
                 if letter == 'O':
                     scale = 1
                     shift = 0
+                if letter == 'M':
+                    scale = 0.8
+                    shift = 0.2
                 self.list_of_objects.append(SpriteObject(self.sprite_types[letter], True, pos, shift, scale))
 
 class SpriteObject:
     def __init__(self, object, static, pos, shift, scale):
         self.object = object
         self.static = static        # consider delete
-        self.x = convert_coords_pixel(pos[0]) + randint(10, 30)
-        self.y = convert_coords_pixel(pos[1]) + randint(10, 30)
+        self.x = convert_coords_pixel(pos[0]) + randint(1, 20)
+        self.y = convert_coords_pixel(pos[1]) + randint(1, 20)
         self.shift = shift
         self.scale = scale
 
