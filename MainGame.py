@@ -28,7 +28,7 @@ class MainGame:
         self.__obtain_game_data()
         self.player_controls = PlayerControls(self.game_data, self.screen, self.world_coords, self.collision_walls)
         self.drawing = Drawing(self.screen, self.mini_map_coords)
-        self.sprites = Sprites()
+        self.sprites = Sprites(self.game_data)
         self.__game_loop()
 
     def __obtain_game_data(self):

@@ -4,27 +4,50 @@ from .Settings import *
 
 
 class Sprites:
-    def __init__(self):
+    def __init__(self, game_data):
         """
-        potions from www.pngegg.com
+        Pass in game_data primarily for object_coords, and potentially for Room objects also.
+        Potion and trap images from www.pngegg.com
         """
+        self.game_data = game_data.maze
+        # self.object_coords = self.game_data.object_coords
+        self.list_of_objects = []
+        self.__create_sprites()
+    
+
+    def __create_sprites(self):
+        # temp coords, will obtain from game_data later
+        object_coords = {
+            'H': [(0, 1), (2, 1)],
+            'V': [(1, 1), (2, 2)],
+            'X': [(0, 1), (2, 1)],
+            'A': [(1, 1)],
+            'E': [(2, 1)],
+            'I': [(2, 2)],
+            'P': [(0, 3)],
+            'O': [self.game_data.egress.coords]
+        }
+
         self.sprite_types = {
-            'h_pot': pygame.image.load('GUI/img/h_potion.png').convert_alpha(),
-            'v_pot': pygame.image.load('GUI/img/v_potion.png').convert_alpha(),
-            'trap': pygame.image.load('GUI/img/trap.png').convert_alpha(),
+            'H': pygame.image.load('GUI/img/h_potion.png').convert_alpha(),
+            'V': pygame.image.load('GUI/img/v_potion.png').convert_alpha(),
+            'X': pygame.image.load('GUI/img/v_potion.png').convert_alpha(),
+            'A': pygame.image.load('GUI/img/pillar.png').convert_alpha(),
+            'E': pygame.image.load('GUI/img/pillar.png').convert_alpha(),
+            'I': pygame.image.load('GUI/img/pillar.png').convert_alpha(),
+            'P': pygame.image.load('GUI/img/pillar.png').convert_alpha(),
+            'O': pygame.image.load('GUI/img/exit.png').convert_alpha()
             }
-        #     'devil': [pygame.image.load(f'sprites/devil/{i}.png').convert_alpha() for i in range(8)]
-        # }
-        self.list_of_objects = [
-            SpriteObject(self.sprite_types['h_pot'], True, (1, 3), 1.8, 0.4),
-            SpriteObject(self.sprite_types['h_pot'], True, (1, 1), 1.8, 0.4),
-            SpriteObject(self.sprite_types['v_pot'], True, (1, 2), 1.6, 0.5),
-            SpriteObject(self.sprite_types['v_pot'], True, (1, 0), 1.6, 0.5),
-            SpriteObject(self.sprite_types['trap'], True, (2, 2), 1.6, 0.5),
-            SpriteObject(self.sprite_types['trap'], True, (1, 2), 1.6, 0.5),
-        ]
-        #     SpriteObject(self.sprite_types['devil'], False, (7, 4), -0.2, 0.7),
-        # ]
+
+        scale = 0.4
+        shift = 1.8
+        for letter, coords in object_coords.items():
+            for pos in coords:
+                if letter == 'O':
+                    scale = 1
+                    shift = 0
+                self.list_of_objects.append(SpriteObject(self.sprite_types[letter], True, pos, shift, scale))
+        print('hello')
 
 class SpriteObject:
     def __init__(self, object, static, pos, shift, scale):
