@@ -1,4 +1,5 @@
 import pygame
+import pickle
 
 from DungeonAdventure import DungeonAdventure
 from GUI.Raycast3D import Raycast
@@ -15,6 +16,7 @@ class MainGame:
         self.mini_map_coords = set()
         self.screen = None
         self.player_controls = None
+        self.hero = None
         self.drawing = None
         self.sprites = None
         self.collision_walls = []
@@ -32,6 +34,7 @@ class MainGame:
     def __obtain_game_data(self):
         self.game_data = DungeonAdventure()
         self.dungeon = self.game_data.maze
+        self.hero = self.game_data.hero
         # Extract more dungeon data here e.g. rooms, objects, etc.
         # self.entrance_loc = self.dungeon.ingress.coords
         # self.exit_loc = self.maze.egress.coords
@@ -70,7 +73,7 @@ class MainGame:
 
     def __game_loop(self):
         clock = pygame.time.Clock()
-        while True:
+        while self.hero.is_alive:       # or while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     exit()
@@ -88,6 +91,8 @@ class MainGame:
             self.drawing.fps_display(clock)
             pygame.display.flip()
             clock.tick(FPS)
+
+        # Insert Game over menu here
 
 
 if __name__ == '__main__':
