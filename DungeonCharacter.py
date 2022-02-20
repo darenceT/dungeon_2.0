@@ -1,147 +1,172 @@
-from DungeonCharacter import *
+from abc import ABC, abstractmethod
 
 
-class Hero(ABC):
-    def __init__(self, hit_points, game, name, hit_points_max, special_skill):
-        super().__init__(self, hit_points, game, name, hit_points_max)
-        self.__hit_points = 20
+class DungeonCharacter(ABC):
+
+    def __init__(self, game, name, hit_points, hit_points_max, attack_speed, attack_behavior, chance_to_hit,
+                 minimum_damage, maximum_damage):
         self.__game = game
         self.__name: str = name
-        self.__special_skill = special_skill
-        self.__vision_potions: int = 0
-        self.__healing_potions: int = 0
-        self.__vision_potions: int = 0
-        self.__pillars: set = set()  # empty
+        self.__hit_points: int = hit_points
         self.__hit_points_max: int = hit_points_max
+        self.__attack_speed: int = attack_speed
+        self.__attack_behavior: str = attack_behavior
+        self.__chance_to_hit: float = chance_to_hit
+        self.__minimum_damage: int = minimum_damage
+        self.__maximum_damage: int = maximum_damage
 
-    def take_damage(self, damage: int = 1) -> int:
+    @property
+    def name(self) -> str:
         """
-        Checks to see if damage has lowered hit points to zero or below, if so, ends game. If not, returns new
-        number of hit points after damage.
-        :param damage: number of hit points to subtract after falling into pit
+        Gets the name
         :return:
         """
-        self.__hit_points -= damage
-        if self.__hit_points <= 0:
-            self.__hit_points = 0
-            self.__game.continues = False
+        return self.__name
+
+    @name.setter
+    def name(self, val: str) -> None:
+        """
+        Sets the name according to the value provided
+        :param val: The value provided by the player
+        :return:
+        """
+        self.__name = val
+
+    @property
+    def game(self):
+        """
+        Gets the current game
+        :return:
+        """
+        return self.__game
+
+    @property
+    def hit_points(self) -> int:
+        """
+        Gets the current hit points
+        :return:
+        """
         return self.__hit_points
 
-    def special_skill(self) -> None:
+    @hit_points.setter
+    def hit_points(self, val: int) -> None:
         """
-        Sets the special skill according to the type of character
+        Checks to see if there are current hit points, if not, sets them to the default beginning value
+        :param val: current hit points, if any
         :return:
         """
-        return self.__special_skill
+        if val is not None:
+            self.__hit_points = val
+        elif self.game is not None:
+            self.__hit_points = self.game.default_hit_points_initial
 
     @property
-    def healing_potions(self) -> int:
+    @abstractmethod
+    def hit_points_max(self) -> int:
         """
-        Gets number of healing potions
+        Returns the maximum value of allowed hit points
         :return:
         """
-        return self.__healing_potions
+        return self.__hit_points_max
 
-    @healing_potions.setter
-    def healing_potions(self, val: int) -> None:
+    @hit_points_max.setter
+    def hit_points_max(self, val: int) -> None:
         """
-        Sets number of healing potions
-        :param val: current number of healing potions
+        Checks to see if maximum value is already set, if not, sets default start value of maximum points.
+        :param val: maximum value of allowed hit points
         :return:
         """
-        self.__healing_potions = val
-
-    @property
-    def vision_potions(self) -> int:
-        """
-        Gets number of healing potions
-        :return:
-        """
-        return self.__vision_potions
-
-    @vision_potions.setter
-    def vision_potions(self, val: int) -> None:
-        """
-        Sets number of healing potions
-        :param val: current number of healing potions
-        :return:
-        """
-        self.__vision_potions = val
+        if val is not None:
+            self.__hit_points_max = val
+        elif self.game is not None:
+            self.__hit_points_max = self.game.default_hit_points_max
 
     @property
-    def pillars(self) -> set:
+    def is_alive(self) -> bool:
         """
-        Gets current pillars
+        Checks to see if our brave adventurer is still breathing, if current hit points greater than zero, returns True.
         :return:
         """
-        return self.__pillars
+        return self.hit_points > 0
 
-    def has_pillar(self, pillar):
-        """
-        Checks to see if a pillar has been collected, if so returns True
-        :param pillar: One of the four pillars
-        :return:
-        """
-        return bool(pillar in self.pillars)
+    @property
+    def minimum_damage(self):
+        return self.__minimum_damage
 
-    def display_inventory(self):
+    @minimum_damage.setter
+    def minimum_damage(self, val: int) -> None:
         """
-        Displays the player's current inventory of items, and hit points
+        Checks to see if maximum value is already set, if not, sets default start value of maximum points.
+        :param val: maximum value of allowed hit points
         :return:
         """
-        # Keeps a list of items in inventory
-        print(f"Name:    {self.__name}")
-        print(f"Health:  {self.__hit_points}")
-        print(f"Pillars: {', '.join(self.pillars)}")
-        print(f"Potions...")
-        print(f"Healing: {self.healing_potions}")
-        print(f"Vision:  {self.vision_potions}")
+        if val is not None:
+            self.__minimum_damage = val
+        elif self.game is not None:
+            self.__minimum_damage = self.game.default_minimum_damage
 
-    def gain_healing_potion(self, ):
-        """
-        Increases the number of healing potions when Adventurer discovers one.
-        :return:
-        """
-        self.healing_potions += 1
+    @property
+    def maximum_damage(self):
+        return self.maximum_damage
 
-    def use_healing_potion(self, hit_points: int = 15) -> int:
+    @maximum_damage.setter
+    def maximum_damage(self, val: int) -> None:
         """
-        Checks to see if Adventurer has any healing potions, if so, increases current hit points by 15 and subtracts
-        1 from the number of healing potions in inventory.
-        :param hit_points: number of hit points to increase after using vision potion
+        Checks to see if maximum value is already set, if not, sets default start value of maximum points.
+        :param val: maximum value of allowed hit points
         :return:
         """
-        if self.healing_potions <= 0:
-            return -1
-        self.healing_potions -= 1
-        self.__hit_points += hit_points
-        if self.__hit_points > self.__hit_points_max:
-            self.__hit_points = self.__hit_points_max
-        return self.healing_potions
+        if val is not None:
+            self.__maximum_damage = val
+        elif self.game is not None:
+            self.__maximum_damage = self.game.default_maximum_damage
 
-    def gain_vision_potion(self):
-        """
-        Increases number of visions potions when Adventurer discovers one.
-        :return:
-        """
-        self.vision_potions += 1
+    @property
+    def attack_speed(self):
+        return self.__attack_speed
 
-    def use_vision_potion(self) -> int:
+    @attack_speed.setter
+    def attack_speed(self, val: int) -> None:
         """
-        Checks to see if adventurer has any vision potions, if so adjusts visible rooms and decreases number of
-        vision potions in inventory by one.
+        Checks to see if maximum value is already set, if not, sets default start value of maximum points.
+        :param val: maximum value of allowed hit points
         :return:
         """
-        if self.vision_potions <= 0:
-            return -1
-        self.vision_potions -= 1
-        self.__game.extend_vision()
-        return self.vision_potions
+        if val is not None:
+            self.__attack_speed = val
+        elif self.game is not None:
+            self.__attack_speed = self.game.default_attack_speed
 
-    def gain_pillar(self, pillar_name):
+    @property
+    def chance_to_hit(self):
+        return self.__chance_to_hit
+
+    @chance_to_hit.setter
+    def chance_to_hit(self, val: float) -> None:
         """
-        Adds pillar to set of discovered pillars
-        :param pillar_name: name of pillar discovered by adventurer
+        Checks to see if maximum value is already set, if not, sets default start value of maximum points.
+        :param val: maximum value of allowed hit points
         :return:
         """
-        self.pillars.add(pillar_name)
+        if val is not None:
+            self.__chance_to_hit = val
+        elif self.game is not None:
+            self.__chance_to_hit = self.game.chance_to_hit
+
+    @property
+    def attack_behavior(self):
+        return self.__attack_behavior
+
+    @attack_behavior.setter
+    def attack_behavior(self, val: str) -> None:
+        """
+        Checks to see if maximum value is already set, if not, sets default start value of maximum points.
+        :param val: maximum value of allowed hit points
+        :return:
+        """
+        if val is not None:
+            self.__attack_behavior = val
+        elif self.game is not None:
+            self.__attack_behavior = self.game.default_attack_behavior
+
+# END
