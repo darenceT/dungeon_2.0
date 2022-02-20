@@ -1,18 +1,17 @@
 from DungeonCharacter import *
 
 
-class Hero(ABC):
-    def __init__(self, hit_points, game, name, hit_points_max, special_skill):
-        super().__init__(self, hit_points, game, name, hit_points_max)
-        self.__hit_points = 20
-        self.__game = game
-        self.__name: str = name
+class Hero(ABC, DungeonCharacter):
+    def __init__(self, game, name, hit_points, hit_points_max, attack_speed, attack_behavior, chance_to_hit,
+                 minimum_damage, maximum_damage, special_skill, chance_to_block):
+        super().__init__(game, name, hit_points, hit_points_max, attack_speed, attack_behavior, chance_to_hit,
+                 minimum_damage, maximum_damage)
         self.__special_skill = special_skill
+        self.__chance_to_block = chance_to_block
         self.__vision_potions: int = 0
         self.__healing_potions: int = 0
         self.__vision_potions: int = 0
         self.__pillars: set = set()  # empty
-        self.__hit_points_max: int = hit_points_max
 
     def take_damage(self, damage: int = 1) -> int:
         """
@@ -21,6 +20,9 @@ class Hero(ABC):
         :param damage: number of hit points to subtract after falling into pit
         :return:
         """
+        # Consider moving this to DungeonCharacter. Then adding the heal capability for monster.
+        # Could also use Factory to create each sub type character
+        # don't declare the same data again, shadowing
         self.__hit_points -= damage
         if self.__hit_points <= 0:
             self.__hit_points = 0
@@ -33,6 +35,10 @@ class Hero(ABC):
         :return:
         """
         return self.__special_skill
+
+    @property
+    def chance_to_block(self) -> float:
+        return self.__chance_to_block
 
     @property
     def healing_potions(self) -> int:
