@@ -47,7 +47,6 @@ class Sprites:
                     scale = 1
                     shift = 0
                 self.list_of_objects.append(SpriteObject(self.sprite_types[letter], True, pos, shift, scale))
-        print('hello')
 
 class SpriteObject:
     def __init__(self, object, static, pos, shift, scale):
