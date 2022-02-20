@@ -1,4 +1,5 @@
 import pygame
+from random import randint
 from .Settings import *
 
 
@@ -9,14 +10,18 @@ class Sprites:
         """
         self.sprite_types = {
             'h_pot': pygame.image.load('GUI/img/h_potion.png').convert_alpha(),
-            'v_pot': pygame.image.load('GUI/img/v_potion.png').convert_alpha()}
+            'v_pot': pygame.image.load('GUI/img/v_potion.png').convert_alpha(),
+            'trap': pygame.image.load('GUI/img/trap.png').convert_alpha(),
+            }
         #     'devil': [pygame.image.load(f'sprites/devil/{i}.png').convert_alpha() for i in range(8)]
         # }
         self.list_of_objects = [
-            SpriteObject(self.sprite_types['h_pot'], True, (1, 0), 1.8, 0.4),
+            SpriteObject(self.sprite_types['h_pot'], True, (1, 3), 1.8, 0.4),
             SpriteObject(self.sprite_types['h_pot'], True, (1, 1), 1.8, 0.4),
             SpriteObject(self.sprite_types['v_pot'], True, (1, 2), 1.6, 0.5),
-            SpriteObject(self.sprite_types['v_pot'], True, (1, 2), 1.6, 0.5),
+            SpriteObject(self.sprite_types['v_pot'], True, (1, 0), 1.6, 0.5),
+            SpriteObject(self.sprite_types['trap'], True, (2, 2), 1.6, 0.5),
+            SpriteObject(self.sprite_types['trap'], True, (1, 2), 1.6, 0.5),
         ]
         #     SpriteObject(self.sprite_types['devil'], False, (7, 4), -0.2, 0.7),
         # ]
@@ -25,8 +30,8 @@ class SpriteObject:
     def __init__(self, object, static, pos, shift, scale):
         self.object = object
         self.static = static        # consider delete
-        self.x = convert_coords_pixel(pos[0])
-        self.y = convert_coords_pixel(pos[1])
+        self.x = convert_coords_pixel(pos[0]) + randint(10, 30)
+        self.y = convert_coords_pixel(pos[1]) + randint(10, 30)
         self.shift = shift
         self.scale = scale
 
