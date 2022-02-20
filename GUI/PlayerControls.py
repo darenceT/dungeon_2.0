@@ -1,6 +1,6 @@
 import pygame
 
-from Settings import *
+from .Settings import *
 
 class PlayerControls:
     """
@@ -11,8 +11,8 @@ class PlayerControls:
         self.player_speed = 4
    
         self.cur_room = game_data.maze.ingress
-        self.x = int(120 + WIDTH / 9 * 2 * self.cur_room.coords[0])  
-        self.y = int(120 + HEIGHT / 9 * 2 * self.cur_room.coords[1])
+        self.x = convert_coords_pixel(self.cur_room.coords[0])
+        self.y = convert_coords_pixel(self.cur_room.coords[1])
 
         self.screen = screen
         self.game_data = game_data

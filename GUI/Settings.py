@@ -10,6 +10,9 @@ FPS = 60
 TILE = 80
 FPS_POS = (WIDTH - 65, 5)
 
+def convert_coords_pixel(coord: int):
+    return int(120 + WIDTH / 9 * 2 * coord)
+
 # minimap settings
 MAP_SCALE = 5
 MAP_TILE = TILE // MAP_SCALE

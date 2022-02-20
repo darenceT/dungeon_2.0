@@ -1,16 +1,16 @@
 import pygame
 
-from Settings import *
-from Raycast3D import Raycast
+from .Settings import *
+from .Raycast3D import Raycast
 
 class Drawing: 
     def __init__(self, screen, map_coords) -> None:
         self.screen = screen
         self.map_coords = map_coords
-        self.textures = {'wall': pygame.image.load('img/wall2b.png').convert(),
-                         'floor': pygame.image.load('img/floor.jpg').convert(),
-                         'ceiling': pygame.image.load('img/ceiling.jfif').convert(),
-                         'door': pygame.image.load('img/door_portal.png').convert()}
+        self.textures = {'wall': pygame.image.load('GUI/img/wall2b.png').convert(),
+                         'floor': pygame.image.load('GUI/img/floor.jpg').convert(),
+                         'ceiling': pygame.image.load('GUI/img/ceiling.jfif').convert(),
+                         'door': pygame.image.load('GUI/img/door_portal.png').convert()}
                         #  'door_openv': pygame.image.load('img/wall1.jpg').convert(),
                         #  'door_openh': pygame.image.load('img/wall1.jpg').convert()
                         #  }
@@ -22,8 +22,11 @@ class Drawing:
         self.screen.blit(self.textures['ceiling'], (sky_offset + WIDTH, 0))
         pygame.draw.rect(self.screen, (53, 40, 30), (0, HALF_HEIGHT, WIDTH, HALF_HEIGHT))
 
-    def world(self, screen, player_pos, player_angle, world_coords): 
-        Raycast.view_3D(screen, player_pos, player_angle, world_coords, self.textures)
+    def world(self, world_objects): 
+        for obj in sorted(world_objects, key=lambda n: n[0], reverse=True):
+            if obj[0]:
+                _, object, object_pos = obj
+                self.screen.blit(object, object_pos)
 
     def mini_map(self, player):
         map_surf = pygame.Surface((WIDTH // MAP_SCALE, HEIGHT // MAP_SCALE))
