@@ -2,7 +2,7 @@ class Adventurer:
     """
     Our brave hero. Sets up and updates game player, their inventory, potions and hit points.
     """
-    default_hit_points_initial = 20
+    default_hit_points_initial = 40
     default_hit_points_max = 100
 
     def __init__(self, game=None, name: str = None, hit_points: int = None, hit_points_max: int = None):

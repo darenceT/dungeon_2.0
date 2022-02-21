@@ -28,8 +28,8 @@ class MainGame:
         self.__obtain_game_data()
         self.player_controls = PlayerControls(self.game_data, self.screen, self.world_coords, self.collision_walls)
         self.drawing = Drawing(self.screen, self.mini_map_coords)
-        self.sprites = Sprites(self.game_data)
-        self.__game_loop()
+        self.sprites = Sprites(self.game_data.maze.rooms)
+        self.sprites.reload_sprites(self.player_controls.cur_room)
 
     def __obtain_game_data(self):
         self.game_data = DungeonAdventure()
@@ -71,7 +71,7 @@ class MainGame:
         __parse_map(self.dungeon)
         
 
-    def __game_loop(self):
+    def game_loop(self):
         clock = pygame.time.Clock()
         while self.hero.is_alive:       # or while True:
             for event in pygame.event.get():
@@ -80,7 +80,10 @@ class MainGame:
 
             self.drawing.background(self.player_controls.angle)
             walls = Raycast.view_3D(self.player_controls, self.world_coords, self.drawing.textures)
-            objects = [obj.object_locate(self.player_controls, walls) for obj in self.sprites.list_of_objects]
+            # reset sprites to curr and adjacent rooms when room change
+            if self.player_controls.room_change:    
+                self.sprites.reload_sprites(self.player_controls.cur_room)
+            objects = [obj.object_locate(self.player_controls, walls) for obj in self.sprites.list_of_sprites]
             self.drawing.world(walls + objects)
 
             self.player_controls.movement()  
@@ -96,7 +99,8 @@ class MainGame:
 
 
 if __name__ == '__main__':
-    MainGame()
+    m = MainGame()
+    m.game_loop()
 
 
 

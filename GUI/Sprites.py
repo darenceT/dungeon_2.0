@@ -4,31 +4,12 @@ from .Settings import *
 
 
 class Sprites:
-    def __init__(self, game_data):
+    def __init__(self, rooms):
         """
-        Pass in game_data primarily for object_coords, and potentially for Room objects also.
         images from www.pngegg.com
         """
-        self.game_data = game_data.maze
+        self.rooms = rooms
         # self.object_coords = self.game_data.object_coords
-        self.list_of_objects = []
-        self.__create_sprites()
-    
-
-    def __create_sprites(self):
-        # temp coords, will obtain from game_data later
-        object_coords = {
-            'H': [(0, 1), (2, 1)],
-            'V': [(1, 1), (2, 2)],
-            'X': [(0, 1), (2, 1)],
-            'A': [(1, 1)],
-            'E': [(2, 1)],
-            'I': [(2, 2)],
-            'P': [(0, 3)],
-            'O': [self.game_data.egress.coords],
-            'M': [(1, 1), (1, 0), (2, 2), (3, 2)]
-        }
-
         self.sprite_types = {
             'H': pygame.image.load('GUI/img/h_potion.png').convert_alpha(),
             'V': pygame.image.load('GUI/img/v_potion.png').convert_alpha(),
@@ -40,23 +21,39 @@ class Sprites:
             'O': pygame.image.load('GUI/img/exit.png').convert_alpha(),
             'M': pygame.image.load('GUI/img/monster.png').convert_alpha()
             }
+        self.list_of_sprites = []
+    
 
-        scale = 0.4
-        shift = 1.8
-        for letter, coords in object_coords.items():
-            for pos in coords:
-                if letter == 'O':
-                    scale = 1
-                    shift = 0
-                if letter == 'M':
-                    scale = 0.8
-                    shift = 0.2
-                self.list_of_objects.append(SpriteObject(self.sprite_types[letter], True, pos, shift, scale))
+    def reload_sprites(self, curr_room):
+        self.list_of_sprites = []
+
+        def __create_sprite(letter, coords, shift=1.8, scale=0.4):
+            self.list_of_sprites.append(SpriteObject(self.sprite_types[letter], coords, shift, scale))
+
+        def peek_room(room):
+            if room.healing_potions:
+                for _ in range(room.healing_potions):
+                    __create_sprite('H', room.coords)
+            if room.vision_potions:
+                for _ in range(curr_room.healing_potions):
+                    __create_sprite('V', room.coords)            
+            if room.has_pit:
+                __create_sprite('X', room.coords)
+            if room.pillar:
+                __create_sprite(room.pillar, room.coords)
+            if room.is_exit:
+                __create_sprite('O', room.coords, scale=1, shift=0)
+        
+        peek_room(curr_room)
+
+        x1, y1 = curr_room.coords
+        x1 += 1
+        peek_room(self.rooms[y1][x1])           # make method accept set() of rooms
 
 class SpriteObject:
-    def __init__(self, object, static, pos, shift, scale):
+    def __init__(self, object, pos, shift, scale):
         self.object = object
-        self.static = static        # consider delete
+        # self.static = static        # consider delete
         self.x = convert_coords_pixel(pos[0]) + randint(1, 20)
         self.y = convert_coords_pixel(pos[1]) + randint(1, 20)
         self.shift = shift

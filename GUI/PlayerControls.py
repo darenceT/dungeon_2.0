@@ -5,6 +5,7 @@ from .Settings import *
 class PlayerControls:
     """
     game_data is object of DungeonAdventure to access "enter_room" method.
+    room_change boolean to trigger loading of sprites
     """
     def __init__(self, game_data, screen, world_raw, collision_walls):
         self.angle = 0
@@ -13,6 +14,7 @@ class PlayerControls:
         self.cur_room = game_data.maze.ingress
         self.x = convert_coords_pixel(self.cur_room.coords[0])
         self.y = convert_coords_pixel(self.cur_room.coords[1])
+        self.room_change = False
 
         self.screen = screen
         self.game_data = game_data
@@ -68,8 +70,13 @@ class PlayerControls:
         # update room location
         next_x = int((self.x - 120) / 160)
         next_y = int((self.y - 120) / 160)
-        self.cur_room = self.rooms[next_y][next_x]
-        self.game_data.enter_room(self.cur_room)
+        # print(next_x, next_y, self.angle)
+        if self.cur_room.coords != (next_x, next_y):
+            self.cur_room = self.rooms[next_y][next_x]
+            self.game_data.enter_room(self.cur_room)
+            self.room_change = True
+        else:
+            self.room_change = False
         self.map_visited.add((self.x // MAP_TILE * 3, self.y // MAP_TILE * 3)) # TODO optimize
 
     def keys_control(self):
