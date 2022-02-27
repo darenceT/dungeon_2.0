@@ -1,5 +1,6 @@
 import pygame
 
+from Grid import Grid
 from .Settings import *
 
 class PlayerControls:
@@ -18,8 +19,9 @@ class PlayerControls:
 
         self.screen = screen
         self.game_data = game_data
-        self.rooms = game_data.maze.rooms
+        # self.rooms = game_data.maze.rooms
         self.world_raw = world_raw
+        self.rooms_in_sight = set()
 
         self.map_visited = set()
         self.show_map = False             
@@ -28,7 +30,6 @@ class PlayerControls:
         # self.collision_sprites = [pygame.Rect(*obj.pos, obj.side, obj.side) for obj in
         #                           self.sprites.list_of_objects if obj.blocked]
         self.collision_list = collision_walls #+ self.collision_sprites
-        # print(self.rooms)
 
     @property
     def pos(self):
@@ -72,12 +73,44 @@ class PlayerControls:
         next_y = int((self.y - 120) / 160)
         # print(next_x, next_y, self.angle)
         if self.cur_room.coords != (next_x, next_y):
-            self.cur_room = self.rooms[next_y][next_x]
-            self.game_data.enter_room(self.cur_room)
+            self.cur_room = self.game_data.maze.rooms[next_y][next_x]
+            # self.game_data.enter_room(self.cur_room)
             self.room_change = True
         else:
             self.room_change = False
         self.map_visited.add((self.x // MAP_TILE * 3, self.y // MAP_TILE * 3)) # TODO optimize
+        self.get_rooms_in_sight()
+
+    def get_rooms_in_sight(self):
+        """
+        Determines direction player is facing using player angle,
+        then obtain coordinates of the 6 rooms (including current room)
+        allowing for use in loading sprites in these rooms
+        """
+        width = height = 2
+        x, y = self.cur_room.coords
+
+        if PI/4 > self.angle > 7/4*PI: # east
+            height = 3
+            y -= 1
+        elif PI/4 < self.angle < 3/4*PI: # south
+            width = 3
+            x -= 1
+        elif 3/4*PI < self.angle < 5/4*PI: # west
+            height = 3
+            x -= 1
+            y -= 1
+        elif 5/4*PI < self.angle < 7/4*PI: # north
+            width = 3
+            x -= 1
+            y -= 1
+        # TODO will "else" for 1 direction may run into == errors?
+
+        extent = Grid(width, height, from_grid=self.game_data.maze, from_coords=(x, y))
+        add = self.rooms_in_sight.add # optimize speed
+        for row in extent.rooms:
+            for room in row:
+                add(room) 
 
     def keys_control(self):
         sin_a = math.sin(self.angle)

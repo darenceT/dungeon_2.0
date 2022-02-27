@@ -28,8 +28,8 @@ class MainGame:
         self.__obtain_game_data()
         self.player_controls = PlayerControls(self.game_data, self.screen, self.world_coords, self.collision_walls)
         self.drawing = Drawing(self.screen, self.mini_map_coords)
-        self.sprites = Sprites(self.game_data.maze.rooms)
-        self.sprites.reload_sprites(self.player_controls.cur_room)
+        self.sprites = Sprites()
+        # self.sprites.reload_sprites(self.player_controls.cur_room)
 
     def __obtain_game_data(self):
         self.game_data = DungeonAdventure()
@@ -82,8 +82,8 @@ class MainGame:
             walls = Raycast.view_3D(self.player_controls, self.world_coords, self.drawing.textures)
             # reset sprites to curr and adjacent rooms when room change
             if self.player_controls.room_change:    
-                self.sprites.reload_sprites(self.player_controls.cur_room)
-            objects = [obj.object_locate(self.player_controls, walls) for obj in self.sprites.list_of_sprites]
+                self.sprites.load_sprites(self.player_controls.rooms_in_sight)
+            objects = [obj.object_locate(self.player_controls, walls) for obj in self.sprites.nearby_sprites]
             self.drawing.world(walls + objects)
 
             self.player_controls.movement()  

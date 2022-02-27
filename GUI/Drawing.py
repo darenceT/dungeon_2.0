@@ -20,7 +20,7 @@ class Drawing:
         self.screen.blit(self.textures['ceiling'], (sky_offset, 0))
         self.screen.blit(self.textures['ceiling'], (sky_offset - WIDTH, 0))
         self.screen.blit(self.textures['ceiling'], (sky_offset + WIDTH, 0))
-        pygame.draw.rect(self.screen, (53, 40, 30), (0, HALF_HEIGHT, WIDTH, HALF_HEIGHT))
+        pygame.draw.rect(self.screen, (145, 129, 81), (0, HALF_HEIGHT, WIDTH, HALF_HEIGHT))
 
     def world(self, world_objects): 
         for obj in sorted(world_objects, key=lambda n: n[0], reverse=True):

@@ -1,5 +1,6 @@
 import math
 
+PI = math.pi
 
 # game settings
 WIDTH = 720    
