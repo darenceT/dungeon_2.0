@@ -7,13 +7,13 @@ class Drawing:
     def __init__(self, screen, map_coords) -> None:
         self.screen = screen
         self.map_coords = map_coords
-        self.textures = {'wall': pygame.image.load('GUI/img/wall2b.png').convert(),
+        self.textures = {#'wall': pygame.image.load('GUI/img/wall2b.png').convert(),
                          'floor': pygame.image.load('GUI/img/floor.jpg').convert(),
                          'ceiling': pygame.image.load('GUI/img/ceiling.jfif').convert(),
-                         'door': pygame.image.load('GUI/img/door_portal.png').convert()}
-                        #  'door_openv': pygame.image.load('img/wall1.jpg').convert(),
-                        #  'door_openh': pygame.image.load('img/wall1.jpg').convert()
-                        #  }
+                         'door': pygame.image.load('GUI/img/door_portal.png').convert(),
+                         'wall': pygame.image.load('GUI/img/wall_default2.png').convert_alpha(),
+                        #  'wall': pygame.image.load('GUI/img/wall_vision2.png').convert_alpha()
+                         }
     
     def background(self, angle):
         sky_offset = -5 * math.degrees(angle) % WIDTH
