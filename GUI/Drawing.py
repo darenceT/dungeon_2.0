@@ -4,9 +4,10 @@ from .Settings import *
 from .Raycast3D import Raycast
 
 class Drawing: 
-    def __init__(self, screen, map_coords) -> None:
+    def __init__(self, screen, map_coords, player) -> None:
         self.screen = screen
         self.map_coords = map_coords
+        self.player = player
         self.textures = {#'wall': pygame.image.load('GUI/img/wall2b.png').convert(),
                          'floor': pygame.image.load('GUI/img/floor.jpg').convert(),
                          'ceiling': pygame.image.load('GUI/img/ceiling.jfif').convert(),
@@ -15,8 +16,8 @@ class Drawing:
                         #  'wall': pygame.image.load('GUI/img/wall_vision2.png').convert_alpha()
                          }
     
-    def background(self, angle):
-        sky_offset = -5 * math.degrees(angle) % WIDTH
+    def background(self):
+        sky_offset = -5 * math.degrees(self.player.angle) % WIDTH
         self.screen.blit(self.textures['ceiling'], (sky_offset, 0))
         self.screen.blit(self.textures['ceiling'], (sky_offset - WIDTH, 0))
         self.screen.blit(self.textures['ceiling'], (sky_offset + WIDTH, 0))
@@ -28,12 +29,12 @@ class Drawing:
                 _, object, object_pos = obj
                 self.screen.blit(object, object_pos)
 
-    def mini_map(self, player):
+    def mini_map(self):
         map_surf = pygame.Surface((WIDTH // MAP_SCALE, HEIGHT // MAP_SCALE))
-        xx, yy = player.x // MAP_SCALE, player.y // MAP_SCALE
+        xx, yy = self.player.x // MAP_SCALE, self.player.y // MAP_SCALE
 
         # Draws visited path
-        for x, y in player.map_visited:
+        for x, y in self.player.map_visited:
             pygame.draw.rect(map_surf, 'red', (x-8, y-8, MAP_TILE * 2, MAP_TILE * 2))
 
         # Draws wall (can use to reveal entire map)
@@ -41,8 +42,8 @@ class Drawing:
             pygame.draw.rect(map_surf, 'black', (x, y, MAP_TILE, MAP_TILE))
 
         pygame.draw.circle(map_surf, 'green', (xx, yy), 5)
-        pygame.draw.line(map_surf, 'green', (xx, yy), (xx + 12 * math.cos(player.angle),
-                        yy + 12 * math.sin(player.angle)), 2)
+        pygame.draw.line(map_surf, 'green', (xx, yy), (xx + 12 * math.cos(self.player.angle),
+                        yy + 12 * math.sin(self.player.angle)), 2)
 
         self.screen.blit(map_surf, MAP_POS)
 

@@ -3,11 +3,12 @@ from random import randint
 from .Settings import *
 
 
-class Sprites:
-    def __init__(self):
+class SpritesContainer:
+    def __init__(self, player):
         """
         images from www.pngegg.com
         """
+        self.player = player
         self.images = {
             'H': pygame.image.load('GUI/img/h_potion.png').convert_alpha(),
             'V': pygame.image.load('GUI/img/v_potion.png').convert_alpha(),
@@ -19,57 +20,32 @@ class Sprites:
             'O': pygame.image.load('GUI/img/exit.png').convert_alpha(),
             'M': pygame.image.load('GUI/img/monster.png').convert_alpha()
             }
-        self.nearby_sprites = []
+        self.nearby_sprites = set()
     
-    def load_sprites(self, rooms_in_sight):
+    def load_sprites(self):
         """
         First empty list of sprites after entering new location, therefore will not
         load sprites from rooms no longer in view
 
         Iterate through set of rooms in view to load sprites
         """
-        self.nearby_sprites = []
-
-        for room in rooms_in_sight:
+        self.nearby_sprites = set()
+        add = self.nearby_sprites.add
+        for room in self.player.rooms_in_sight:
             if room.healing_potions:
                 for _ in range(room.healing_potions):
-                    self.nearby_sprites.append(SpriteObject(self.images['H'], room.coords))
+                    add(SpriteObject(self.images['H'], room.coords))
             if room.vision_potions:
                 for _ in range(room.vision_potions):
-                    self.nearby_sprites.append(SpriteObject(self.images['V'], room.coords))
-                    self.nearby_sprites.append(SpriteObject(self.images['M'], room.coords))            
+                    add(SpriteObject(self.images['V'], room.coords))
+                    add(SpriteObject(self.images['M'], room.coords, scale=0.8, shift=0.2))            
             if room.has_pit:
-                self.nearby_sprites.append(SpriteObject(self.images['X'], room.coords))
+                add(SpriteObject(self.images['X'], room.coords))
             if room.pillar:
-                self.nearby_sprites.append(SpriteObject(self.images[room.pillar], room.coords))
+                add(SpriteObject(self.images[room.pillar], room.coords))
             if room.is_exit:
-                self.nearby_sprites.append(SpriteObject(self.images['O'], room.coords, scale=1, shift=0))
+                add(SpriteObject(self.images['O'], room.coords, scale=1, shift=0))
     
-    # def reload_sprites(self, curr_room):
-    #     self.list_of_sprites = []
-
-    #     def __create_sprite(letter, coords, shift=1.8, scale=0.4):
-    #         self.list_of_sprites.append(SpriteObject(self.sprite_types[letter], coords, shift, scale))
-
-    #     def peek_room(room):
-    #         if room.healing_potions:
-    #             for _ in range(room.healing_potions):
-    #                 __create_sprite('H', room.coords)
-    #         if room.vision_potions:
-    #             for _ in range(curr_room.healing_potions):
-    #                 __create_sprite('V', room.coords)            
-    #         if room.has_pit:
-    #             __create_sprite('X', room.coords)
-    #         if room.pillar:
-    #             __create_sprite(room.pillar, room.coords)
-    #         if room.is_exit:
-    #             __create_sprite('O', room.coords, scale=1, shift=0)
-        
-    #     peek_room(curr_room)
-
-    #     x1, y1 = curr_room.coords
-    #     x1 += 1
-    #     peek_room(self.rooms[y1][x1])           # make method accept set() of rooms
 
 class SpriteObject:
     def __init__(self, object, pos, shift=1.8, scale=0.4):
