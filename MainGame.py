@@ -6,7 +6,7 @@ from GUI.Raycast3D import Raycast
 from GUI.Settings import *
 from GUI.PlayerControls import PlayerControls
 from GUI.Drawing import Drawing
-from GUI.Sprites import Sprites
+from GUI.Sprites import SpritesContainer
 
 class MainGame:
     def __init__(self):
@@ -27,17 +27,14 @@ class MainGame:
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.__obtain_game_data()
         self.player_controls = PlayerControls(self.game_data, self.screen, self.world_coords, self.collision_walls)
-        self.drawing = Drawing(self.screen, self.mini_map_coords)
-        self.sprites = Sprites(self.game_data)
-        self.__game_loop()
+        self.drawing = Drawing(self.screen, self.mini_map_coords, self.player_controls)
+        self.sprites = SpritesContainer(self.player_controls)
 
     def __obtain_game_data(self):
         self.game_data = DungeonAdventure()
         self.dungeon = self.game_data.maze
         self.hero = self.game_data.hero
         # Extract more dungeon data here e.g. rooms, objects, etc.
-        # self.entrance_loc = self.dungeon.ingress.coords
-        # self.exit_loc = self.maze.egress.coords
         print(self.dungeon)                         # DELETE
 
         def __parse_map(maze):
@@ -71,23 +68,22 @@ class MainGame:
         __parse_map(self.dungeon)
         
 
-    def __game_loop(self):
+    def game_loop(self):
         clock = pygame.time.Clock()
         while self.hero.is_alive:       # or while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     exit()
 
-            self.drawing.background(self.player_controls.angle)
+            self.drawing.background()
+            self.sprites.load_sprites()
+
             walls = Raycast.view_3D(self.player_controls, self.world_coords, self.drawing.textures)
-            objects = [obj.object_locate(self.player_controls, walls) for obj in self.sprites.list_of_objects]
+            objects = [obj.object_locate(self.player_controls, walls) for obj in self.sprites.nearby_sprites]
             self.drawing.world(walls + objects)
 
             self.player_controls.movement()  
-            
-            if self.player_controls.show_map:
-                self.drawing.mini_map(self.player_controls)
-
+            self.drawing.mini_map()
             self.drawing.fps_display(clock)
             pygame.display.flip()
             clock.tick(FPS)
@@ -96,7 +92,8 @@ class MainGame:
 
 
 if __name__ == '__main__':
-    MainGame()
+    m = MainGame()
+    m.game_loop()
 
 
 
