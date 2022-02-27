@@ -13,8 +13,8 @@ class PlayerControls:
         self.player_speed = 4
    
         self.cur_room = game_data.maze.ingress
-        self.x = convert_coords_pixel(self.cur_room.coords[0])
-        self.y = convert_coords_pixel(self.cur_room.coords[1])
+        self.x = convert_coords_to_pixel(self.cur_room.coords[0])
+        self.y = convert_coords_to_pixel(self.cur_room.coords[1])
         self.room_change = False
 
         self.screen = screen
@@ -107,7 +107,7 @@ class PlayerControls:
         # TODO will "else" for 1 direction may run into == errors?
 
         extent = Grid(width, height, from_grid=self.game_data.maze, from_coords=(x, y))
-        add = self.rooms_in_sight.add # optimize speed
+        add = self.rooms_in_sight.add
         for row in extent.rooms:
             for room in row:
                 add(room) 

@@ -6,6 +6,8 @@ from .Settings import *
 class SpritesContainer:
     def __init__(self, player):
         """
+        Initial loading images of sprites
+        Container of sprites for current and nearby rooms 
         images from www.pngegg.com
         """
         self.player = player
@@ -29,29 +31,30 @@ class SpritesContainer:
 
         Iterate through set of rooms in view to load sprites
         """
-        self.nearby_sprites = set()
-        add = self.nearby_sprites.add
-        for room in self.player.rooms_in_sight:
-            if room.healing_potions:
-                for _ in range(room.healing_potions):
-                    add(SpriteObject(self.images['H'], room.coords))
-            if room.vision_potions:
-                for _ in range(room.vision_potions):
-                    add(SpriteObject(self.images['V'], room.coords))
-                    add(SpriteObject(self.images['M'], room.coords, scale=0.8, shift=0.2))            
-            if room.has_pit:
-                add(SpriteObject(self.images['X'], room.coords))
-            if room.pillar:
-                add(SpriteObject(self.images[room.pillar], room.coords))
-            if room.is_exit:
-                add(SpriteObject(self.images['O'], room.coords, scale=1, shift=0))
+        if self.player.room_change:
+            self.nearby_sprites = set()
+            add = self.nearby_sprites.add
+            for room in self.player.rooms_in_sight:
+                if room.healing_potions:
+                    for _ in range(room.healing_potions):
+                        add(SpriteObject(self.images['H'], room.coords))
+                if room.vision_potions:
+                    for _ in range(room.vision_potions):
+                        add(SpriteObject(self.images['V'], room.coords))
+                        add(SpriteObject(self.images['M'], room.coords, scale=0.8, shift=0.2))            
+                if room.has_pit:
+                    add(SpriteObject(self.images['X'], room.coords))
+                if room.pillar:
+                    add(SpriteObject(self.images[room.pillar], room.coords))
+                if room.is_exit:
+                    add(SpriteObject(self.images['O'], room.coords, scale=1, shift=0))
     
 
 class SpriteObject:
     def __init__(self, object, pos, shift=1.8, scale=0.4):
         self.object = object
-        self.x = convert_coords_pixel(pos[0]) + randint(1, 20)
-        self.y = convert_coords_pixel(pos[1]) + randint(1, 20)
+        self.x = convert_coords_to_pixel(pos[0]) + randint(1, 20)
+        self.y = convert_coords_to_pixel(pos[1]) + randint(1, 20)
         self.shift = shift
         self.scale = scale
 

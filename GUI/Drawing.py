@@ -30,22 +30,23 @@ class Drawing:
                 self.screen.blit(object, object_pos)
 
     def mini_map(self):
-        map_surf = pygame.Surface((WIDTH // MAP_SCALE, HEIGHT // MAP_SCALE))
-        xx, yy = self.player.x // MAP_SCALE, self.player.y // MAP_SCALE
+        if self.player.show_map:
+            map_surf = pygame.Surface((WIDTH // MAP_SCALE, HEIGHT // MAP_SCALE))
+            xx, yy = self.player.x // MAP_SCALE, self.player.y // MAP_SCALE
 
-        # Draws visited path
-        for x, y in self.player.map_visited:
-            pygame.draw.rect(map_surf, 'red', (x-8, y-8, MAP_TILE * 2, MAP_TILE * 2))
+            # Draws visited path
+            for x, y in self.player.map_visited:
+                pygame.draw.rect(map_surf, 'red', (x-8, y-8, MAP_TILE * 2, MAP_TILE * 2))
 
-        # Draws wall (can use to reveal entire map)
-        for x,y in self.map_coords:
-            pygame.draw.rect(map_surf, 'black', (x, y, MAP_TILE, MAP_TILE))
+            # Draws wall (can use to reveal entire map)
+            for x,y in self.map_coords:
+                pygame.draw.rect(map_surf, 'black', (x, y, MAP_TILE, MAP_TILE))
 
-        pygame.draw.circle(map_surf, 'green', (xx, yy), 5)
-        pygame.draw.line(map_surf, 'green', (xx, yy), (xx + 12 * math.cos(self.player.angle),
-                        yy + 12 * math.sin(self.player.angle)), 2)
+            pygame.draw.circle(map_surf, 'green', (xx, yy), 5)
+            pygame.draw.line(map_surf, 'green', (xx, yy), (xx + 12 * math.cos(self.player.angle),
+                            yy + 12 * math.sin(self.player.angle)), 2)
 
-        self.screen.blit(map_surf, MAP_POS)
+            self.screen.blit(map_surf, MAP_POS)
 
     def fps_display(self, clock):
         fps = str(int(clock.get_fps()))

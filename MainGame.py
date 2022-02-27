@@ -76,18 +76,14 @@ class MainGame:
                     exit()
 
             self.drawing.background()
+            self.sprites.load_sprites()
+
             walls = Raycast.view_3D(self.player_controls, self.world_coords, self.drawing.textures)
-            # reset sprites to curr and adjacent rooms when room change
-            if self.player_controls.room_change:    
-                self.sprites.load_sprites()
             objects = [obj.object_locate(self.player_controls, walls) for obj in self.sprites.nearby_sprites]
             self.drawing.world(walls + objects)
 
             self.player_controls.movement()  
-            
-            if self.player_controls.show_map:
-                self.drawing.mini_map()
-
+            self.drawing.mini_map()
             self.drawing.fps_display(clock)
             pygame.display.flip()
             clock.tick(FPS)
