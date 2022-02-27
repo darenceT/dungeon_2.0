@@ -8,7 +8,7 @@ class PlayerControls:
     game_data is object of DungeonAdventure to access "enter_room" method.
     room_change boolean to trigger loading of sprites
     """
-    def __init__(self, game_data, screen, world_raw, collision_walls):
+    def __init__(self, game_data, screen, collision_walls):
         self.angle = 0
         self.player_speed = 4
    
@@ -19,16 +19,15 @@ class PlayerControls:
 
         self.screen = screen
         self.game_data = game_data
-        # self.rooms = game_data.maze.rooms
-        self.world_raw = world_raw
+        # self.world_raw = world_raw
         self.rooms_in_sight = set()
 
         self.map_visited = set()
         self.show_map = False             
         self.side = 50
-        self.rect = pygame.Rect(*(self.x, self.y), self.side, self.side)
-        # self.collision_sprites = [pygame.Rect(*obj.pos, obj.side, obj.side) for obj in
-        #                           self.sprites.list_of_objects if obj.blocked]
+        self.rect = pygame.Rect(*self.pos, self.side, self.side)
+        #self.collision_sprites = [pygame.Rect(*obj.pos, obj.side, obj.side) for obj in
+                                  #self.sprites.list_of_objects if obj.blocked]
         self.collision_list = collision_walls #+ self.collision_sprites
 
     @property
@@ -41,7 +40,7 @@ class PlayerControls:
         hit_indexes = next_rect.collidelistall(self.collision_list)
 
         if len(hit_indexes):
-            delta_x, delta_y = 0, 0
+            delta_x = delta_y = 0
             for hit_index in hit_indexes:
                 hit_rect = self.collision_list[hit_index]
                 if dx > 0:
@@ -54,7 +53,7 @@ class PlayerControls:
                     delta_y += hit_rect.bottom - next_rect.top
 
             if abs(delta_x - delta_y) < 10:
-                dx, dy = 0, 0
+                dx = dy = 0
             elif delta_x > delta_y:
                 dy = 0
             elif delta_y > delta_x:
@@ -71,7 +70,7 @@ class PlayerControls:
         # update room location
         next_x = int((self.x - 120) / 160)
         next_y = int((self.y - 120) / 160)
-        # print(next_x, next_y, self.angle)
+
         if self.cur_room.coords != (next_x, next_y):
             self.cur_room = self.game_data.maze.rooms[next_y][next_x]
             # self.game_data.enter_room(self.cur_room)

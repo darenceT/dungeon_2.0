@@ -26,7 +26,7 @@ class MainGame:
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.__obtain_game_data()
-        self.player_controls = PlayerControls(self.game_data, self.screen, self.world_coords, self.collision_walls)
+        self.player_controls = PlayerControls(self.game_data, self.screen, self.collision_walls)
         self.drawing = Drawing(self.screen, self.mini_map_coords, self.player_controls)
         self.sprites = SpritesContainer(self.player_controls)
 

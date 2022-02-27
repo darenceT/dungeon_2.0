@@ -37,12 +37,15 @@ class SpritesContainer:
             for room in self.player.rooms_in_sight:
                 if room.healing_potions:
                     for _ in range(room.healing_potions):
+                        room.healing_potions -= 1
                         add(SpriteObject(self.images['H'], room.coords))
                 if room.vision_potions:
                     for _ in range(room.vision_potions):
+                        room.vision_potions -= 1
                         add(SpriteObject(self.images['V'], room.coords))
                         add(SpriteObject(self.images['M'], room.coords, scale=0.8, shift=0.2))            
                 if room.has_pit:
+                    room.has_pit = False
                     add(SpriteObject(self.images['X'], room.coords))
                 if room.pillar:
                     add(SpriteObject(self.images[room.pillar], room.coords))
@@ -57,14 +60,23 @@ class SpriteObject:
         self.y = convert_coords_to_pixel(pos[1]) + randint(1, 20)
         self.shift = shift
         self.scale = scale
+        # self.side = 30
+        self.collided = False
 
     def object_locate(self, player, walls):
+        if self.collided:
+            return (False,)
+
         fake_walls0 = [walls[0] for _ in range(FAKE_RAYS)]
         fake_walls1 = [walls[-1] for _ in range(FAKE_RAYS)]
         fake_walls = fake_walls0 + walls + fake_walls1
 
         dx, dy = self.x - player.x, self.y - player.y
         distance_to_sprite = math.sqrt(dx ** 2 + dy ** 2)
+        
+        # collect objects
+        if distance_to_sprite < 2:
+            self.collided = True
 
         theta = math.atan2(dy, dx)
         gamma = theta - player.angle
