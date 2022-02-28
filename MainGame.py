@@ -19,6 +19,7 @@ class MainGame:
         self.hero = None
         self.drawing = None
         self.sprites = None
+        self.raycast = None
         self.collision_walls = []
         self.__load_game()   
 
@@ -26,9 +27,10 @@ class MainGame:
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.__obtain_game_data()
-        self.player_controls = PlayerControls(self.game_data, self.screen, self.world_coords, self.collision_walls)
+        self.player_controls = PlayerControls(self.game_data, self.screen, self.collision_walls)
         self.drawing = Drawing(self.screen, self.mini_map_coords, self.player_controls)
         self.sprites = SpritesContainer(self.player_controls)
+        self.raycast = Raycast(self.player_controls, self.world_coords, self.drawing.textures)
 
     def __obtain_game_data(self):
         self.game_data = DungeonAdventure()
@@ -78,8 +80,8 @@ class MainGame:
             self.drawing.background()
             self.sprites.load_sprites()
 
-            walls = Raycast.view_3D(self.player_controls, self.world_coords, self.drawing.textures)
-            objects = [obj.object_locate(self.player_controls, walls) for obj in self.sprites.nearby_sprites]
+            walls = self.raycast.view_3D()
+            objects = self.sprites.obtain_sprites(walls)
             self.drawing.world(walls + objects)
 
             self.player_controls.movement()  
