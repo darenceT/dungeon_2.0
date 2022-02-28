@@ -88,7 +88,6 @@ class PlayerControls:
         """
         width = height = 2
         x, y = self.cur_room.coords
-
         if PI/4 > self.angle > 7/4*PI: # east
             height = 3
             y -= 1
