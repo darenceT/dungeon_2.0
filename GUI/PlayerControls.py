@@ -73,12 +73,13 @@ class PlayerControls:
 
         if self.cur_room.coords != (next_x, next_y):
             self.cur_room = self.game_data.maze.rooms[next_y][next_x]
-            # self.game_data.enter_room(self.cur_room)
+            self.game_data.enter_room(self.cur_room)
             self.room_change = True
+            self.get_rooms_in_sight()
         else:
             self.room_change = False
         self.map_visited.add((self.x // MAP_TILE * 3, self.y // MAP_TILE * 3)) # TODO optimize
-        self.get_rooms_in_sight()
+        
 
     def get_rooms_in_sight(self):
         """
@@ -108,7 +109,7 @@ class PlayerControls:
         add = self.rooms_in_sight.add
         for row in extent.rooms:
             for room in row:
-                add(room) 
+                add(room)
 
     def keys_control(self):
         sin_a = math.sin(self.angle)

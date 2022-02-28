@@ -46,13 +46,11 @@ class SpritesContainer:
             self.nearby_sprites = set()
             add = self.nearby_sprites.add
             for room in self.player.rooms_in_sight:
-                if room.healing_potions:
+                if room.healing_potions > 0:
                     for _ in range(room.healing_potions):
-                        # room.healing_potions -= 1
                         add(SpriteObject(self.images['H'], 'H', room.coords))
-                if room.vision_potions:
+                if room.vision_potions > 0:
                     for _ in range(room.vision_potions):
-                        # room.vision_potions -= 1
                         add(SpriteObject(self.images['V'], 'V', room.coords))
                         add(SpriteObject(self.images['M'], 'M', room.coords, scale=0.8, shift=0.2))            
                 if room.has_pit:
@@ -64,7 +62,12 @@ class SpritesContainer:
                     add(SpriteObject(self.images['O'], 'O', room.coords, scale=1, shift=0))
     
     def obtain_sprites(self, walls):
-        return [self.object_locate(obj, walls) for obj in self.nearby_sprites]
+        """"
+        Obtain location of each sprite object in relation to player and nearby walls
+        Copy of nearby sprites container used to avoid iteration error from object removal in object_locate
+        """
+        temp_container = self.nearby_sprites.copy()
+        return [self.object_locate(obj, walls) for obj in temp_container]
 
     def object_locate(self, sprite, walls):
         # if sprite.collided:
@@ -78,12 +81,12 @@ class SpritesContainer:
         distance_to_sprite = math.sqrt(dx ** 2 + dy ** 2)
         
         # collect objects
-        if distance_to_sprite < 2:
+        if distance_to_sprite < 20:
             if sprite.letter == 'H':
                 self.game.find_healing_potion()
             elif sprite.letter == 'V':
                 self.game.find_vision_potion()
-        #     sprite.collided = True
+            self.nearby_sprites.remove(sprite)
 
         theta = math.atan2(dy, dx)
         gamma = theta - self.player.angle

@@ -254,6 +254,7 @@ class DungeonAdventure:
         print("You find a Healing Potion. Use this to restore some lost hit-points.")
         self.room.healing_potions -= 1
         self.hero.gain_healing_potion()
+        print('current room healing potions:', self.room.healing_potions)
 
     def find_vision_potion(self):
         """
@@ -264,6 +265,7 @@ class DungeonAdventure:
         print("You find a Vision Potion. Use this to see surrounding rooms.")
         self.room.vision_potions -= 1
         self.hero.gain_vision_potion()
+        print('current room vision potions:', self.room.vision_potions)
 
     def extend_vision(self):
         from_coords = (self.room.coord_x -1, self.room.coord_y - 1)
@@ -325,6 +327,41 @@ class DungeonAdventure:
             print("then return here to the Exit... if you can!")
 
     def enter_room(self, room) -> None:
+        """ Enter a room. Stuff happens and/or is found.
+        *** DOES NOT AUTO pickup potions/pit
+        When the hero enters a room:
+        checks to see if there is a pit, if yes, calls pit function.
+            checks to see if hero is no longer alive
+        checks to see if room has healing potion,if yes calls find healing potion function
+        checks to see if room has vision potion, if yes calls find vision potion function
+        :param room:
+        :return:
+        """
+        if self.room is not None:
+            self.room.has_hero = False
+        self.room = room
+        self.room.has_hero = True
+        # Falling into pit occurs first. If fatal, do not find other contents.
+        # if room.has_pit:
+        #     self.fall_into_pit()
+        # if not self.hero.is_alive:
+        #     return
+        # # Collect items
+        # if room.healing_potions:
+        #     self.find_healing_potion()
+        # if room.vision_potions:
+            # self.find_vision_potion()
+        # Pillars and Exit are each supposed to be sole item in room, if present.
+        # Ergo, cannot have both, so order of the following does not matter.
+        if room.pillar:
+            self.find_pillar()
+        if room.is_exit:
+            self.find_exit()
+        # Drop breadcrumb AFTER finding Pillar or Exit, so announce differently.
+        room.has_crumb = True
+
+
+    def enter_room_OLD(self, room) -> None:
         """ Enter a room. Stuff happens and/or is found.
         When the hero enters a room:
         checks to see if there is a pit, if yes, calls pit function.
