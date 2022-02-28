@@ -3,19 +3,22 @@ from .Settings import *
 
 
 class Raycast:
+    def __init__(self, player, world_coords, textures):
+        self.player = player
+        self.w_coords = world_coords
+        self.textures = textures
 
-    @staticmethod
-    def view_3D(player, world_coords, textures):
+    def view_3D(self):
         """
         Raycasting algorithm to display 3D view of walls, ceiling, floor
         Credit: https://github.com/StanislavPetrovV/Raycasting-3d-game-tutorial/blob/master/part%20%232/ray_casting.py
         """  
         walls = []     
-        ox, oy = player.pos
+        ox, oy = self.player.pos
         def mapping(a, b):
             return (a // TILE) * TILE, (b // TILE) * TILE
         xm, ym = mapping(ox, oy)
-        cur_angle = player.angle - HALF_FOV
+        cur_angle = self.player.angle - HALF_FOV
         for ray in range(NUM_RAYS):
             sin_a = math.sin(cur_angle)
             cos_a = math.cos(cur_angle)
@@ -28,8 +31,8 @@ class Raycast:
                 depth_v = (x - ox) / cos_a
                 yv = oy + depth_v * sin_a
                 tile_v = mapping(x + dx, yv)
-                if tile_v in world_coords:
-                    texture_v = world_coords[tile_v]
+                if tile_v in self.w_coords:
+                    texture_v = self.w_coords[tile_v]
                     break
                 x += dx * TILE
 
@@ -39,21 +42,20 @@ class Raycast:
                 depth_h = (y - oy) / sin_a
                 xh = ox + depth_h * cos_a
                 tile_h = mapping(xh, y + dy)
-                if tile_h in world_coords:
-                    texture_h = world_coords[tile_h]
+                if tile_h in self.w_coords:
+                    texture_h = self.w_coords[tile_h]
                     break
                 y += dy * TILE
 
             # projection
             depth, offset, texture = (depth_v, yv, texture_v) if depth_v < depth_h else (depth_h, xh, texture_h)
             offset = int(offset) % TILE
-            depth *= math.cos(player.angle - cur_angle)
+            depth *= math.cos(self.player.angle - cur_angle)
             depth = max(depth, 0.00001)
             proj_height = min(int(PROJ_COEFF / depth), 2 * HEIGHT)
 
-            wall_column = textures[texture].subsurface(offset * TEXTURE_SCALE, 0, TEXTURE_SCALE, TEXTURE_HEIGHT)
+            wall_column = self.textures[texture].subsurface(offset * TEXTURE_SCALE, 0, TEXTURE_SCALE, TEXTURE_HEIGHT)
             wall_column = pygame.transform.scale(wall_column, (SCALE, proj_height))
-            # screen.blit(wall_column, (ray * SCALE, HALF_HEIGHT - proj_height // 2))
 
             wall_pos = (ray * SCALE, HALF_HEIGHT - proj_height // 2)
 
