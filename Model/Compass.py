@@ -1,16 +1,20 @@
 from Direction import Direction
 
+North = Direction('N', 'North', (0, 1))
+South = Direction('S', 'South', (0, -1))
+East = Direction('E', 'East', (1, 0))
+West = Direction('W', 'West', (-1, 0))
+Northeast = Direction('NE', 'Northeast', (1, 1))
+Southeast = Direction('SE', 'Southeast', (1, -1))
+Northwest = Direction('NW', 'Northwest', (-1, 1))
+Southwest = Direction('SW', 'Southwest', (-1, -1))
+
 
 class Compass:
     dirs: list[Direction] = [
-        Direction('N', 'North', (0, 1)),
-        Direction('S', 'South', (0, -1)),
-        Direction('E', 'East', (1, 0)),
-        Direction('W', 'West', (-1, 0)),
-        Direction('NE', 'Northeast', (1, 1)),
-        Direction('SE', 'Southeast', (1, -1)),
-        Direction('NW', 'Northwest', (-1, 1)),
-        Direction('SW', 'Southwest', (-1, -1)) ]
+        North, South, East, West,
+        Northeast, Southeast, Northwest, Southwest,
+    ]
 
     def __getitem__(self, item):
         if isinstance(item, str):
@@ -32,7 +36,7 @@ if __name__ == '__main__':
         x: Compass = Compass()
         for s in ('N n north North NORTH NoRtH foo'.split(' ')):
             d = x[s]
-            print(f"{s} -> {repr(d)}")
+            print(f"{s} -> {d}")
 
     example()
 

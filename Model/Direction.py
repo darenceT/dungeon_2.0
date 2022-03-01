@@ -1,11 +1,16 @@
 from typing import NamedTuple, Union
 
+from Util import obj_repr
+
 IntPair = tuple[int, int]
 
 
 class Vect(NamedTuple):
     x: int
     y: int
+
+
+Vectish = Union[IntPair, Vect]
 
 
 class Direction:
@@ -30,17 +35,17 @@ class Direction:
         return self.name
 
     def __repr__(self):
-        return f"Direction(abbr:'{self.abbr}', name:'{self.name}', vect:{tuple(self.vect)}"
+        return obj_repr(self)
 
 
 if __name__ == '__main__':
     from pprint import PrettyPrinter
 
     def example():
-        pp = PrettyPrinter(compact=True)
-
         d1 = Direction('N', 'North', (0, 1))
-        print("d1 = ", pp.pformat(vars(d1)))
+        print(f"str(d1) = {d1}")
+        print(f"d1 = {d1!r}")
+
         # show use of Vect fields by name and index
         v1 = d1.vect
         print(f"v1 = d1.vect...")
@@ -50,7 +55,7 @@ if __name__ == '__main__':
         print(f"tuple = {tuple(v1)}")
 
         d2 = Direction('E', 'East', (1, 0))
-        print("d2 = ", pp.pformat(vars(d2)))
+        print(f"d2 = {d2!r}")
 
     example()
 
