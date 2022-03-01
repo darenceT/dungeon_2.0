@@ -11,7 +11,6 @@ class SpriteObject:
         self.shift = shift
         self.scale = scale
         # self.side = 30
-        # self.collided = False
 
 class SpritesContainer:
     def __init__(self, player, game):
@@ -43,13 +42,14 @@ class SpritesContainer:
         Iterate through set of rooms in view to load sprites
         """
         if self.player.room_change:
+            print('loading sprites')
             self.nearby_sprites = set()
             add = self.nearby_sprites.add
             for room in self.player.rooms_in_sight:
-                if room.healing_potions > 0:
+                if room.healing_potions:
                     for _ in range(room.healing_potions):
                         add(SpriteObject(self.images['H'], 'H', room.coords))
-                if room.vision_potions > 0:
+                if room.vision_potions:
                     for _ in range(room.vision_potions):
                         add(SpriteObject(self.images['V'], 'V', room.coords))
                         add(SpriteObject(self.images['M'], 'M', room.coords, scale=0.8, shift=0.2))            
@@ -70,8 +70,6 @@ class SpritesContainer:
         return [self.object_locate(obj, walls) for obj in temp_container]
 
     def object_locate(self, sprite, walls):
-        # if sprite.collided:
-        #     return (False,)
 
         fake_walls0 = [walls[0] for _ in range(FAKE_RAYS)]
         fake_walls1 = [walls[-1] for _ in range(FAKE_RAYS)]
@@ -82,9 +80,9 @@ class SpritesContainer:
         
         # collect objects
         if distance_to_sprite < 20:
-            if sprite.letter == 'H':
+            if sprite.letter == 'H' and self.game.room.healing_potions:
                 self.game.find_healing_potion()
-            elif sprite.letter == 'V':
+            elif sprite.letter == 'V' and self.game.room.vision_potions:
                 self.game.find_vision_potion()
             self.nearby_sprites.remove(sprite)
 

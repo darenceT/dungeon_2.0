@@ -254,7 +254,6 @@ class DungeonAdventure:
         print("You find a Healing Potion. Use this to restore some lost hit-points.")
         self.room.healing_potions -= 1
         self.hero.gain_healing_potion()
-        print('current room healing potions:', self.room.healing_potions)
 
     def find_vision_potion(self):
         """
@@ -265,7 +264,6 @@ class DungeonAdventure:
         print("You find a Vision Potion. Use this to see surrounding rooms.")
         self.room.vision_potions -= 1
         self.hero.gain_vision_potion()
-        print('current room vision potions:', self.room.vision_potions)
 
     def extend_vision(self):
         from_coords = (self.room.coord_x -1, self.room.coord_y - 1)

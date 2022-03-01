@@ -31,6 +31,7 @@ class MainGame:
         self.drawing = Drawing(self.screen, self.mini_map_coords, self.player_controls)
         self.sprites = SpritesContainer(self.player_controls, self.game_data)
         self.raycast = Raycast(self.player_controls, self.world_coords, self.drawing.textures)
+        self.player_controls.get_rooms_in_sight()
 
     def __obtain_game_data(self):
         self.game_data = DungeonAdventure()
