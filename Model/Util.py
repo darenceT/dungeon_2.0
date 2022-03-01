@@ -21,37 +21,35 @@ def obj_repr(obj):
                 break
             k = k.removeprefix(p)
         attrs[k] = v
-    return f"({nam}){attrs}"
-
-
-def __example():
-
-    class Example0:
-        def __init__(self):
-            self.__f0 = "a"
-
-        def __repr__(self):
-            return obj_repr(self)
-
-    class _Example1(Example0):
-        def __init__(self):
-            super().__init__()
-            self.__f1 = "b"
-
-    class __Example2(_Example1):
-        def __init__(self):
-            super().__init__()
-            self.__f2 = "c"
-
-    o = __Example2()
-    print(f"{o}")
-    o = _Example1()
-    print(f"{o}")
-    o = Example0()
-    print(f"{o}")
+    return f"{nam}({attrs})"
 
 
 if __name__ == '__main__':
-    __example()
+    def example():
+        class Example0:
+            def __init__(self):
+                self.__f0 = "a"
+
+            def __repr__(self):
+                return obj_repr(self)
+
+        class _Example1(Example0):
+            def __init__(self):
+                super().__init__()
+                self.__f1 = "b"
+
+        class __Example2(_Example1):
+            def __init__(self):
+                super().__init__()
+                self.__f2 = "c"
+
+        o = __Example2()
+        print(f"{o}")
+        o = _Example1()
+        print(f"{o}")
+        o = Example0()
+        print(f"{o}")
+
+    example()
 
 # END

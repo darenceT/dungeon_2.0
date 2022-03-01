@@ -1,11 +1,19 @@
-from typing import Optional
+from typing import NamedTuple, Optional, Union
 
 from Util import *
 
-Coords = tuple[int, int]
+IntPair = tuple[int, int]
 
 
-class Box():
+class Coords(NamedTuple):
+    x: int
+    y: int
+
+
+Coordish = Union[IntPair, Coords]
+
+
+class Box:
     """
     The four boundaries of a square.
     """
@@ -65,26 +73,26 @@ class Cell(Box):
         return self.__coords
 
     @xy.setter
-    def xy(self, val: Coords):
-        self.__coords = val
-
-
-def example():
-    box1 = Box()
-    box1.E = "morning"
-    box1.W = "wicked"
-    box1.S = "tropics"
-    box1.S = "arctic"
-    print(f"Box 1: {box1}")
-
-    cell1 = Cell()
-    cell1.E = "juliet"
-    cell1.W = "sundown"
-    cell1.xy = (4, 5)
-    print(f"Cell 1: {cell1}")
+    def xy(self, val: Coordish):
+        self.__coords = Coords(*val)
 
 
 if __name__ == '__main__':
+
+    def example():
+        box1 = Box()
+        box1.E = "morning"
+        box1.W = "wicked"
+        box1.S = "tropics"
+        box1.S = "arctic"
+        print(f"Box 1: {box1}")
+
+        cell1 = Cell()
+        cell1.E = "juliet"
+        cell1.W = "sundown"
+        cell1.xy = (4, 5)
+        print(f"Cell 1: {cell1}")
+
     example()
 
 # END

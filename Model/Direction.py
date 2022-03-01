@@ -14,10 +14,10 @@ Vectish = Union[IntPair, Vect]
 
 
 class Direction:
-    def __init__(self, abbr: str, name: str, vect: IntPair):
+    def __init__(self, abbr: str, name: str, vect: Vectish):
         self.__abbr = abbr
         self.__name = name
-        self.__vect = Vect(x=vect[0], y=vect[1])
+        self.__vect = Vect(*vect)
 
     @property
     def abbr(self):
@@ -39,7 +39,6 @@ class Direction:
 
 
 if __name__ == '__main__':
-    from pprint import PrettyPrinter
 
     def example():
         d1 = Direction('N', 'North', (0, 1))
