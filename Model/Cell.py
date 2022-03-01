@@ -1,13 +1,16 @@
 from typing import Optional
 
+from Util import *
+
 Coords = tuple[int, int]
 
 
-class Box:
+class Box():
     """
     The four boundaries of a square.
     """
     def __init__(self):
+        super().__init__()
         self.__north = None
         self.__east = None
         self.__south = None
@@ -45,6 +48,9 @@ class Box:
     def W(self, val):
         self.__west = val
 
+    def __repr__(self):
+        return obj_repr(self)
+
 
 class Cell(Box):
     """
@@ -63,22 +69,22 @@ class Cell(Box):
         self.__coords = val
 
 
+def example():
+    box1 = Box()
+    box1.E = "morning"
+    box1.W = "wicked"
+    box1.S = "tropics"
+    box1.S = "arctic"
+    print(f"Box 1: {box1}")
+
+    cell1 = Cell()
+    cell1.E = "juliet"
+    cell1.W = "sundown"
+    cell1.xy = (4, 5)
+    print(f"Cell 1: {cell1}")
+
+
 if __name__ == '__main__':
-    # Example code
-    from pprint import PrettyPrinter
-
-    g_pp = PrettyPrinter(compact=True)
-    g_box1 = Box()
-    g_box1.E = "morning"
-    g_box1.W = "wicked"
-    g_box1.S = "tropics"
-    g_box1.S = "arctic"
-    print(f"Box 1: {g_pp.pformat(vars(g_box1))}")
-
-    g_cell1 = Cell()
-    g_cell1.E = "juliet"
-    g_cell1.W = "sundown"
-    g_cell1.xy = (4, 5)
-    print(f"Cell 1: {g_pp.pformat(vars(g_cell1))}")
+    example()
 
 # END
