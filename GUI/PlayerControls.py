@@ -11,6 +11,7 @@ class PlayerControls:
     def __init__(self, game_data, screen, collision_walls):
         self.angle = 0
         self.player_speed = 4
+        self.attacking = False
    
         self.cur_room = game_data.maze.ingress
         self.x = convert_coords_to_pixel(self.cur_room.coords[0])
@@ -139,6 +140,8 @@ class PlayerControls:
             self.angle -= 0.02
         if keys[pygame.K_RIGHT]:
             self.angle += 0.02
+        self.attacking = True if keys[pygame.K_r] else False
+
 
         if keys[pygame.K_TAB]:
             self.show_map = True

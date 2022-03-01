@@ -29,7 +29,7 @@ class MainGame:
         self.__obtain_game_data()
         self.player_controls = PlayerControls(self.game_data, self.screen, self.collision_walls)
         self.drawing = Drawing(self.screen, self.mini_map_coords, self.player_controls)
-        self.sprites = SpritesContainer(self.player_controls, self.game_data)
+        self.sprites = SpritesContainer(self.screen, self.player_controls, self.game_data)
         self.raycast = Raycast(self.player_controls, self.world_coords, self.drawing.textures)
         self.player_controls.get_rooms_in_sight()
 
@@ -86,6 +86,8 @@ class MainGame:
             self.drawing.world(walls + objects)
 
             self.player_controls.movement()  
+
+            self.sprites.weapon()
             self.drawing.mini_map()
             self.drawing.fps_display(clock)
             pygame.display.flip()
