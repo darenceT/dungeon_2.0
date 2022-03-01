@@ -8,7 +8,7 @@ class Dungeon(Maze):
     """
     Thin subclass Maze that handles autofilling of items, etc.
     """
-    item_chance: int = 10  # percent chance given item type appears in room
+    item_chance: int = 30  # percent chance given item type appears in room
 
     def __init__(self, *args, **kwargs):
         """ Create a Dungeon. Same usage as Maze constructor. """

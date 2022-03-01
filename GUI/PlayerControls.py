@@ -137,9 +137,9 @@ class PlayerControls:
             dy = self.player_speed * cos_a
             self.detect_collision(dx, dy)
         if keys[pygame.K_LEFT]:
-            self.angle -= 0.02
+            self.angle -= 0.04
         if keys[pygame.K_RIGHT]:
-            self.angle += 0.02
+            self.angle += 0.04
         self.attacking = True if keys[pygame.K_r] else False
 
 
