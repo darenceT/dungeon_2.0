@@ -1,0 +1,4 @@
+class Edge:
+    pass
+
+# END
