@@ -12,13 +12,15 @@ class SpriteObject:
         self.scale = scale
 
 class SpritesContainer:
-    def __init__(self, player, game):
+    def __init__(self, screen, player, game):
         """
         Initial loading images of sprites
         Container of sprites for current and nearby rooms 
         images from www.pngegg.com
         """
+        self.screen = screen
         self.player = player
+        self.weapon_animate = 1
         self.game = game
         self.nearby_sprites = set()
         self.images = {
@@ -30,7 +32,11 @@ class SpritesContainer:
             'I': pygame.image.load('GUI/img/pillar.png').convert_alpha(),
             'P': pygame.image.load('GUI/img/pillar.png').convert_alpha(),
             'O': pygame.image.load('GUI/img/exit.png').convert_alpha(),
-            'M': pygame.image.load('GUI/img/monster.png').convert_alpha()
+            'M': pygame.image.load('GUI/img/monster.png').convert_alpha(),
+            'S0': pygame.image.load('GUI/img/sword0.png').convert_alpha(),
+            'S1': pygame.image.load('GUI/img/sword1.png').convert_alpha(),
+            'S2': pygame.image.load('GUI/img/sword2.png').convert_alpha(),
+            'S3': pygame.image.load('GUI/img/sword2.png').convert_alpha()
             }
         
     def load_sprites(self):
@@ -109,3 +115,16 @@ class SpritesContainer:
             return (distance_to_sprite, sprite, sprite_pos)
         else:
             return (False,)
+    
+    def weapon(self):
+        x_loc, y_loc = WIDTH *2/5, HEIGHT * 5/8
+        if self.player.attacking and self.weapon_animate < 4:
+            weapon = pygame.transform.scale(self.images[f'S{self.weapon_animate}'], (x_loc, y_loc))
+            self.screen.blit(weapon, (x_loc, y_loc))
+            self.weapon_animate += 1
+            # pygame.time.wait(500)
+        else:
+            weapon = pygame.transform.scale(self.images['S0'], (x_loc, y_loc))
+            self.weapon_animate = 1
+            self.player.attacking = False
+        self.screen.blit(weapon, (x_loc, y_loc))
