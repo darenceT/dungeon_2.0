@@ -15,7 +15,7 @@ class PlayerControls:
         self.cur_room = game_data.maze.ingress
         self.x = convert_coords_to_pixel(self.cur_room.coords[0])
         self.y = convert_coords_to_pixel(self.cur_room.coords[1])
-        self.room_change = False
+        self.room_change = True     # set initial to True to for initial 1 time loading of nearby sprites
 
         self.screen = screen
         self.game_data = game_data
@@ -73,12 +73,13 @@ class PlayerControls:
 
         if self.cur_room.coords != (next_x, next_y):
             self.cur_room = self.game_data.maze.rooms[next_y][next_x]
-            # self.game_data.enter_room(self.cur_room)
+            self.game_data.enter_room(self.cur_room)
             self.room_change = True
+            self.get_rooms_in_sight() 
         else:
             self.room_change = False
         self.map_visited.add((self.x // MAP_TILE * 3, self.y // MAP_TILE * 3)) # TODO optimize
-        self.get_rooms_in_sight()
+        
 
     def get_rooms_in_sight(self):
         """
@@ -88,7 +89,6 @@ class PlayerControls:
         """
         width = height = 2
         x, y = self.cur_room.coords
-
         if PI/4 > self.angle > 7/4*PI: # east
             height = 3
             y -= 1
@@ -105,11 +105,12 @@ class PlayerControls:
             y -= 1
         # TODO will "else" for 1 direction may run into == errors?
 
+        self.rooms_in_sight = set() # reset
         extent = Grid(width, height, from_grid=self.game_data.maze, from_coords=(x, y))
         add = self.rooms_in_sight.add
         for row in extent.rooms:
             for room in row:
-                add(room) 
+                add(room)
 
     def keys_control(self):
         sin_a = math.sin(self.angle)

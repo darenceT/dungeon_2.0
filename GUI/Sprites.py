@@ -2,25 +2,25 @@ import pygame
 from random import randint
 from .Settings import *
 
+class SpriteObject:
+    def __init__(self, object, letter, pos, shift=1.8, scale=0.4):
+        self.object = object
+        self.letter = letter
+        self.x = convert_coords_to_pixel(pos[0]) + randint(1, 20)
+        self.y = convert_coords_to_pixel(pos[1]) + randint(1, 20)
+        self.shift = shift
+        self.scale = scale
 
 class SpritesContainer:
-    class SpriteObject:
-        def __init__(self, object, pos, shift=1.8, scale=0.4):
-            self.object = object
-            self.x = convert_coords_to_pixel(pos[0]) + randint(1, 20)
-            self.y = convert_coords_to_pixel(pos[1]) + randint(1, 20)
-            self.shift = shift
-            self.scale = scale
-            # self.side = 30
-            self.collided = False
-
-    def __init__(self, player):
+    def __init__(self, player, game):
         """
         Initial loading images of sprites
         Container of sprites for current and nearby rooms 
         images from www.pngegg.com
         """
         self.player = player
+        self.game = game
+        self.nearby_sprites = set()
         self.images = {
             'H': pygame.image.load('GUI/img/h_potion.png').convert_alpha(),
             'V': pygame.image.load('GUI/img/v_potion.png').convert_alpha(),
@@ -32,11 +32,10 @@ class SpritesContainer:
             'O': pygame.image.load('GUI/img/exit.png').convert_alpha(),
             'M': pygame.image.load('GUI/img/monster.png').convert_alpha()
             }
-        self.nearby_sprites = set()
-    
+        
     def load_sprites(self):
         """
-        First empty list of sprites after entering new location, therefore will not
+        First, empty list of sprites after entering new location, therefore will not
         load sprites from rooms no longer in view
 
         Iterate through set of rooms in view to load sprites
@@ -47,28 +46,32 @@ class SpritesContainer:
             for room in self.player.rooms_in_sight:
                 if room.healing_potions:
                     for _ in range(room.healing_potions):
-                        # room.healing_potions -= 1
-                        add(SpritesContainer.SpriteObject(self.images['H'], room.coords))
+                        add(SpriteObject(self.images['H'], 'H', room.coords))
                 if room.vision_potions:
                     for _ in range(room.vision_potions):
-                        # room.vision_potions -= 1
-                        add(SpritesContainer.SpriteObject(self.images['V'], room.coords))
-                        add(SpritesContainer.SpriteObject(self.images['M'], room.coords, scale=0.8, shift=0.2))            
+                        add(SpriteObject(self.images['V'], 'V', room.coords))
+                        add(SpriteObject(self.images['M'], 'M', room.coords, scale=0.8, shift=0.2))            
                 if room.has_pit:
                     # room.has_pit = False
-                    add(SpritesContainer.SpriteObject(self.images['X'], room.coords))
+                    add(SpriteObject(self.images['X'], 'X', room.coords))
                 if room.pillar:
-                    add(SpritesContainer.SpriteObject(self.images[room.pillar], room.coords))
+                    add(SpriteObject(self.images[room.pillar], room.pillar, room.coords))
                 if room.is_exit:
-                    add(SpritesContainer.SpriteObject(self.images['O'], room.coords, scale=1, shift=0))
+                    add(SpriteObject(self.images['O'], 'O', room.coords, scale=1, shift=0))
     
     def obtain_sprites(self, walls):
-        return [self.object_locate(obj, walls) for obj in self.nearby_sprites]
+        """"
+        Obtain location of each sprite object in relation to player and nearby walls
+        Copy of container used to avoid iteration error from object removal in object_locate
+        """
+        temp_container = self.nearby_sprites.copy()
+        return [self.object_locate(obj, walls) for obj in temp_container]
 
     def object_locate(self, sprite, walls):
-        # if sprite.collided:
-        #     return (False,)
-
+        """
+        
+        Credit most of algo to: Credit: https://github.com/StanislavPetrovV/Raycasting-3d-game-tutorial/blob/master/part%20%232/ray_casting.py
+        """
         fake_walls0 = [walls[0] for _ in range(FAKE_RAYS)]
         fake_walls1 = [walls[-1] for _ in range(FAKE_RAYS)]
         fake_walls = fake_walls0 + walls + fake_walls1
@@ -77,8 +80,13 @@ class SpritesContainer:
         distance_to_sprite = math.sqrt(dx ** 2 + dy ** 2)
         
         # collect objects
-        # if distance_to_sprite < 2:
-        #     sprite.collided = True
+        if distance_to_sprite < 20:
+            if sprite.letter == 'H' and self.game.room.healing_potions:
+                self.game.find_healing_potion()
+            elif sprite.letter == 'V' and self.game.room.vision_potions:
+                self.game.find_vision_potion()
+            self.nearby_sprites.remove(sprite)
+            # insert interaction with PIT and Pillars
 
         theta = math.atan2(dy, dx)
         gamma = theta - self.player.angle
