@@ -92,11 +92,65 @@ class MainGame:
             clock.tick(FPS)
 
         # Insert Game over menu here
+    def start_screen(self):
+        """
+        
+        Credit: https://www.geeksforgeeks.org/python-display-text-to-pygame-window/
+        """
+        pygame.display.set_caption('Dungeon 2.0')
+        font = pygame.font.Font('freesansbold.ttf', 32)
+        text = font.render('DUNGEON 2.0', True, (0, 255, 0))
+        text2 = font.render('Press Enter to Play', True, (0, 255, 0))
+        textRect1 = text.get_rect()
+        textRect1.center = (HALF_WIDTH, HALF_HEIGHT * 3/4)
+        textRect2 = text2.get_rect()
+        textRect2.center = (HALF_WIDTH, HALF_HEIGHT)
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN: 
+                        return
+                    elif event.key == pygame.K_ESCAPE:
+                        exit()
+            self.screen.fill((0, 0, 0))
+            self.screen.blit(text, textRect1)
+            self.screen.blit(text2, textRect2)
+            pygame.display.flip()
+
+
+    def end_screen(self):
+        """
+        
+        Credit: https://www.geeksforgeeks.org/python-display-text-to-pygame-window/
+        """
+        pygame.display.set_caption('Dungeon 2.0')
+        font = pygame.font.Font('freesansbold.ttf', 32)
+        text = font.render('GAME OVER', True, (0, 255, 0))
+        text2 = font.render('Press Enter to quit', True, (0, 255, 0))
+        textRect1 = text.get_rect()
+        textRect1.center = (HALF_WIDTH, HALF_HEIGHT * 3/4)
+        textRect2 = text2.get_rect()
+        textRect2.center = (HALF_WIDTH, HALF_HEIGHT)
+        while True:
+            # self.clock.tick(FPS)
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN or event.type == pygame.QUIT: 
+                        exit()
+            self.screen.fill((0, 0, 0))
+            self.screen.blit(text, textRect1)
+            self.screen.blit(text2, textRect2)
+            pygame.display.flip()
 
 
 if __name__ == '__main__':
     m = MainGame()
+    # m.end_screen()    
+    m.start_screen()
     m.game_loop()
+    m.end_screen()
 
 
 

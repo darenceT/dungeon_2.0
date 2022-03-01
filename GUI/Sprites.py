@@ -20,6 +20,7 @@ class SpritesContainer:
         """
         self.player = player
         self.game = game
+        self.nearby_sprites = set()
         self.images = {
             'H': pygame.image.load('GUI/img/h_potion.png').convert_alpha(),
             'V': pygame.image.load('GUI/img/v_potion.png').convert_alpha(),
@@ -31,11 +32,10 @@ class SpritesContainer:
             'O': pygame.image.load('GUI/img/exit.png').convert_alpha(),
             'M': pygame.image.load('GUI/img/monster.png').convert_alpha()
             }
-        self.nearby_sprites = set()
-    
+        
     def load_sprites(self):
         """
-        First empty list of sprites after entering new location, therefore will not
+        First, empty list of sprites after entering new location, therefore will not
         load sprites from rooms no longer in view
 
         Iterate through set of rooms in view to load sprites
@@ -62,13 +62,16 @@ class SpritesContainer:
     def obtain_sprites(self, walls):
         """"
         Obtain location of each sprite object in relation to player and nearby walls
-        Copy of nearby sprites container used to avoid iteration error from object removal in object_locate
+        Copy of container used to avoid iteration error from object removal in object_locate
         """
         temp_container = self.nearby_sprites.copy()
         return [self.object_locate(obj, walls) for obj in temp_container]
 
     def object_locate(self, sprite, walls):
-
+        """
+        
+        Credit most of algo to: Credit: https://github.com/StanislavPetrovV/Raycasting-3d-game-tutorial/blob/master/part%20%232/ray_casting.py
+        """
         fake_walls0 = [walls[0] for _ in range(FAKE_RAYS)]
         fake_walls1 = [walls[-1] for _ in range(FAKE_RAYS)]
         fake_walls = fake_walls0 + walls + fake_walls1
@@ -83,6 +86,7 @@ class SpritesContainer:
             elif sprite.letter == 'V' and self.game.room.vision_potions:
                 self.game.find_vision_potion()
             self.nearby_sprites.remove(sprite)
+            # insert interaction with PIT and Pillars
 
         theta = math.atan2(dy, dx)
         gamma = theta - self.player.angle
