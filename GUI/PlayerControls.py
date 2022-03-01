@@ -111,7 +111,6 @@ class PlayerControls:
         for row in extent.rooms:
             for room in row:
                 add(room)
-        print('len(self.rooms_in_sight):', len(self.rooms_in_sight))
 
     def keys_control(self):
         sin_a = math.sin(self.angle)

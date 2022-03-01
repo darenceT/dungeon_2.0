@@ -10,7 +10,6 @@ class SpriteObject:
         self.y = convert_coords_to_pixel(pos[1]) + randint(1, 20)
         self.shift = shift
         self.scale = scale
-        # self.side = 30
 
 class SpritesContainer:
     def __init__(self, player, game):
@@ -42,7 +41,6 @@ class SpritesContainer:
         Iterate through set of rooms in view to load sprites
         """
         if self.player.room_change:
-            print('loading sprites')
             self.nearby_sprites = set()
             add = self.nearby_sprites.add
             for room in self.player.rooms_in_sight:
