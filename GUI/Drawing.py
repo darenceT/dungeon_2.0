@@ -17,6 +17,9 @@ class Drawing:
                          }
     
     def hero_health_bar(self):
+        """
+        Display hero's health bar, red as background for health lost, underneath amount of current health
+        """
         # top right corner: left edge, top edge, width(amount of health), height
         bar_info = [WIDTH - 180, 20, 150, 20]
         red = (139,0,0)
@@ -58,7 +61,7 @@ class Drawing:
             self.screen.blit(map_surf, MAP_POS)
 
     def fps_display(self, clock):
-        fps = str(int(clock.get_fps()))
+        fps = 'FPS ' + str(int(clock.get_fps()))
         font = pygame.font.SysFont('Monospace Regular', 30)
         fps_surface = font.render(fps, False, (255, 255, 255))
-        self.screen.blit(fps_surface, (480, 0))
+        self.screen.blit(fps_surface, (WIDTH-80, HEIGHT-20))
