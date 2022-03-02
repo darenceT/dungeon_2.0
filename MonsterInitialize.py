@@ -3,6 +3,8 @@ import sqlite3
 connection = sqlite3.connect("monster_db")
 
 cursor = connection.cursor()
+dropstatement = "DROP TABLE IF EXISTS monsterstats"
+cursor.execute(dropstatement)
 cursor.execute("CREATE TABLE monsterstats (name TEXT, mtype TEXT, hit_points INTEGER, attack_speed INTEGER, "
                "chance_to_hit DECIMAL,  minimum_damage INTEGER, maximum_damage INTEGER, chance_to_heal DECIMAL, "
                "minimum_heal_points INTEGER, maximum_heal_points INTEGER)")
@@ -26,6 +28,4 @@ cursor.execute("INSERT INTO monsterstats VALUES ('Regina George', 'Mean Girl', 1
 cursor.execute("INSERT INTO monsterstats VALUES ('Joan Crawford', 'Mean Girl', 100, 7, 0.9, 10, 30, 0.6, 10, 30)")
 cursor.execute("INSERT INTO monsterstats VALUES ('Heather Duke', 'Mean Girl', 100, 7, 0.9, 10, 30, 0.6, 10, 30)")
 cursor.execute("INSERT INTO monsterstats VALUES ('Paris Geller', 'Mean Girl', 100, 7, 0.9, 10, 30, 0.6, 10, 30)")
-rows = cursor.execute("SELECT name, mtype, hit_points FROM monsterstats").fetchall()
-print(rows)
-print(connection.total_changes)
+
