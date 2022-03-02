@@ -24,7 +24,7 @@ More to come...
   
 ![Current progress screenshot:](https://github.com/darenceT/dungeon_2.0/blob/main/docs/4th%20Iteration/GUI_general.png)  
 
-<strong>Initial 2/18/22:</strong>  
+<strong>Initial GUI 2/18/22:</strong>  
     
 ![Initial 2/18/22:](https://github.com/darenceT/dungeon_2.0/blob/main/docs/1st%20Iteration/GUI_maze.png)
   
