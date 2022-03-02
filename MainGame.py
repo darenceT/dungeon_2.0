@@ -25,11 +25,13 @@ class MainGame:
 
     def __load_game(self):
         pygame.init()
+        pygame.display.set_caption('Dungeon 2.0')
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.__obtain_game_data()
-        self.player_controls = PlayerControls(self.game_data, self.screen, self.collision_walls)
-        self.drawing = Drawing(self.screen, self.mini_map_coords, self.player_controls)
-        self.sprites = SpritesContainer(self.screen, self.player_controls, self.game_data)
+        # TODO: decrease/narrow params passed
+        self.player_controls = PlayerControls(self.screen, self.game_data, self.collision_walls)
+        self.sprites = SpritesContainer(self.screen, self.game_data, self.player_controls)
+        self.drawing = Drawing(self.screen, self.mini_map_coords, self.player_controls, self.sprites)
         self.raycast = Raycast(self.player_controls, self.world_coords, self.drawing.textures)
         self.player_controls.get_rooms_in_sight()
 
@@ -88,19 +90,20 @@ class MainGame:
             self.player_controls.movement()  
 
             self.sprites.weapon()
+
+            #TODO create drawing function that calls all info display
             self.drawing.hero_health_bar()
+            self.drawing.enemy_health_bar()
             self.drawing.mini_map()
             self.drawing.fps_display(clock)
             pygame.display.flip()
             clock.tick(FPS)
 
-        # Insert Game over menu here
     def start_screen(self):
         """
-        
+        TODO Insert Game over menu here        
         Credit: https://www.geeksforgeeks.org/python-display-text-to-pygame-window/
         """
-        pygame.display.set_caption('Dungeon 2.0')
         font = pygame.font.Font('freesansbold.ttf', 32)
         text = font.render('DUNGEON 2.0', True, (0, 255, 0))
         text2 = font.render('Press Enter to Play', True, (0, 255, 0))
@@ -122,14 +125,12 @@ class MainGame:
             self.screen.blit(text2, textRect2)
             pygame.display.flip()
 
-
     def end_screen(self):
         """
         
         Credit: https://www.geeksforgeeks.org/python-display-text-to-pygame-window/
         """
-        pygame.display.set_caption('Dungeon 2.0')
-        font = pygame.font.Font('freesansbold.ttf', 32)
+        font = pygame.font.Font('freesansbold.ttf', 32) #TODO make font into class attribute
         text = font.render('GAME OVER', True, (0, 255, 0))
         text2 = font.render('Press Enter to quit', True, (0, 255, 0))
         textRect1 = text.get_rect()
@@ -150,8 +151,8 @@ class MainGame:
 
 if __name__ == '__main__':
     m = MainGame()
-    # m.end_screen()    
     m.start_screen()
+    # m.end_screen()    
     m.game_loop()
     m.end_screen()
 

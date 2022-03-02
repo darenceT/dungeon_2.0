@@ -1,13 +1,13 @@
 import pygame
 
 from .Settings import *
-from .Raycast3D import Raycast
 
 class Drawing: 
-    def __init__(self, screen, map_coords, player) -> None:
+    def __init__(self, screen, map_coords, player, sprites) -> None:
         self.screen = screen
         self.map_coords = map_coords
         self.player = player
+        self.sprites = sprites
         self.textures = {#'wall': pygame.image.load('GUI/img/wall2b.png').convert(),
                          'floor': pygame.image.load('GUI/img/floor.jpg').convert(),
                          'ceiling': pygame.image.load('GUI/img/ceiling.jfif').convert(),
@@ -22,18 +22,25 @@ class Drawing:
         """
         # top right corner: left edge, top edge, width(amount of health), height
         bar_info = [WIDTH - 180, 20, 150, 20]
-        red = (139,0,0)
-        green = (57, 255, 20)
-        pygame.draw.rect(self.screen, red, bar_info)
+
+        pygame.draw.rect(self.screen, RED, bar_info)
         bar_info[2] *= self.player.game_data.hero.hit_points / 100
-        pygame.draw.rect(self.screen, green, bar_info)
+        pygame.draw.rect(self.screen, GREEN, bar_info)
+
+    def enemy_health_bar(self):
+        bar_info = [HALF_WIDTH - 100, 80, 200, 15]
+        for object in self.sprites.nearby_sprites:
+            if object.letter == 'M' and object.visible_health:
+                bar_info[2] *= object.hitpoint / 100
+                pygame.draw.rect(self.screen, PINK, bar_info)
+
 
     def background(self):
         sky_offset = -5 * math.degrees(self.player.angle) % WIDTH
         self.screen.blit(self.textures['ceiling'], (sky_offset, 0))
         self.screen.blit(self.textures['ceiling'], (sky_offset - WIDTH, 0))
         self.screen.blit(self.textures['ceiling'], (sky_offset + WIDTH, 0))
-        pygame.draw.rect(self.screen, (145, 129, 81), (0, HALF_HEIGHT, WIDTH, HALF_HEIGHT))
+        pygame.draw.rect(self.screen, DARK_TAN, (0, HALF_HEIGHT, WIDTH, HALF_HEIGHT))
 
     def world(self, world_objects): 
         for obj in sorted(world_objects, key=lambda n: n[0], reverse=True):
@@ -63,5 +70,5 @@ class Drawing:
     def fps_display(self, clock):
         fps = 'FPS ' + str(int(clock.get_fps()))
         font = pygame.font.SysFont('Monospace Regular', 30)
-        fps_surface = font.render(fps, False, (255, 255, 255))
+        fps_surface = font.render(fps, False, WHITE)
         self.screen.blit(fps_surface, (WIDTH-80, HEIGHT-20))
