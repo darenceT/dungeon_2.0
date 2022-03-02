@@ -20,8 +20,15 @@ More to come...
 
 [Repo for Dungeon 1.0](https://github.com/jenniferboutell/DungeonAdventure) which is different from this [project](https://github.com/darenceT/dungeon) by Darence
 
-Progress 3/2/22:  
+<strong>Progress 3/2/22:</strong>  
+  
 ![Current progress screenshot:](https://github.com/darenceT/dungeon_2.0/blob/main/docs/4th%20Iteration/GUI_general.png)  
 
-Initial 2/18/22:  
+<strong>Initial 2/18/22:</strong>  
+    
 ![Initial 2/18/22:](https://github.com/darenceT/dungeon_2.0/blob/main/docs/1st%20Iteration/GUI_maze.png)
+  
+  
+<strong>Version 1.0 ASCII-based game:</strong>  
+  
+![version1](https://github.com/darenceT/dungeon_2.0/blob/main/docs/v1screenshot.png)
