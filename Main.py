@@ -8,7 +8,7 @@ from GUI.PlayerControls import PlayerControls
 from GUI.Drawing import Drawing
 from GUI.Sprites import SpritesContainer
 
-class MainGame:
+class Main:
     def __init__(self):
         self.game_data = None
         self.dungeon = None
@@ -150,7 +150,7 @@ class MainGame:
 
 
 if __name__ == '__main__':
-    m = MainGame()
+    m = Main()
     m.start_screen()
     # m.end_screen()    
     m.game_loop()
