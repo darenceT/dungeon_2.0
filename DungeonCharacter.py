@@ -3,14 +3,12 @@ from abc import ABC, abstractmethod
 
 class DungeonCharacter(ABC):
 
-    def __init__(self, game, name, hit_points, hit_points_max, attack_speed, attack_behavior, chance_to_hit,
+    def __init__(self, game, name, hit_points, attack_speed, chance_to_hit,
                  minimum_damage, maximum_damage):
         self.__game = game
         self.__name: str = name
         self.__hit_points: int = hit_points
-        self.__hit_points_max: int = hit_points_max
         self.__attack_speed: int = attack_speed
-        self.__attack_behavior: str = attack_behavior
         self.__chance_to_hit: float = chance_to_hit
         self.__minimum_damage: int = minimum_damage
         self.__maximum_damage: int = maximum_damage
@@ -60,26 +58,6 @@ class DungeonCharacter(ABC):
         elif self.game is not None:
             self.__hit_points = self.game.default_hit_points_initial
 
-    @property
-    @abstractmethod
-    def hit_points_max(self) -> int:
-        """
-        Returns the maximum value of allowed hit points
-        :return:
-        """
-        return self.__hit_points_max
-
-    @hit_points_max.setter
-    def hit_points_max(self, val: int) -> None:
-        """
-        Checks to see if maximum value is already set, if not, sets default start value of maximum points.
-        :param val: maximum value of allowed hit points
-        :return:
-        """
-        if val is not None:
-            self.__hit_points_max = val
-        elif self.game is not None:
-            self.__hit_points_max = self.game.default_hit_points_max
 
     @property
     def is_alive(self) -> bool:
@@ -152,21 +130,5 @@ class DungeonCharacter(ABC):
             self.__chance_to_hit = val
         elif self.game is not None:
             self.__chance_to_hit = self.game.chance_to_hit
-
-    @property
-    def attack_behavior(self):
-        return self.__attack_behavior
-
-    @attack_behavior.setter
-    def attack_behavior(self, val: str) -> None:
-        """
-        Checks to see if maximum value is already set, if not, sets default start value of maximum points.
-        :param val: maximum value of allowed hit points
-        :return:
-        """
-        if val is not None:
-            self.__attack_behavior = val
-        elif self.game is not None:
-            self.__attack_behavior = self.game.default_attack_behavior
 
 # END
