@@ -340,10 +340,10 @@ class DungeonAdventure:
         self.room = room
         self.room.has_hero = True
         # Falling into pit occurs first. If fatal, do not find other contents.
-        # if room.has_pit:
-        #     self.fall_into_pit()
-        # if not self.hero.is_alive:
-        #     return
+        if room.has_pit:
+            self.fall_into_pit()
+        if not self.hero.is_alive:
+            return
         # # Collect items
         # if room.healing_potions:
         #     self.find_healing_potion()

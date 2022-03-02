@@ -16,6 +16,15 @@ class Drawing:
                         #  'wall': pygame.image.load('GUI/img/wall_vision2.png').convert_alpha()
                          }
     
+    def hero_health_bar(self):
+        # top right corner: left edge, top edge, width(amount of health), height
+        bar_info = [WIDTH - 180, 20, 150, 20]
+        red = (139,0,0)
+        green = (57, 255, 20)
+        pygame.draw.rect(self.screen, red, bar_info)
+        bar_info[2] *= self.player.game_data.hero.hit_points / 100
+        pygame.draw.rect(self.screen, green, bar_info)
+
     def background(self):
         sky_offset = -5 * math.degrees(self.player.angle) % WIDTH
         self.screen.blit(self.textures['ceiling'], (sky_offset, 0))

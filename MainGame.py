@@ -88,6 +88,7 @@ class MainGame:
             self.player_controls.movement()  
 
             self.sprites.weapon()
+            self.drawing.hero_health_bar()
             self.drawing.mini_map()
             self.drawing.fps_display(clock)
             pygame.display.flip()
