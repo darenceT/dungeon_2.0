@@ -90,21 +90,22 @@ class PlayerControls:
         """
         width = height = 2
         x, y = self.cur_room.coords
-        if PI/4 > self.angle > 7/4*PI: # east
+        if PI/4 >= self.angle >= 7/4*PI: # east
             height = 3
             y -= 1
-        elif PI/4 < self.angle < 3/4*PI: # south
+        elif PI/4 < self.angle <= 3/4*PI: # south
             width = 3
             x -= 1
-        elif 3/4*PI < self.angle < 5/4*PI: # west
+        elif 3/4*PI < self.angle <= 5/4*PI: # west
             height = 3
             x -= 1
             y -= 1
-        elif 5/4*PI < self.angle < 7/4*PI: # north
+        else:    #may run into == errors?
+        # elif 5/4*PI < self.angle < 7/4*PI: # north
             width = 3
             x -= 1
             y -= 1
-        # TODO will "else" for 1 direction may run into == errors?
+        
 
         self.rooms_in_sight = set() # reset
         extent = Grid(width, height, from_grid=self.game_data.maze, from_coords=(x, y))
@@ -137,9 +138,9 @@ class PlayerControls:
             dy = self.player_speed * cos_a
             self.detect_collision(dx, dy)
         if keys[pygame.K_LEFT]:
-            self.angle -= 0.02
+            self.angle -= 0.04
         if keys[pygame.K_RIGHT]:
-            self.angle += 0.02
+            self.angle += 0.04
         self.attacking = True if keys[pygame.K_r] else False
 
 

@@ -10,6 +10,7 @@ class SpriteObject:
         self.y = convert_coords_to_pixel(pos[1]) + randint(1, 20)
         self.shift = shift
         self.scale = scale
+        self.hitpoint = 30 # temporary
 
 class SpritesContainer:
     def __init__(self, screen, player, game):
@@ -35,8 +36,7 @@ class SpritesContainer:
             'M': pygame.image.load('GUI/img/monster.png').convert_alpha(),
             'S0': pygame.image.load('GUI/img/sword0.png').convert_alpha(),
             'S1': pygame.image.load('GUI/img/sword1.png').convert_alpha(),
-            'S2': pygame.image.load('GUI/img/sword2.png').convert_alpha(),
-            'S3': pygame.image.load('GUI/img/sword2.png').convert_alpha()
+            'S2': pygame.image.load('GUI/img/sword2.png').convert_alpha()
             }
         
     def load_sprites(self):
@@ -56,10 +56,11 @@ class SpritesContainer:
                 if room.vision_potions:
                     for _ in range(room.vision_potions):
                         add(SpriteObject(self.images['V'], 'V', room.coords))
-                        add(SpriteObject(self.images['M'], 'M', room.coords, scale=0.8, shift=0.2))            
+                        # add(SpriteObject(self.images['M'], 'M', room.coords, scale=0.8, shift=0.2))            
                 if room.has_pit:
                     # room.has_pit = False
                     add(SpriteObject(self.images['X'], 'X', room.coords))
+                    add(SpriteObject(self.images['M'], 'M', room.coords, scale=0.8, shift=0.2)) 
                 if room.pillar:
                     add(SpriteObject(self.images[room.pillar], room.pillar, room.coords))
                 if room.is_exit:
@@ -89,9 +90,17 @@ class SpritesContainer:
         if distance_to_sprite < 20:
             if sprite.letter == 'H' and self.game.room.healing_potions:
                 self.game.find_healing_potion()
+                self.nearby_sprites.remove(sprite)
             elif sprite.letter == 'V' and self.game.room.vision_potions:
                 self.game.find_vision_potion()
-            self.nearby_sprites.remove(sprite)
+                self.nearby_sprites.remove(sprite)
+            elif sprite.letter == 'M' and self.player.attacking:
+                if sprite.hitpoint <= 0:
+                    self.nearby_sprites.remove(sprite)
+                    self.game.room.has_pit = False
+                    print('you defeated monster')
+                sprite.hitpoint -= 5   # TODO substitute for weapon damage
+
             # insert interaction with PIT and Pillars
 
         theta = math.atan2(dy, dx)
@@ -117,14 +126,14 @@ class SpritesContainer:
             return (False,)
     
     def weapon(self):
-        x_loc, y_loc = WIDTH *2/5, HEIGHT * 5/8
-        if self.player.attacking and self.weapon_animate < 4:
-            weapon = pygame.transform.scale(self.images[f'S{self.weapon_animate}'], (x_loc, y_loc))
-            self.screen.blit(weapon, (x_loc, y_loc))
+        # TODO change weapon "S" based on hero's class
+        wep_pos = (WIDTH *2/5, HEIGHT * 5/8)
+        if self.player.attacking and self.weapon_animate < 3:
+            weapon = pygame.transform.scale(self.images[f'S{self.weapon_animate}'], wep_pos)
+            self.screen.blit(weapon, wep_pos)
             self.weapon_animate += 1
-            # pygame.time.wait(500)
         else:
-            weapon = pygame.transform.scale(self.images['S0'], (x_loc, y_loc))
+            weapon = pygame.transform.scale(self.images['S0'], wep_pos)
             self.weapon_animate = 1
             self.player.attacking = False
-        self.screen.blit(weapon, (x_loc, y_loc))
+        self.screen.blit(weapon, wep_pos)
