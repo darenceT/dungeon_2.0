@@ -44,3 +44,11 @@ DOUBLE_PI = PI * 2
 CENTER_RAY = NUM_RAYS // 2 - 1
 FAKE_RAYS = 100
 FAKE_RAYS_RANGE = NUM_RAYS - 1 + 2 * FAKE_RAYS
+
+
+# colors for drawing.py
+DARK_TAN = (145, 129, 81)
+RED = (139,0,0)
+GREEN = (57, 255, 20)
+PINK = (199,36,177)
+WHITE = (255, 255, 255)

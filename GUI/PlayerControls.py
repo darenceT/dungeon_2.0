@@ -8,7 +8,7 @@ class PlayerControls:
     game_data is object of DungeonAdventure to access "enter_room" method.
     room_change boolean to trigger loading of sprites
     """
-    def __init__(self, game_data, screen, collision_walls):
+    def __init__(self, screen, game_data, collision_walls):
         self.angle = 0
         self.player_speed = 4
         self.attacking = False
@@ -20,7 +20,6 @@ class PlayerControls:
 
         self.screen = screen
         self.game_data = game_data
-        # self.world_raw = world_raw
         self.rooms_in_sight = set()
 
         self.map_visited = set()

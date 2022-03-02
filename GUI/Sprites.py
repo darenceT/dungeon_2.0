@@ -10,10 +10,11 @@ class SpriteObject:
         self.y = convert_coords_to_pixel(pos[1]) + randint(1, 20)
         self.shift = shift
         self.scale = scale
-        self.hitpoint = 30 # temporary
+        self.visible_health = False
+        self.hitpoint = 50 # temporary
 
 class SpritesContainer:
-    def __init__(self, screen, player, game):
+    def __init__(self, screen, game, player):
         """
         Initial loading images of sprites
         Container of sprites for current and nearby rooms 
@@ -86,6 +87,8 @@ class SpritesContainer:
         dx, dy = sprite.x - self.player.x, sprite.y - self.player.y
         distance_to_sprite = math.sqrt(dx ** 2 + dy ** 2)
         
+        sprite.visible_health = True if distance_to_sprite < 100 and sprite.letter == 'M' else False
+            
         # collect objects
         if distance_to_sprite < 20:
             if sprite.letter == 'H' and self.game.room.healing_potions:
