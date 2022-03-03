@@ -10,7 +10,7 @@ Pygame "3D" GUI
 SQLite database  
 Model view controller design   
 Hero classes  
-Monster classes
+Monster classes  
 Pickling  
 Sound Effects  
 Save/Continue Menu  
