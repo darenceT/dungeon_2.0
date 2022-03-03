@@ -20,8 +20,11 @@ class PlayerControls:
 
         self.screen = screen
         self.game_data = game_data
-        self.rooms_in_sight = set()
 
+        self.in_menu = True
+        self.menu_input = None
+
+        self.rooms_in_sight = set()
         self.map_visited = set()
         self.show_map = False             
         self.side = 50
@@ -121,10 +124,16 @@ class PlayerControls:
         if keys[pygame.K_ESCAPE]:
             exit()
         if keys[pygame.K_w] or keys[pygame.K_UP]:
+            if self.in_menu:
+                self.menu_input = 'UP'
+                return
             dx = self.player_speed * cos_a
             dy = self.player_speed * sin_a
             self.detect_collision(dx, dy)
         if keys[pygame.K_s] or keys[pygame.K_DOWN]:
+            if self.in_menu:
+                self.menu_input = 'DOWN'
+                return
             dx = -self.player_speed * cos_a
             dy = -self.player_speed * sin_a
             self.detect_collision(dx, dy)
@@ -140,6 +149,10 @@ class PlayerControls:
             self.angle -= 0.04
         if keys[pygame.K_RIGHT]:
             self.angle += 0.04
+        if keys[pygame.K_RETURN]:
+            if self.in_menu:
+                self.menu_input = 'SELECT'
+                return
         self.attacking = True if keys[pygame.K_r] else False
 
 
