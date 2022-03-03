@@ -1,4 +1,8 @@
 import sqlite3
+"""
+Creates Sqlite3 database (if it does not already exist) and creates monsterstats table. Inserts initial
+stats for each type of monster into monsterstats table. If table already exists, drops table and then recreates it 
+for a new game."""
 
 connection = sqlite3.connect("monster_db")
 
@@ -28,4 +32,3 @@ cursor.execute("INSERT INTO monsterstats VALUES ('Regina George', 'Mean Girl', 1
 cursor.execute("INSERT INTO monsterstats VALUES ('Joan Crawford', 'Mean Girl', 100, 7, 0.9, 10, 30, 0.6, 10, 30)")
 cursor.execute("INSERT INTO monsterstats VALUES ('Heather Duke', 'Mean Girl', 100, 7, 0.9, 10, 30, 0.6, 10, 30)")
 cursor.execute("INSERT INTO monsterstats VALUES ('Paris Geller', 'Mean Girl', 100, 7, 0.9, 10, 30, 0.6, 10, 30)")
-
