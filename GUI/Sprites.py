@@ -1,6 +1,7 @@
 import pygame
 from random import randint
 from .Settings import *
+from .Utility import convert_coords_to_pixel
 
 class SpriteObject:
     def __init__(self, object, letter, pos, shift=1.8, scale=0.4):

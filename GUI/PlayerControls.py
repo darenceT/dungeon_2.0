@@ -1,7 +1,8 @@
 import pygame
-
+import math
 from Grid import Grid
-from .Settings import *
+from .Settings import PI, DOUBLE_PI, MAP_TILE
+from .Utility import convert_coords_to_pixel
 
 class PlayerControls:
     """
@@ -124,16 +125,10 @@ class PlayerControls:
         if keys[pygame.K_ESCAPE]:
             exit()
         if keys[pygame.K_w] or keys[pygame.K_UP]:
-            if self.in_menu:
-                self.menu_input = 'UP'
-                return
             dx = self.player_speed * cos_a
             dy = self.player_speed * sin_a
             self.detect_collision(dx, dy)
         if keys[pygame.K_s] or keys[pygame.K_DOWN]:
-            if self.in_menu:
-                self.menu_input = 'DOWN'
-                return
             dx = -self.player_speed * cos_a
             dy = -self.player_speed * sin_a
             self.detect_collision(dx, dy)
@@ -153,11 +148,7 @@ class PlayerControls:
             if self.in_menu:
                 self.menu_input = 'SELECT'
                 return
-        self.attacking = True if keys[pygame.K_r] else False
-
-
-        if keys[pygame.K_TAB]:
-            self.show_map = True
-        else:
-            self.show_map = False
+        self.attacking = True if keys[pygame.K_e] else False
+        # self.special_skill = True if keys[pygame.K_r] else False
+        self.show_map = True if keys[pygame.K_TAB] else False
 

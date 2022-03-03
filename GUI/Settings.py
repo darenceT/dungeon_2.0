@@ -12,10 +12,10 @@ TILE = 80
 FPS_POS = (WIDTH - 65, 5)
 
 # player control settings
-def convert_coords_to_pixel(coord: int):
-    adjust_center = 120
-    #TODO Variable for 2
-    return int(2 * coord * WIDTH / TEXTURE_SCALE + adjust_center)
+# def convert_coords_to_pixel(coord: int):
+#     adjust_center = 120
+#     #TODO Variable for 2
+#     return int(2 * coord * WIDTH / TEXTURE_SCALE + adjust_center)
 
 # minimap settings
 MAP_SCALE = 5
@@ -47,8 +47,10 @@ FAKE_RAYS_RANGE = NUM_RAYS - 1 + 2 * FAKE_RAYS
 
 
 # colors for drawing.py
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
 DARK_TAN = (145, 129, 81)
 RED = (139,0,0)
 GREEN = (57, 255, 20)
 PINK = (199,36,177)
-WHITE = (255, 255, 255)
+GREEN_NEON = (0, 255, 0)
