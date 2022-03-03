@@ -1,7 +1,8 @@
 import pygame
-
+import math
 from Grid import Grid
-from .Settings import *
+from .Settings import PI, DOUBLE_PI, MAP_TILE
+from .Utility import convert_coords_to_pixel
 
 class PlayerControls:
     """
@@ -20,8 +21,11 @@ class PlayerControls:
 
         self.screen = screen
         self.game_data = game_data
-        self.rooms_in_sight = set()
 
+        self.in_menu = True
+        self.menu_input = None
+
+        self.rooms_in_sight = set()
         self.map_visited = set()
         self.show_map = False             
         self.side = 50
@@ -140,11 +144,11 @@ class PlayerControls:
             self.angle -= 0.04
         if keys[pygame.K_RIGHT]:
             self.angle += 0.04
-        self.attacking = True if keys[pygame.K_r] else False
-
-
-        if keys[pygame.K_TAB]:
-            self.show_map = True
-        else:
-            self.show_map = False
+        if keys[pygame.K_RETURN]:
+            if self.in_menu:
+                self.menu_input = 'SELECT'
+                return
+        self.attacking = True if keys[pygame.K_e] else False
+        # self.special_skill = True if keys[pygame.K_r] else False
+        self.show_map = True if keys[pygame.K_TAB] else False
 

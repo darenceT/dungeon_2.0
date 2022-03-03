@@ -7,6 +7,8 @@ from GUI.Settings import *
 from GUI.PlayerControls import PlayerControls
 from GUI.Drawing import Drawing
 from GUI.Sprites import SpritesContainer
+from GUI.Utility import create_textline
+from GUI.Menu import Menu
 
 class Main:
     def __init__(self):
@@ -99,32 +101,6 @@ class Main:
             pygame.display.flip()
             clock.tick(FPS)
 
-    def start_screen(self):
-        """
-        TODO Insert Game over menu here        
-        Credit: https://www.geeksforgeeks.org/python-display-text-to-pygame-window/
-        """
-        font = pygame.font.Font('freesansbold.ttf', 32)
-        text = font.render('DUNGEON 2.0', True, (0, 255, 0))
-        text2 = font.render('Press Enter to Play', True, (0, 255, 0))
-        textRect1 = text.get_rect()
-        textRect1.center = (HALF_WIDTH, HALF_HEIGHT * 3/4)
-        textRect2 = text2.get_rect()
-        textRect2.center = (HALF_WIDTH, HALF_HEIGHT)
-        while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    exit()
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_RETURN: 
-                        return
-                    elif event.key == pygame.K_ESCAPE:
-                        exit()
-            self.screen.fill((0, 0, 0))
-            self.screen.blit(text, textRect1)
-            self.screen.blit(text2, textRect2)
-            pygame.display.flip()
-
     def end_screen(self):
         """
         
@@ -150,11 +126,13 @@ class Main:
 
 
 if __name__ == '__main__':
-    m = Main()
-    m.start_screen()
+    main = Main()
+    menu = Menu(main.screen)
+    menu.start_screen()
+    # m.start_screen()
     # m.end_screen()    
-    m.game_loop()
-    m.end_screen()
+    main.game_loop()
+    main.end_screen()
 
 
 
