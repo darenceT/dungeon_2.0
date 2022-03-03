@@ -3,10 +3,12 @@ from Healable import *
 
 
 class Priestess(Hero, Healable):
-    def __init__(self, game, name, hit_points, hit_points_max, attack_speed, attack_behavior, chance_to_hit,
-                 minimum_damage, maximum_damage, chance_to_block, special_skill, chance_to_heal):
-        super().__init__(self, game, name, hit_points, hit_points_max, attack_speed, attack_behavior, chance_to_hit,
-                         minimum_damage, maximum_damage, chance_to_block, special_skill, chance_to_heal)
+    def __init__(self, game, name, hit_points, attack_speed, chance_to_hit,
+                 minimum_damage, maximum_damage, chance_to_block, special_skill, chance_to_heal, minimum_heal_points,
+                 maximum_heal_points):
+        super().__init__(self, game, name, hit_points, attack_speed, chance_to_hit,
+                         minimum_damage, maximum_damage, chance_to_block, special_skill)
+        super().__init__(self, chance_to_heal, minimum_heal_points, maximum_heal_points)
         self.__hit_points = 75
         self.__attack_speed = 5
         self.__chance_to_hit = .7
