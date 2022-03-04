@@ -12,11 +12,15 @@ from GUI.Menu import Menu
 
 class Main:
     def __init__(self):
+        self.screen = None
+        self.clock = None
+        self.intro_on = True
+        self.pause_on = False
+        self.menu = None
         self.game_data = None
         self.dungeon = None
         self.world_coords = {}
         self.mini_map_coords = set()
-        self.screen = None
         self.player_controls = None
         self.hero = None
         self.drawing = None
@@ -29,13 +33,17 @@ class Main:
         pygame.init()
         pygame.display.set_caption('Dungeon 2.0')
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        self.clock = pygame.time.Clock()
         self.__obtain_game_data()
+
         # TODO: decrease/narrow params passed
         self.player_controls = PlayerControls(self.screen, self.game_data, self.collision_walls)
         self.sprites = SpritesContainer(self.screen, self.game_data, self.player_controls)
         self.drawing = Drawing(self.screen, self.mini_map_coords, self.player_controls, self.sprites)
         self.raycast = Raycast(self.player_controls, self.world_coords, self.drawing.textures)
         self.player_controls.get_rooms_in_sight()
+
+        self.menu = Menu(self.screen, self.clock)
 
     def __obtain_game_data(self):
         self.game_data = DungeonAdventure()
@@ -76,11 +84,20 @@ class Main:
         
 
     def game_loop(self):
-        clock = pygame.time.Clock()
-        while self.hero.is_alive:       # or while True:
+        while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     exit()
+
+            if not self.hero.is_alive:
+                self.menu.end_screen()
+                self.intro_on = True
+
+            if self.pause_on:
+                self.pause_on = self.menu.pause_menu()
+
+            if self.intro_on:
+                self.intro_on = self.menu.start_screen()
 
             self.drawing.background()
             self.sprites.load_sprites()
@@ -89,7 +106,7 @@ class Main:
             objects = self.sprites.obtain_sprites(walls)
             self.drawing.world(walls + objects)
 
-            self.player_controls.movement()  
+            self.pause_on = self.player_controls.movement() #TODO improve pause logic
 
             self.sprites.weapon()
 
@@ -97,42 +114,13 @@ class Main:
             self.drawing.hero_health_bar()
             self.drawing.enemy_health_bar()
             self.drawing.mini_map()
-            self.drawing.fps_display(clock)
+            self.drawing.fps_display(self.clock)
             pygame.display.flip()
-            clock.tick(FPS)
-
-    def end_screen(self):
-        """
-        
-        Credit: https://www.geeksforgeeks.org/python-display-text-to-pygame-window/
-        """
-        font = pygame.font.Font('freesansbold.ttf', 32) #TODO make font into class attribute
-        text = font.render('GAME OVER', True, (0, 255, 0))
-        text2 = font.render('Press Enter to quit', True, (0, 255, 0))
-        textRect1 = text.get_rect()
-        textRect1.center = (HALF_WIDTH, HALF_HEIGHT * 3/4)
-        textRect2 = text2.get_rect()
-        textRect2.center = (HALF_WIDTH, HALF_HEIGHT)
-        while True:
-            # self.clock.tick(FPS)
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_RETURN or event.type == pygame.QUIT: 
-                        exit()
-            self.screen.fill((0, 0, 0))
-            self.screen.blit(text, textRect1)
-            self.screen.blit(text2, textRect2)
-            pygame.display.flip()
-
+            self.clock.tick(FPS)
 
 if __name__ == '__main__':
-    main = Main()
-    menu = Menu(main.screen)
-    menu.start_screen()
-    # m.start_screen()
-    # m.end_screen()    
+    main = Main()  
     main.game_loop()
-    main.end_screen()
 
 
 

@@ -22,9 +22,6 @@ class PlayerControls:
         self.screen = screen
         self.game_data = game_data
 
-        self.in_menu = True
-        self.menu_input = None
-
         self.rooms_in_sight = set()
         self.map_visited = set()
         self.show_map = False             
@@ -37,6 +34,10 @@ class PlayerControls:
     @property
     def pos(self):
         return (self.x, self.y)
+
+    @property
+    def pause_on(self):
+        return self.__pause_on
 
     def detect_collision(self, dx, dy):
         next_rect = self.rect.copy()
@@ -66,7 +67,8 @@ class PlayerControls:
         self.y += dy
 
     def movement(self):
-        self.keys_control()
+        if self.keys_control():
+            return True
         # self.mouse_control()
         self.rect.center = self.x, self.y
         self.angle %= DOUBLE_PI
@@ -122,6 +124,11 @@ class PlayerControls:
         cos_a = math.cos(self.angle)
         keys = pygame.key.get_pressed()
 
+        if keys[pygame.K_SPACE]:
+            return True
+            # self.__pause_on = True
+            # print('pressed return')
+            # return True
         if keys[pygame.K_ESCAPE]:
             exit()
         if keys[pygame.K_w] or keys[pygame.K_UP]:
@@ -144,10 +151,7 @@ class PlayerControls:
             self.angle -= 0.04
         if keys[pygame.K_RIGHT]:
             self.angle += 0.04
-        if keys[pygame.K_RETURN]:
-            if self.in_menu:
-                self.menu_input = 'SELECT'
-                return
+
         self.attacking = True if keys[pygame.K_e] else False
         # self.special_skill = True if keys[pygame.K_r] else False
         self.show_map = True if keys[pygame.K_TAB] else False

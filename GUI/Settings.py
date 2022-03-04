@@ -11,11 +11,8 @@ FPS = 40
 TILE = 80
 FPS_POS = (WIDTH - 65, 5)
 
-# player control settings
-# def convert_coords_to_pixel(coord: int):
-#     adjust_center = 120
-#     #TODO Variable for 2
-#     return int(2 * coord * WIDTH / TEXTURE_SCALE + adjust_center)
+# menu settings
+MENU_FPS = 6
 
 # minimap settings
 MAP_SCALE = 5
