@@ -9,6 +9,7 @@ from GUI.Drawing import Drawing
 from GUI.Sprites import SpritesContainer
 from GUI.Menu import Menu
 
+
 class Main:
     def __init__(self):
         self.screen = None
@@ -40,7 +41,7 @@ class Main:
         self.sprites = SpritesContainer(self.screen, self.game_data, self.player_controls)
         self.drawing = Drawing(self.screen, self.mini_map_coords, self.player_controls, self.sprites)
         self.raycast = Raycast(self.player_controls, self.world_coords, self.drawing.textures)
-        self.player_controls.get_rooms_in_sight()
+        self.player_controls.get_rooms_in_sight() # initiate sprites for 1st room 
 
         self.menu = Menu(self.screen, self.clock)
 

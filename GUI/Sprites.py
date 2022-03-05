@@ -12,8 +12,8 @@ class SpriteObject:
         self.shift = shift
         self.scale = scale
         self.visible_health = False
-        self.hitpoint = 50 # temporary
-        self.attack_damage = 20 # temporary
+        self.hitpoint = 200 # temporary
+        self.attack_damage = 5 # temporary
 
 class SpritesContainer:
     def __init__(self, screen, game, player):
@@ -89,6 +89,7 @@ class SpritesContainer:
         dx, dy = sprite.x - self.player.x, sprite.y - self.player.y
         distance_to_sprite = math.sqrt(dx ** 2 + dy ** 2)
         
+        # display monster health
         sprite.visible_health = True if distance_to_sprite < 100 and sprite.letter == 'M' else False
             
         # collect objects
@@ -99,14 +100,13 @@ class SpritesContainer:
             elif sprite.letter == 'V' and self.game.room.vision_potions:
                 self.game.find_vision_potion()
                 self.nearby_sprites.remove(sprite)
-            elif sprite.letter == 'M' and self.player.attacking:
-                if sprite.hitpoint <= 0:
+            elif sprite.letter == 'M':
+                self.player.arena.fight(sprite)
+                if sprite.hitpoint <= 0:                # temp, should be in model logic
                     self.nearby_sprites.remove(sprite)
-                    self.game.room.has_pit = False
                     print('you defeated monster')
-                sprite.hitpoint -= 5   # TODO substitute for weapon damage
 
-            # insert interaction with PIT and Pillars
+            # insert interaction with PIT and Pillars ???
 
         theta = math.atan2(dy, dx)
         gamma = theta - self.player.angle
@@ -130,15 +130,3 @@ class SpritesContainer:
         else:
             return (False,)
     
-    # def weapon(self):
-    #     # TODO change weapon "S" based on hero's class
-    #     wep_pos = (WIDTH *2/5, HEIGHT * 5/8)
-    #     if self.player.attacking and self.weapon_animate < 3:
-    #         weapon = pygame.transform.scale(self.images[f'S{self.weapon_animate}'], wep_pos)
-    #         self.screen.blit(weapon, wep_pos)
-    #         self.weapon_animate += 1
-    #     else:
-    #         weapon = pygame.transform.scale(self.images['S0'], wep_pos)
-    #         self.weapon_animate = 1
-    #         self.player.attacking = False
-    #     self.screen.blit(weapon, wep_pos)
