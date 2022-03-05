@@ -13,6 +13,7 @@ class SpriteObject:
         self.scale = scale
         self.visible_health = False
         self.hitpoint = 50 # temporary
+        self.attack_damage = 20 # temporary
 
 class SpritesContainer:
     def __init__(self, screen, game, player):
@@ -129,15 +130,15 @@ class SpritesContainer:
         else:
             return (False,)
     
-    def weapon(self):
-        # TODO change weapon "S" based on hero's class
-        wep_pos = (WIDTH *2/5, HEIGHT * 5/8)
-        if self.player.attacking and self.weapon_animate < 3:
-            weapon = pygame.transform.scale(self.images[f'S{self.weapon_animate}'], wep_pos)
-            self.screen.blit(weapon, wep_pos)
-            self.weapon_animate += 1
-        else:
-            weapon = pygame.transform.scale(self.images['S0'], wep_pos)
-            self.weapon_animate = 1
-            self.player.attacking = False
-        self.screen.blit(weapon, wep_pos)
+    # def weapon(self):
+    #     # TODO change weapon "S" based on hero's class
+    #     wep_pos = (WIDTH *2/5, HEIGHT * 5/8)
+    #     if self.player.attacking and self.weapon_animate < 3:
+    #         weapon = pygame.transform.scale(self.images[f'S{self.weapon_animate}'], wep_pos)
+    #         self.screen.blit(weapon, wep_pos)
+    #         self.weapon_animate += 1
+    #     else:
+    #         weapon = pygame.transform.scale(self.images['S0'], wep_pos)
+    #         self.weapon_animate = 1
+    #         self.player.attacking = False
+    #     self.screen.blit(weapon, wep_pos)

@@ -7,7 +7,6 @@ from GUI.Settings import *
 from GUI.PlayerControls import PlayerControls
 from GUI.Drawing import Drawing
 from GUI.Sprites import SpritesContainer
-from GUI.Utility import create_textline
 from GUI.Menu import Menu
 
 class Main:
@@ -88,16 +87,13 @@ class Main:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     exit()
-
-            if not self.hero.is_alive:
-                self.menu.end_screen()
-                self.intro_on = True
-
-            if self.pause_on:
-                self.pause_on = self.menu.pause_menu()
-
             if self.intro_on:
                 self.intro_on = self.menu.start_screen()
+            elif self.pause_on:
+                self.pause_on = self.menu.pause_menu()
+            elif not self.hero.is_alive:
+                self.menu.end_screen()
+                self.intro_on = True
 
             self.drawing.background()
             self.sprites.load_sprites()
@@ -108,9 +104,8 @@ class Main:
 
             self.pause_on = self.player_controls.movement() #TODO improve pause logic
 
-            self.sprites.weapon()
-
             #TODO create drawing function that calls all info display
+            self.drawing.weapon()
             self.drawing.hero_health_bar()
             self.drawing.enemy_health_bar()
             self.drawing.mini_map()
@@ -119,8 +114,10 @@ class Main:
             self.clock.tick(FPS)
 
 if __name__ == '__main__':
-    main = Main()  
-    main.game_loop()
+    while True:
+        # TODO move menu function here to integrate with pickling/restart
+        main = Main()  
+        main.game_loop()
 
 
 

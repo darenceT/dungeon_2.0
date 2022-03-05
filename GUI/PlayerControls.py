@@ -128,7 +128,6 @@ class PlayerControls:
             return True
             # self.__pause_on = True
             # print('pressed return')
-            # return True
         if keys[pygame.K_ESCAPE]:
             exit()
         if keys[pygame.K_w] or keys[pygame.K_UP]:
