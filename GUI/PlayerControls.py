@@ -1,6 +1,7 @@
 import pygame
 import math
 from Grid import Grid
+from .Arena import Arena
 from .Settings import PI, DOUBLE_PI, MAP_TILE
 from .Utility import convert_coords_to_pixel
 
@@ -21,6 +22,7 @@ class PlayerControls:
 
         self.screen = screen
         self.game_data = game_data
+        self.arena = Arena(self, game_data.hero)
 
         self.rooms_in_sight = set()
         self.map_visited = set()
@@ -40,6 +42,9 @@ class PlayerControls:
         return self.__pause_on
 
     def detect_collision(self, dx, dy):
+        """
+        Credit: https://github.com/StanislavPetrovV/Raycasting-3d-game-tutorial/blob/master/part%20%232/ray_casting.py
+        """
         next_rect = self.rect.copy()
         next_rect.move_ip(dx, dy)
         hit_indexes = next_rect.collidelistall(self.collision_list)
@@ -128,7 +133,6 @@ class PlayerControls:
             return True
             # self.__pause_on = True
             # print('pressed return')
-            # return True
         if keys[pygame.K_ESCAPE]:
             exit()
         if keys[pygame.K_w] or keys[pygame.K_UP]:

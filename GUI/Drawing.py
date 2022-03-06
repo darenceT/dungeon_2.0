@@ -3,6 +3,10 @@ import pygame
 from .Settings import *
 
 class Drawing: 
+    """
+    Class for drawing all images onto GUI surface. Sprite objects/images get 
+    delivered here for blitting.
+    """
     def __init__(self, screen, map_coords, player, sprites) -> None:
         self.screen = screen
         self.map_coords = map_coords
@@ -16,11 +20,26 @@ class Drawing:
                         #  'wall': pygame.image.load('GUI/img/wall_vision2.png').convert_alpha()
                          }
     
+    def weapon(self):
+        # TODO change weapon "S" based on hero's class
+        wep_pos = (WIDTH *2/5, HEIGHT * 5/8)
+        if self.player.attacking and self.weapon_animate < 3:
+            weapon = pygame.transform.scale(self.sprites.images[f'S{self.weapon_animate}'], wep_pos)
+            self.screen.blit(weapon, wep_pos)
+            self.weapon_animate += 1
+        else:
+            weapon = pygame.transform.scale(self.sprites.images['S0'], wep_pos)
+            self.weapon_animate = 1
+            self.player.attacking = False
+        self.screen.blit(weapon, wep_pos)
+
+
     def hero_health_bar(self):
         """
-        Display hero's health bar, red as background for health lost, underneath amount of current health
+        Display hero's health bar, red as background for health lost, 
+        underneath amount of current health
+        bar_info = [left_pos, top_pos, width(health amount), height]
         """
-        # top right corner: left edge, top edge, width(amount of health), height
         bar_info = [WIDTH - 180, 20, 150, 20]
 
         pygame.draw.rect(self.screen, RED, bar_info)
@@ -28,7 +47,11 @@ class Drawing:
         pygame.draw.rect(self.screen, GREEN, bar_info)
 
     def enemy_health_bar(self):
-        bar_info = [HALF_WIDTH - 100, 80, 200, 15]
+        """
+        Display nearby enemy's health bar
+        bar_info = [left_pos, top_pos, width(health amount), height]
+        """
+        bar_info = [HALF_WIDTH - 100, 80, 200, 20]
         for object in self.sprites.nearby_sprites:
             if object.letter == 'M' and object.visible_health:
                 bar_info[2] *= object.hitpoint / 100
