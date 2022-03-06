@@ -11,9 +11,6 @@ FPS = 40
 TILE = 80
 FPS_POS = (WIDTH - 65, 5)
 
-# menu settings
-MENU_FPS = 6
-
 # minimap settings
 MAP_SCALE = 5
 MAP_TILE = TILE // MAP_SCALE

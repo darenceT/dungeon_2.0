@@ -116,7 +116,6 @@ class PlayerControls:
             x -= 1
             y -= 1
         
-
         self.rooms_in_sight = set() # reset
         extent = Grid(width, height, from_grid=self.game_data.maze, from_coords=(x, y))
         add = self.rooms_in_sight.add
@@ -144,10 +143,7 @@ class PlayerControls:
 
         if keys[pygame.K_SPACE]:
             return True
-            # self.__pause_on = True
-            # print('pressed return')
-        # if keys[pygame.K_ESCAPE]:
-        #     exit()
+            # self.__pause_on = True TODO refactor passing of pause_on from main
         if keys[pygame.K_w] or keys[pygame.K_UP]:
             dx = self.player_speed * cos_a
             dy = self.player_speed * sin_a
@@ -170,6 +166,5 @@ class PlayerControls:
             self.angle += 0.04
 
         self.attacking = True if keys[pygame.K_e] else False
-        # self.special_skill = True if keys[pygame.K_r] else False
         self.show_map = True if keys[pygame.K_TAB] else False
 
