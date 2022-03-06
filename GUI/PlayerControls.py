@@ -125,6 +125,19 @@ class PlayerControls:
                 add(room)
 
     def keys_control(self):
+        # for non-continuous key input
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN
+                and event.key == pygame.K_ESCAPE):
+                pygame.quit()
+                exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_h:
+                    self.game_data.hero.use_healing_potion()
+                if event.key == pygame.K_v:
+                    self.game_data.hero.use_vision_potion()
+
+        # for continuous key input
         sin_a = math.sin(self.angle)
         cos_a = math.cos(self.angle)
         keys = pygame.key.get_pressed()
@@ -133,8 +146,8 @@ class PlayerControls:
             return True
             # self.__pause_on = True
             # print('pressed return')
-        if keys[pygame.K_ESCAPE]:
-            exit()
+        # if keys[pygame.K_ESCAPE]:
+        #     exit()
         if keys[pygame.K_w] or keys[pygame.K_UP]:
             dx = self.player_speed * cos_a
             dy = self.player_speed * sin_a

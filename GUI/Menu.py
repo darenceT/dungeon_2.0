@@ -11,9 +11,8 @@ class Cursor:
                                     size=self.size)
 
 class Menu:
-    def __init__(self, screen, clock):
+    def __init__(self, screen):
         self.screen = screen
-        self.clock = clock
         self.menu_options = {0:'New', 1:'Load', 2:'Settings'}
         self.menu_input = None
         self.cursor = Cursor()
@@ -43,19 +42,20 @@ class Menu:
 
         self.screen.blit(self.cursor.surface, self.cursor.rect)
         pygame.display.flip()
-        self.clock.tick(MENU_FPS)
 
     def menu_controls(self):
-        keys = pygame.key.get_pressed()
-
-        if keys[pygame.K_UP]:
-            self.move_cursor('UP')
-        if keys[pygame.K_DOWN]:
-            self.move_cursor('DOWN')
-        if keys[pygame.K_RETURN]:
-            return False
-        if keys[pygame.K_ESCAPE]:
-            exit()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN
+                and event.key == pygame.K_ESCAPE):
+                pygame.quit()
+                exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    self.move_cursor('UP')
+                if event.key == pygame.K_DOWN:
+                    self.move_cursor('DOWN')
+                if event.key == pygame.K_RETURN:
+                    return False
         return True
 
     def start_screen(self):
@@ -78,9 +78,6 @@ class Menu:
         messages = ((title,title_pos), (new, new_pos), 
                     (load, load_pos), (setting, setting_pos))
         while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    exit()
             if not self.menu_controls():
                 return False
 
@@ -98,9 +95,6 @@ class Menu:
                                             size=30)
         messages = ((save, save_pos), (reset, reset_pos), (unpause, unpause_pos))
         while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    exit()
             if not self.menu_controls():
                 return False
 
@@ -124,9 +118,6 @@ class Menu:
         messages = ((title, title_pos), (reset, reset_pos), (done, done_pos))
         
         while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    exit()
             if not self.menu_controls():
                 return False
 
