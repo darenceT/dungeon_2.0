@@ -7,7 +7,7 @@ class Cursor:
         self.size = 40
         self.surface, self.rect = create_textline(
                                     '*', 
-                                    pos=(HALF_WIDTH-100, HALF_HEIGHT), 
+                                    pos=(HALF_WIDTH-140, HALF_HEIGHT), 
                                     size=self.size)
 
 class Menu:
@@ -15,12 +15,13 @@ class Menu:
         self.screen = screen
         self.menu_options = {0:'New', 1:'Load', 2:'Settings'}
         self.menu_input = None
+        self.option_count = None
         self.cursor = Cursor()
 
     def move_cursor(self, move):
-        offset = 45
+        offset = 40
         top_height = HALF_HEIGHT
-        bottom_height = top_height + offset * 2
+        bottom_height = top_height + offset * (self.option_count-1)
         move_reference = {'DOWN':1, 'UP':-1}
 
         self.cursor.rect.centery += offset * move_reference[move]
@@ -63,9 +64,12 @@ class Menu:
         TODO
         """
 
-        title, title_pos = create_textline('DUNGEON 2.0', 
+        title1, title1_pos = create_textline('DUNGEON', 
+                                            pos=(HALF_WIDTH-50, HALF_HEIGHT * 1/2), 
+                                            size=80)
+        title2, title2_pos = create_textline('ESCAPE', 
                                             pos=(HALF_WIDTH, HALF_HEIGHT * 3/4), 
-                                            size=40)
+                                            size=80)
         new, new_pos = create_textline('New Game', 
                                             pos=(HALF_WIDTH, HALF_HEIGHT), 
                                             size=30)
@@ -75,8 +79,9 @@ class Menu:
         setting, setting_pos = create_textline('Settings', 
                                             pos=(HALF_WIDTH, HALF_HEIGHT+80), 
                                             size=30)
-        messages = ((title,title_pos), (new, new_pos), 
-                    (load, load_pos), (setting, setting_pos))
+        messages = ((title1,title1_pos), (title2,title2_pos),
+                    (new, new_pos), (load, load_pos), (setting, setting_pos))
+        self.option_count = len(messages)-2
         while True:
             if not self.menu_controls():
                 return False
@@ -94,6 +99,7 @@ class Menu:
                                             pos=(HALF_WIDTH, HALF_HEIGHT+80), 
                                             size=30)
         messages = ((save, save_pos), (reset, reset_pos), (unpause, unpause_pos))
+        self.option_count = len(messages)
         while True:
             if not self.menu_controls():
                 return False
@@ -108,7 +114,7 @@ class Menu:
         """
         title, title_pos = create_textline('GAME OVER', 
                                             pos=(HALF_WIDTH, HALF_HEIGHT * 3/4), 
-                                            size=40)
+                                            size=60)
         reset, reset_pos = create_textline('Try again?', 
                                             pos=(HALF_WIDTH, HALF_HEIGHT), 
                                             size=30)
@@ -116,7 +122,7 @@ class Menu:
                                             pos=(HALF_WIDTH, HALF_HEIGHT+40), 
                                             size=30)
         messages = ((title, title_pos), (reset, reset_pos), (done, done_pos))
-        
+        self.option_count = len(messages)-1
         while True:
             if not self.menu_controls():
                 return False
