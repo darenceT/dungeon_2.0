@@ -13,7 +13,6 @@ from GUI.Menu import Menu
 class Main:
     def __init__(self):
         self.screen = None
-        self.clock = None
         self.intro_on = True
         self.pause_on = False
         self.menu = None
@@ -33,7 +32,6 @@ class Main:
         pygame.init()
         pygame.display.set_caption('Dungeon 2.0')
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
-        self.clock = pygame.time.Clock()
         self.__obtain_game_data()
 
         # TODO: decrease/narrow params passed
@@ -43,7 +41,7 @@ class Main:
         self.raycast = Raycast(self.player_controls, self.world_coords, self.drawing.textures)
         self.player_controls.get_rooms_in_sight() # initiate sprites for 1st room 
 
-        self.menu = Menu(self.screen, self.clock)
+        self.menu = Menu(self.screen)
 
     def __obtain_game_data(self):
         self.game_data = DungeonAdventure()
@@ -84,10 +82,10 @@ class Main:
         
 
     def game_loop(self):
+        clock = pygame.time.Clock()
         while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    exit()
+            self.pause_on = self.player_controls.movement() #TODO improve pause logic
+
             if self.intro_on:
                 self.intro_on = self.menu.start_screen()
             elif self.pause_on:
@@ -103,16 +101,15 @@ class Main:
             objects = self.sprites.obtain_sprites(walls)
             self.drawing.world(walls + objects)
 
-            self.pause_on = self.player_controls.movement() #TODO improve pause logic
 
             #TODO create drawing function that calls all info display
             self.drawing.weapon()
             self.drawing.hero_health_bar()
             self.drawing.enemy_health_bar()
             self.drawing.mini_map()
-            self.drawing.fps_display(self.clock)
+            self.drawing.fps_display(clock)
             pygame.display.flip()
-            self.clock.tick(FPS)
+            clock.tick(FPS)
 
 if __name__ == '__main__':
     while True:
