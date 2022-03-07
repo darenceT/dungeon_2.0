@@ -106,18 +106,21 @@ class Room(Cell):
         if self.contents.get(group):
             raise ValueError(f"room already has a {group.__name__}")
         self.contents[group] = obj
+        obj.owner = self
 
     def make_add_only(self, group: type, cls: type):
         if self.contents.get(group):
             raise ValueError(f"room already has a {group.__name__}")
         obj = cls()
         self.contents[group] = obj
+        obj.owner = self
 
     def add_one(self, group: type, obj: Any):
         if not self.contents.get(group):
             self.contents[group] = [obj]
         else:
             self.contents[group].append(obj)
+        obj.owner = self
 
     def make_add_one(self, group: type, cls: type):
         obj = cls()
@@ -128,6 +131,7 @@ class Room(Cell):
         or may be one of those subclasses itself. If specified by class, will be instantiated.
         :param items: Zero or more items to add. Items may be a mix of instances and classes.
         """
+        # TODO assign self as owner of each added item
         for i in items:
             if not self.can_add(i):
                 # TODO raising exception mauybe too extreme, but at least log somewhere
@@ -171,6 +175,7 @@ class Room(Cell):
         if not have:
             return None  # TODO log error? depends whether caller expected to first check has()
         item = have.pop()
+        obj.owner = None
         return item
 
     def __repr__(self) -> str:

@@ -23,7 +23,7 @@ class Item(metaclass=ABCMeta):
 
 
 class Pit(Item):
-    __portable = False
+    __portable = False  # override Item default
 
     __damage: int = 10
 
@@ -41,7 +41,9 @@ class Bomb(Item):
     def __init__(self):
         super().__init__()
 
-    # TODO ...?
+    @property
+    def damage(self):
+        return self.__damage
 
 
 class Potion(Item, metaclass=ABCMeta):
@@ -54,17 +56,25 @@ class Potion(Item, metaclass=ABCMeta):
 
 
 class VisionPotion(Potion):
-    radius: int = 1
+    __radius: int = 1
 
     def __init__(self):
         super().__init__()
+
+    @property
+    def radius(self):
+        return self.__radius
 
 
 class HealthPotion(Potion):
-    points: int = 10
+    __points: int = 10
 
     def __init__(self):
         super().__init__()
+
+    @property
+    def points(self):
+        return self.__points
 
 
 class Pillar(Item):
