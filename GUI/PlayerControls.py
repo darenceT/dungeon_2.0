@@ -85,9 +85,20 @@ class PlayerControls:
 
         if self.cur_room.coords != (next_x, next_y):
             self.cur_room = self.game_data.maze.rooms[next_y][next_x]
+
+            if self.cur_room.pillar and \
+            self.cur_room.pillar not in self.game_data.hero.pillars:
+                self.memo.new_message(f'You found pillar {self.cur_room.pillar}!')
+            
+            if self.cur_room.is_exit:
+                # print(self.cur_room.is_exit)
+                # print()
+                # print(len(self.game_data.hero.pillars))
+                self.memo.new_message(f'You need to find {4-len(self.game_data.hero.pillars)} more pillars!')
+            
             self.game_data.enter_room(self.cur_room)
             self.room_change = True
-            self.get_rooms_in_sight() 
+            self.get_rooms_in_sight()
         else:
             self.room_change = False
         self.map_visited.add((self.x // MAP_TILE * 3, self.y // MAP_TILE * 3)) # TODO optimize
@@ -138,7 +149,7 @@ class PlayerControls:
                     self.game_data.hero.use_healing_potion()
                 elif event.key == pygame.K_v:
                     if self.game_data.hero.vision_potions:
-                        self.memo.new_message('You used a vision potion, look at your map!')
+                        self.memo.new_message('Vision potion used, check your map!')
                     self.game_data.hero.use_vision_potion()
 
         # for continuous key input
