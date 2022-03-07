@@ -41,10 +41,15 @@ FAKE_RAYS_RANGE = NUM_RAYS - 1 + 2 * FAKE_RAYS
 
 
 # colors for drawing.py
-BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
+DARK_GRAY = (37, 34, 30)
+GRAY = (169, 169, 169)
+BLACK = (0, 0, 0)
 DARK_TAN = (145, 129, 81)
-RED = (139,0,0)
+PINK = (199, 36, 177)
+RED = (139, 0, 0)
+DARK_RED = (66, 13, 9)
+# DARK_RED = (170, 1, 20)
+# PURPLE = (128, 0, 128)
 GREEN = (57, 255, 20)
-PINK = (199,36,177)
-GREEN_NEON = (0, 255, 0)
+# GREEN_NEON = (0, 255, 0)

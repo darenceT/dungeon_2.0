@@ -1,16 +1,18 @@
 import pygame
 
+from .Memo import Memo
 from .Settings import *
+from .Utility import create_textline
 
 class Drawing: 
     """
     Class for drawing all images onto GUI surface. Sprite objects/images get 
     delivered here for blitting.
     """
-    def __init__(self, screen, map_coords, player, sprites) -> None:
+    def __init__(self, screen, map_coords, player_controls, sprites) -> None:
         self.screen = screen
         self.map_coords = map_coords
-        self.player = player
+        self.player = player_controls
         self.sprites = sprites
         self.textures = {#'wall': pygame.image.load('GUI/img/wall2b.png').convert(),
                          'floor': pygame.image.load('GUI/img/floor.jpg').convert(),
@@ -19,10 +21,11 @@ class Drawing:
                          'wall': pygame.image.load('GUI/img/wall_default2.png').convert_alpha(),
                         #  'wall': pygame.image.load('GUI/img/wall_vision2.png').convert_alpha()
                          }
-    
+
     def weapon(self):
+
         # TODO change weapon "S" based on hero's class
-        wep_pos = (WIDTH *2/5, HEIGHT * 5/8)
+        wep_pos = (WIDTH * 2/5, HEIGHT * 5/8)
         if self.player.attacking and self.weapon_animate < 3:
             weapon = pygame.transform.scale(self.sprites.images[f'S{self.weapon_animate}'], wep_pos)
             self.screen.blit(weapon, wep_pos)
@@ -40,7 +43,7 @@ class Drawing:
         underneath amount of current health
         bar_info = [left_pos, top_pos, width(health amount), height]
         """
-        bar_info = [WIDTH - 180, 20, 150, 20]
+        bar_info = [WIDTH - 180, HEIGHT - 60, 150, 30]
 
         pygame.draw.rect(self.screen, RED, bar_info)
         bar_info[2] *= self.player.game_data.hero.hit_points / 100
@@ -51,7 +54,7 @@ class Drawing:
         Display nearby enemy's health bar
         bar_info = [left_pos, top_pos, width(health amount), height]
         """
-        bar_info = [HALF_WIDTH - 100, 80, 200, 20]
+        bar_info = [HALF_WIDTH - 100, 80, 150, 40]
         for object in self.sprites.nearby_sprites:
             if object.letter == 'M' and object.visible_health:
                 bar_info[2] *= object.hitpoint / 100
@@ -91,7 +94,10 @@ class Drawing:
             self.screen.blit(map_surf, MAP_POS)
 
     def fps_display(self, clock):
-        fps = 'FPS ' + str(int(clock.get_fps()))
-        font = pygame.font.SysFont('Monospace Regular', 30)
-        fps_surface = font.render(fps, False, WHITE)
-        self.screen.blit(fps_surface, (WIDTH-80, HEIGHT-20))
+        fps_text = 'FPS ' + str(int(clock.get_fps()))
+        fps_txt, fps_pos = create_textline(fps_text, 
+                                            pos=(WIDTH-45, 15),
+                                            font_type='GUI/font/28DaysLater.ttf', 
+                                            size=30,
+                                            color=WHITE)
+        self.screen.blit(fps_txt, fps_pos)
