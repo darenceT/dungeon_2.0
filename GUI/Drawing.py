@@ -87,6 +87,13 @@ class Drawing:
                 pygame.draw.rect(self.screen, PINK, bar_info)
 
     def inventory(self):
+        """
+        Display inventory counts of pillars, vision potion & healing potions
+        above the memo box. First half of code displays the iconds then
+        displays counts of each.
+        param: None, obtains info from self.textures and self.hero's inventory
+        return: None
+        """
         background_size = (45, HALF_HEIGHT + 185, 195, 38)
         pygame.draw.rect(self.screen, BLACK, background_size)        
 
