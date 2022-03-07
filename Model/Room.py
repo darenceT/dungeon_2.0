@@ -1,20 +1,22 @@
-from typing import Optional
-
 from Item import *
 from Cell import Cell
 from Util import obj_repr
 
 
-class RoomContents:
+class Room(Cell):
+    """
+    A room, i.e. a cell and its contents.
+    """
+
     def __init__(self):
+        super().__init__()
         self.__ingress: bool = False
         self.__egress: bool = False
-        # TODO instances, not ints/bools
-        self.__pit: bool = False
-        self.__health: int = 0
-        self.__vision: int = 0
-        self.__bomb: int = 0
-        self.__pillar: Optional[str] = None
+        self.__contents: dict = {}
+
+    @property
+    def contents(self):
+        return self.__contents
 
     @property
     def ingress(self):
@@ -32,45 +34,55 @@ class RoomContents:
     def egress(self, val: bool):
         self.__egress = val
 
-    @property
-    def pit(self):
-        return self.__pit
+    def can_have(self, obj: Any):
+        if self.ingress or self.egress:
+            return False
+        else:
+            if isinstance(obj, type):
+                if issubclass(obj, Item):
+                    return True
+                # if issubclass(obj, Pillar):
+                #     return True
+            elif isinstance(obj, Item):
+                return True
+            # elif isinstance(obj, Pillar):
+            #     return True
+        return False
 
-    @pit.setter
-    def pit(self, val: bool):
-        self.__pit = val
+    def __getitem__(self, item: Any):
+        i = item
+        if not self.can_have(i):
+            # TODO raising exception mauybe too extreme, but at least log somewhere
+            raise TypeError(f"room cannot have {i}")
+            # return None
+        if isinstance(i, type):
+            if issubclass(i, Pit):
+                return self.contents.get(Pit)
+            elif issubclass(i, VisionPotion):
+                return self.contents.get(VisionPotion)
+            elif issubclass(i, HealthPotion):
+                return self.contents.get(HealthPotion)
+            elif i is Potion:
+                all_potions = []
+                for i in (HealthPotion, VisionPotion):
+                    p = self.contents.get(i)
+                    if p:
+                        all_potions += p
+                if all_potions:
+                    return all_potions
+                return None
+            elif issubclass(i, Bomb):
+                return self.contents.get(Bomb)
+            elif issubclass(i, Pillar):
+                return self.contents.get(Pillar)
+        elif isinstance(i, Pillar):
+            pillar = self.contents.get(Pillar)
+            if pillar and i is pillar:
+                return pillar
+        return None
 
-    @property
-    def health(self):
-        return self.__health
-
-    @health.setter
-    def health(self, val: int):
-        self.__health = val
-
-    @property
-    def vision(self):
-        return self.__vision
-
-    @vision.setter
-    def vision(self, val: int):
-        self.__vision = val
-
-    @property
-    def bomb(self):
-        return self.__bomb
-
-    @bomb.setter
-    def bomb(self, val: int):
-        self.__bomb = val
-
-    @property
-    def pillar(self):
-        return self.__pillar
-
-    @pillar.setter
-    def pillar(self, val: Optional[Pillar]):
-        self.__pillar = val
+    def has(self, obj: Any):
+        return bool(self.__getitem__(obj))
 
     def can_add(self, obj: Any):
         if self.ingress or self.egress:
@@ -90,122 +102,133 @@ class RoomContents:
                 return True
         return False
 
-    def can_have(self, obj: Any):
-        if self.ingress or self.egress:
-            return False
+    def add_only(self, group: type, obj: Any):
+        if self.contents.get(group):
+            raise ValueError(f"room already has a {group.__name__}")
+        self.contents[group] = obj
+
+    def make_add_only(self, group: type, cls: type):
+        if self.contents.get(group):
+            raise ValueError(f"room already has a {group.__name__}")
+        obj = cls()
+        self.contents[group] = obj
+
+    def add_one(self, group: type, obj: Any):
+        if not self.contents.get(group):
+            self.contents[group] = [obj]
         else:
-            if isinstance(obj, type):
-                if issubclass(obj, Item):
-                    return True
-                # if issubclass(obj, Pillar):
-                #     return True
-            elif isinstance(obj, Item):
-                return True
-            # elif isinstance(obj, Pillar):
-            #     return True
-        return False
+            self.contents[group].append(obj)
+
+    def make_add_one(self, group: type, cls: type):
+        obj = cls()
+        self.add_one(group, obj)
 
     def add(self, *items) -> None:
+        """ Add items to room. Each item may be either an instance of an Item subclass,
+        or may be one of those subclasses itself. If specified by class, will be instantiated.
+        :param items: Zero or more items to add. Items may be a mix of instances and classes.
+        """
         for i in items:
             if not self.can_add(i):
                 # TODO raising exception mauybe too extreme, but at least log somewhere
                 raise TypeError(f"room cannot add {i}")
                 # continue
-            # TODO instantiate (if passed class) and add
             if isinstance(i, type):
                 if issubclass(i, Pit):
-                    self.pit = True
+                    self.make_add_only(Pit, i)
                 elif issubclass(i, HealthPotion):
-                    self.health += 1
+                    self.make_add_one(HealthPotion, i)
                 elif issubclass(i, VisionPotion):
-                    self.vision += 1
+                    self.make_add_one(VisionPotion, i)
                 elif issubclass(i, Bomb):
-                    self.bomb += 1
+                    self.make_add_one(Bomb, i)
+            if isinstance(i, Pit):
+                self.add_only(Pit, i)
+            elif isinstance(i, HealthPotion):
+                self.add_one(HealthPotion, i)
+            elif isinstance(i, VisionPotion):
+                self.add_one(VisionPotion, i)
+            elif isinstance(i, Bomb):
+                self.add_one(Bomb, i)
             elif isinstance(i, Pillar):
-                self.pillar = i
+                self.add_only(Pillar, i)
 
-    def has(self, item: Any) -> bool:
-        i = item
-        if not self.can_have(i):
-            # TODO raising exception mauybe too extreme, but at least log somewhere
-            raise TypeError(f"room cannot have {i}")
-            # return False
-        if isinstance(i, type):
-            if issubclass(i, Pit):
-                return bool(self.pit)
-            elif issubclass(i, VisionPotion):
-                return self.vision > 0
-            elif issubclass(i, HealthPotion):
-                return self.health > 0
-            elif i is Potion:
-                return self.has(HealthPotion) or self.has(VisionPotion)
-            elif issubclass(i, VisionPotion):
-                return self.vision > 0
-            elif issubclass(i, Bomb):
-                return self.bomb > 0
-            elif issubclass(i, Pillar):
-                return bool(self.pillar)
-        elif isinstance(i, Pillar):
-            return i is self.pillar
+    def can_pop(self, obj: Any) -> bool:
+        if isinstance(obj, type):
+            if isinstance(obj, Bomb):
+                return True
+            # Not allowed to pop abstract Potion, only its subclass
+            if issubclass(obj, VisionPotion):
+                return True
+            if issubclass(obj, HealthPotion):
+                return True
         return False
 
-    def __repr__(self):
+    def pop(self, obj: Any) -> Any:
+        if not self.can_pop(obj):
+            return None  # TODO raise exception and/or log error?
+        have = self.contents.get(obj)
+        if not have:
+            return None  # TODO log error? depends whether caller expected to first check has()
+        item = have.pop()
+        return item
+
+    def __repr__(self) -> str:
         return obj_repr(self)
-
-
-class Room(Cell):
-    """
-    A room, i.e. a cell and its contents.
-    """
-    def __init__(self):
-        super().__init__()
-        self.__contents: RoomContents = RoomContents()
-
-    @property
-    def contents(self):
-        return self.__contents
-
-    @contents.setter
-    def contents(self, val: RoomContents):
-        self.__contents = val
 
 
 if __name__ == '__main__':
 
     def example():
         """Example code"""
-        print(f'RoomContents 1...')
-        cont = RoomContents()
-        cont.add(HealthPotion)
-        cont.add(Bomb)
-        print(cont)
-        print(f'has a Potion? {cont.has(Potion)}')
-        print(f'has a Vision Potion? {cont.has(VisionPotion)}')
-        print(f'has a Health Potion? {cont.has(HealthPotion)}')
-        print(f'has a Bomb? {cont.has(Bomb)}')
-
-        print(f'RoomContents 2...')
-        cont = RoomContents()
-        cont.add(Pit, VisionPotion)
-        cont.add(Abstraction)
-        print(cont)
-        print(f'has a Pit? {cont.has(Pit)}')
-        print(f'has a Potion? {cont.has(Potion)}')
-        print(f'has a Vision Potion? {cont.has(VisionPotion)}')
-        print(f'has a Health Potion? {cont.has(HealthPotion)}')
-        print(f'has a Bomb? {cont.has(Bomb)}')
-        print(f'has a Pillar? {cont.has(Pillar)}')
-        print(f'has Abstraction? {cont.has(Abstraction)}')
-        print(f'has Encapsulation? {cont.has(Encapsulation)}')
-
-        print(f'Room 1...')
         room = Room()
-        room.contents.add(Pit)
+        # Can add multiple items in single call.
+        # These may be class names and/or instances thereof.
+        # Pillar is unique; can only add one of its fixed set of instances.
+        room.add(Pit, VisionPotion, Abstraction)
         print(room)
 
-        print(f'Room 2...')
-        room = Room()
-        room.contents.add(VisionPotion, HealthPotion)
+        # For some item types, can have zero to many: Potions, Bombs.
+        # For other item types, only have zero or one: Pit, Pillar.
+        print(f'has a Pit? {room.has(Pit)}')
+        try:
+            room.add(Pit)
+        except ValueError as e:
+            print(f"cannot add Pit: {e}")
+        print(f'has a Bomb? {room.has(Bomb)}')
+
+        # Can have zero to many Bombs.
+        room.add(Bomb)
+        obj = Bomb()
+        room.add(obj)
+
+        # Can have zero to many of the various Potions.
+        print(f'has a Potion? {room.has(Potion)}')
+        print(f"how many? {len(room[Potion])}")
+        print(f'has a Health Potion? {room.has(HealthPotion)}')
+        print(f'has a Vision Potion? {room.has(VisionPotion)}')
+        print(f"how many? {len(room[VisionPotion])}")
+        room.add(VisionPotion)
+        obj = VisionPotion()
+        room.add(obj)
+        print(f"added 2 more, now have {len(room[VisionPotion])}")
+        obj = room.pop(VisionPotion)
+        print(f"popped 1: {obj}")
+        print(f"how many now? {len(room[VisionPotion])}")
+        room.add(HealthPotion)
+        print(f"added 1 Health Potion")
+        print(f"how many total Potions now? {len(room[Potion])}")
+
+        # Can only have zero or one of the Pillar instances.
+        print(f'has a Pillar? {room.has(Pillar)}')
+        print(f'has Abstraction? {room.has(Abstraction)}')
+        print(f'has Encapsulation? {room.has(Encapsulation)}')
+        try:
+            room.add(Encapsulation)
+        except ValueError as e:
+            print(f"cannot add Encapsulation: {e}")
+
+        print("after adding some more items...")
         print(room)
 
     example()
