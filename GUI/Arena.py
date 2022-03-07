@@ -4,7 +4,6 @@ class Arena:
     def __init__(self, player_controls, hero):
         self.player_controls = player_controls
         self.hero = hero
-        # self.memo = memo
         self.attack_speed = 4 / 4   # will be from hero
         self.chance_to_hit = 0.8    # will be from hero
         self.min_damage = 35        # will be from hero

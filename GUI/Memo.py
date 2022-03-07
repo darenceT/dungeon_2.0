@@ -17,12 +17,11 @@ class Memo:
 
     def message_box(self):
         size = (5, HALF_HEIGHT + 225, 280, 120)
-        pygame.draw.rect(self.screen, GRAY, size)
+        pygame.draw.rect(self.screen, WHITE, size)
         self.display_messages()
     
     def display_messages(self):
         index = 0
-        txt_size = 18
         y_offset = 30
         while index < len(self.lines):
             txt_color = BLACK

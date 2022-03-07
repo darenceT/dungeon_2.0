@@ -37,9 +37,6 @@ class SpritesContainer:
             'P': pygame.image.load('GUI/img/pillar.png').convert_alpha(),
             'O': pygame.image.load('GUI/img/exit.png').convert_alpha(),
             'M': pygame.image.load('GUI/img/monster.png').convert_alpha(),
-            'S0': pygame.image.load('GUI/img/sword0.png').convert_alpha(),
-            'S1': pygame.image.load('GUI/img/sword1.png').convert_alpha(),
-            'S2': pygame.image.load('GUI/img/sword2.png').convert_alpha()
             }
         
     def load_sprites(self):
