@@ -36,7 +36,7 @@ class Menu:
         'blit' = put on surface
         'flip' = show user the final surface
         """
-        self.screen.fill(BLACK)
+        self.screen.fill(GRAY)
 
         for object, pos in envelope:
             self.screen.blit(object, pos)
@@ -61,7 +61,7 @@ class Menu:
 
     def start_screen(self):
         """
-        TODO
+        TODO convert height adjustment into offset variable, move size values to settings
         """
 
         title1, title1_pos = create_textline('DUNGEON', 

@@ -11,7 +11,7 @@ def create_textline(message,
                     pos=(HALF_WIDTH, HALF_HEIGHT), 
                     font_type="GUI/font/Damned.ttf", 
                     size=32, 
-                    color=GREEN_NEON):
+                    color=DARK_RED):
     """
     Create text object for surface
     """

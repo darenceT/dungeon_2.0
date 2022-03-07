@@ -10,7 +10,7 @@ class PlayerControls:
     game_data is object of DungeonAdventure to access "enter_room" method.
     room_change boolean to trigger loading of sprites
     """
-    def __init__(self, screen, game_data, collision_walls):
+    def __init__(self, screen, game_data, memo, collision_walls):
         self.angle = 0
         self.player_speed = 4
         self.attacking = False
@@ -22,6 +22,7 @@ class PlayerControls:
 
         self.screen = screen
         self.game_data = game_data
+        self.memo = memo
         self.arena = Arena(self, game_data.hero)
 
         self.rooms_in_sight = set()
@@ -132,8 +133,12 @@ class PlayerControls:
                 exit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_h:
+                    if self.game_data.hero.healing_potions:
+                        self.memo.new_message('You used a healing potion!')
                     self.game_data.hero.use_healing_potion()
-                if event.key == pygame.K_v:
+                elif event.key == pygame.K_v:
+                    if self.game_data.hero.vision_potions:
+                        self.memo.new_message('You used a vision potion, look at your map!')
                     self.game_data.hero.use_vision_potion()
 
         # for continuous key input

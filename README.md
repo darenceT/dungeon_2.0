@@ -1,4 +1,4 @@
-# Dungeon 2.0
+# Dungeon Escape
 
 
 This is an expansion of previous project v1.0 by JP Montagnet and Jennifer Boutell.  

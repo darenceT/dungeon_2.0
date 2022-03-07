@@ -8,6 +8,7 @@ from GUI.PlayerControls import PlayerControls
 from GUI.Drawing import Drawing
 from GUI.Sprites import SpritesContainer
 from GUI.Menu import Menu
+from GUI.Memo import Memo
 
 
 class Main:
@@ -32,16 +33,16 @@ class Main:
         pygame.init()
         pygame.display.set_caption('Dungeon 2.0')
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        self.memo = Memo(self.screen)
+        self.menu = Menu(self.screen)
         self.__obtain_game_data()
 
         # TODO: decrease/narrow params passed
-        self.player_controls = PlayerControls(self.screen, self.game_data, self.collision_walls)
+        self.player_controls = PlayerControls(self.screen, self.game_data, self.memo, self.collision_walls)
         self.sprites = SpritesContainer(self.screen, self.game_data, self.player_controls)
         self.drawing = Drawing(self.screen, self.mini_map_coords, self.player_controls, self.sprites)
         self.raycast = Raycast(self.player_controls, self.world_coords, self.drawing.textures)
         self.player_controls.get_rooms_in_sight() # initiate sprites for 1st room 
-
-        self.menu = Menu(self.screen)
 
     def __obtain_game_data(self):
         self.game_data = DungeonAdventure()
@@ -101,7 +102,7 @@ class Main:
             objects = self.sprites.obtain_sprites(walls)
             self.drawing.world(walls + objects)
 
-
+            self.memo.message_box()
             #TODO create drawing function that calls all info display
             self.drawing.weapon()
             self.drawing.hero_health_bar()
