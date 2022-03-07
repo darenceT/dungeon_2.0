@@ -40,7 +40,7 @@ class Main:
         # TODO: decrease/narrow params passed
         self.player_controls = PlayerControls(self.screen, self.game_data, self.memo, self.collision_walls)
         self.sprites = SpritesContainer(self.screen, self.game_data, self.player_controls)
-        self.drawing = Drawing(self.screen, self.mini_map_coords, self.player_controls, self.sprites)
+        self.drawing = Drawing(self.screen, self.mini_map_coords, self.player_controls, self.hero, self.sprites)
         self.raycast = Raycast(self.player_controls, self.world_coords, self.drawing.textures)
         self.player_controls.get_rooms_in_sight() # initiate sprites for 1st room 
 
@@ -103,12 +103,7 @@ class Main:
             self.drawing.world(walls + objects)
 
             self.memo.message_box()
-            #TODO create drawing function that calls all info display
-            self.drawing.weapon()
-            self.drawing.hero_health_bar()
-            self.drawing.enemy_health_bar()
-            self.drawing.mini_map()
-            self.drawing.fps_display(clock)
+            self.drawing.weapon_and_ui(clock)
             pygame.display.flip()
             clock.tick(FPS)
 
