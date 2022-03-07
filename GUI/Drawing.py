@@ -16,7 +16,7 @@ class Drawing:
         self.sprites = sprites
         self.textures = {#'wall': pygame.image.load('GUI/img/wall2b.png').convert(),
                          'floor': pygame.image.load('GUI/img/floor.jpg').convert(),
-                         'ceiling': pygame.image.load('GUI/img/ceiling.jfif').convert(),
+                         'ceiling': pygame.image.load('GUI/img/ceiling3.jpg').convert(),
                          'door': pygame.image.load('GUI/img/door_portal.png').convert(),
                          'wall': pygame.image.load('GUI/img/wall_default2.png').convert_alpha(),
                         #  'wall': pygame.image.load('GUI/img/wall_vision2.png').convert_alpha()

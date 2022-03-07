@@ -20,6 +20,10 @@ More to come...
 
 [Repo for Dungeon 1.0](https://github.com/jenniferboutell/DungeonAdventure) which is different from this [project](https://github.com/darenceT/dungeon) by Darence
 
+<strong>Progress 3/6/22:</strong>  
+  
+![Current progress screenshot:](https://github.com/darenceT/dungeon_2.0/blob/main/docs/4th%20Iteration/GUI_progress4th.png)
+
 <strong>Progress 3/2/22:</strong>  
   
 ![Current progress screenshot:](https://github.com/darenceT/dungeon_2.0/blob/main/docs/4th%20Iteration/GUI_general.png)  
