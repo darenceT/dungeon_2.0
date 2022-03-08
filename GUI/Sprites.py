@@ -24,7 +24,6 @@ class SpritesContainer:
         """
         self.screen = screen
         self.player = player
-        self.weapon_animate = 1
         self.game = game
         self.nearby_sprites = set()
         self.images = {

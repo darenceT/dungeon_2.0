@@ -77,7 +77,7 @@ class Menu:
 
     def intro_menu(self):
         """
-        TODO: input hero name
+        TODO: input and return hero name
         """
         while True:
             # print('menu_input:', self.menu_input, 'picked: ', self.picked)
