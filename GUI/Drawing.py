@@ -21,7 +21,7 @@ class Drawing:
                          'door': pygame.image.load('GUI/img/door_portal.png').convert(),
                          'wall': pygame.image.load('GUI/img/wall_default2.png').convert_alpha(),
                          'Hi': pygame.image.load('GUI/img/health_icon.png').convert_alpha(),
-                         'Vi': pygame.image.load('GUI/img/vision_large.png').convert_alpha(),
+                         'Vi': pygame.image.load('GUI/img/vision_icon.png').convert_alpha(),
                          'Pi': pygame.image.load('GUI/img/pillar.png').convert_alpha(),
                          'S0': pygame.image.load('GUI/img/sword0.png').convert_alpha(),
                          'S1': pygame.image.load('GUI/img/sword1.png').convert_alpha(),

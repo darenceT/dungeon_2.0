@@ -14,7 +14,7 @@ from GUI.Memo import Memo
 class Main:
     def __init__(self):
         self.screen = None
-        self.intro_on = True
+        # self.intro_on = True
         self.pause_on = False
         self.menu = None
         self.game_data = None
@@ -22,6 +22,7 @@ class Main:
         self.world_coords = {}
         self.mini_map_coords = set()
         self.player_controls = None
+        self.hero_class = None
         self.hero = None
         self.drawing = None
         self.sprites = None
@@ -45,6 +46,7 @@ class Main:
         self.player_controls.get_rooms_in_sight() # initiate sprites for 1st room 
 
     def __obtain_game_data(self):
+        self.hero_class = self.menu.intro_menu()
         self.game_data = DungeonAdventure()
         self.dungeon = self.game_data.maze
         self.hero = self.game_data.hero
@@ -87,9 +89,7 @@ class Main:
         while True:
             self.pause_on = self.player_controls.movement() #TODO improve pause logic
 
-            if self.intro_on:
-                self.intro_on = self.menu.start_screen()
-            elif self.pause_on:
+            if self.pause_on:
                 self.pause_on = self.menu.pause_menu()
             elif not self.hero.is_alive:
                 self.menu.end_screen()
