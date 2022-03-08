@@ -2,6 +2,8 @@ from abc import ABCMeta
 from collections import namedtuple
 from typing import Any
 
+from Util import obj_repr
+
 
 class Item(metaclass=ABCMeta):
     __portable: bool = True
@@ -20,6 +22,9 @@ class Item(metaclass=ABCMeta):
     @property
     def portable(self):
         return self.__portable
+
+    def __repr__(self):
+        return obj_repr(self)
 
 
 class Pit(Item):
@@ -130,9 +135,34 @@ Pillars = (Abstraction, Encapsulation, Inheritance, Polymorphism)
 if __name__ == '__main__':
 
     def example():
-        # TODO pit
-        # TODO bomb
-        # TODO potions
+        print('instantiates various stuff...')
+        stuff = dict()
+        stuff[Pit] = Pit()
+        stuff[Bomb] = [Bomb(), Bomb()]
+        stuff[VisionPotion] = [VisionPotion()]
+        stuff[HealthPotion] = [HealthPotion()]
+        print(stuff)
+
+        class Owner:
+            def __init__(self, *args, **kw):
+                super().__init__(*args, **kw)
+                self.stuff: dict = {}
+
+            def __repr__(self):
+                return obj_repr(self)
+
+        print('their soon-to-be owner...')
+        owner = Owner()
+        print(owner)
+
+        print('their owner, though stuff does not know yet...')
+        owner.stuff = stuff
+        print(owner)
+
+        print('their owner, after updating Pit instance with its owner...')
+        owner.stuff[Pit].owner = owner
+        print(owner)
+
         print("The Pillars of OO...")
         for p in Pillars:
             print(p)
