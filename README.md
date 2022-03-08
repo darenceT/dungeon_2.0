@@ -22,13 +22,14 @@ More to come...
 
 <strong>Progress 3/6/22:</strong>  
   
-![Current progress screenshot:](https://github.com/darenceT/dungeon_2.0/blob/main/docs/4th%20Iteration/GUI_progress4th.png)
-
+![progress 3/6/22 p1:](https://github.com/darenceT/dungeon_2.0/blob/main/docs/screenshotUpdate3_8_22.png)  
+![progress 3/6/22 p1:](https://github.com/darenceT/dungeon_2.0/blob/main/docs/4th%20Iteration/GUI_progress4th.png) 
+   
 <strong>Progress 3/2/22:</strong>  
   
-![Current progress screenshot:](https://github.com/darenceT/dungeon_2.0/blob/main/docs/4th%20Iteration/GUI_general.png)  
+![progress 3/2/22:](https://github.com/darenceT/dungeon_2.0/blob/main/docs/4th%20Iteration/GUI_general.png)  
 
-<strong>Initial GUI 2/18/22:</strong>  
+<strong>Initial GUI with ray-casting 2/18/22:</strong>  
     
 ![Initial 2/18/22:](https://github.com/darenceT/dungeon_2.0/blob/main/docs/1st%20Iteration/GUI_maze.png)
   
