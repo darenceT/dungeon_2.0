@@ -9,12 +9,14 @@ class Drawing:
     Class for drawing all images onto GUI surface. Sprite objects/images get 
     delivered here for blitting.
     """
-    def __init__(self, screen, map_coords, player_controls, hero, sprites) -> None:
+    def __init__(self, screen, hero_class, map_coords, player_controls, hero, sprites) -> None:
         self.screen = screen
+        self.hero_class = hero_class
         self.map_coords = map_coords
         self.player = player_controls
         self.hero = hero
         self.sprites = sprites
+        self.weapon_animate = 0
         self.textures = {
                         #  'floor': pygame.image.load('GUI/img/floor.jpg').convert(),
                          'ceiling': pygame.image.load('GUI/img/ceiling3.jpg').convert(),
@@ -23,9 +25,18 @@ class Drawing:
                          'Hi': pygame.image.load('GUI/img/health_icon.png').convert_alpha(),
                          'Vi': pygame.image.load('GUI/img/vision_icon.png').convert_alpha(),
                          'Pi': pygame.image.load('GUI/img/pillar.png').convert_alpha(),
-                         'S0': pygame.image.load('GUI/img/sword0.png').convert_alpha(),
-                         'S1': pygame.image.load('GUI/img/sword1.png').convert_alpha(),
-                         'S2': pygame.image.load('GUI/img/sword2.png').convert_alpha()
+                         'Warrior0': pygame.image.load('GUI/img/sword0.png').convert_alpha(),
+                         'Warrior1': pygame.image.load('GUI/img/sword1.png').convert_alpha(),
+                         'Warrior2': pygame.image.load('GUI/img/sword2.png').convert_alpha(),
+                         'Warrior3': pygame.image.load('GUI/img/sword2.png').convert_alpha(),
+                         'Priest0': pygame.image.load('GUI/img/staff0.png').convert_alpha(),
+                         'Priest1': pygame.image.load('GUI/img/staff1.png').convert_alpha(),
+                         'Priest2': pygame.image.load('GUI/img/staff2.png').convert_alpha(),
+                         'Priest3': pygame.image.load('GUI/img/staff3.png').convert_alpha(),
+                         'Thief0': pygame.image.load('GUI/img/dagger0.png').convert_alpha(),
+                         'Thief1': pygame.image.load('GUI/img/dagger1.png').convert_alpha(),
+                         'Thief2': pygame.image.load('GUI/img/dagger2.png').convert_alpha(),
+                         'Thief3': pygame.image.load('GUI/img/dagger2.png').convert_alpha(),                         
                         #  'wall': pygame.image.load('GUI/img/wall_vision2.png').convert_alpha()
                          }
 
@@ -52,15 +63,14 @@ class Drawing:
 
     def weapon(self):
         # TODO change weapon "S" based on hero's class
-        wep_pos = (WIDTH * 2/5, HEIGHT * 5/8)
+        wep_pos = (WIDTH * 2/5, HEIGHT - 280)
+        wep_size = (HALF_WIDTH, HALF_HEIGHT)
         if self.player.attacking and self.weapon_animate < 3:
-            weapon = pygame.transform.scale(self.textures[f'S{self.weapon_animate}'], wep_pos)
-            self.screen.blit(weapon, wep_pos)
-            self.weapon_animate += 1
-        else:
-            weapon = pygame.transform.scale(self.textures['S0'], wep_pos)
-            self.weapon_animate = 1
-            self.player.attacking = False
+            self.weapon_animate += 1 
+        else: 
+            self.weapon_animate = 0
+
+        weapon = pygame.transform.scale(self.textures[f'{self.hero_class}{self.weapon_animate}'], wep_size)
         self.screen.blit(weapon, wep_pos)
 
     def hero_health_bar(self):
