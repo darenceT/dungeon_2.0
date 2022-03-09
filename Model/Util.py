@@ -1,3 +1,6 @@
+from collections import namedtuple
+
+
 def seq_repr(obj, **kw):
     return ', '.join([f'{obj_repr(i, **kw)}' for i in obj])
 
@@ -47,8 +50,17 @@ def obj_repr(obj, seen: set = None, show_ids: bool = False, bare_str: bool = Fal
         return f'{wrap[cls][0]}{oid}{map_repr(obj, **kw)}{wrap[cls][1]}'
 
     nam = cls.__name__
+    # namedtuple is weird: Ostensibly a subclass of tuple, but not a class
+    # in its own right, and cannot do isinstance(obj, namedtuple).
+    # Only way I see to discern them is presence of the several additional
+    # methods and attributes. Attribute _asdict is particularly useful,
+    # given that namedtuple does not have attribute __dict__.
+    if isinstance(obj, tuple) and getattr(obj, '_asdict'):
+        d = obj._asdict()
+        return f'{nam}({oid}{map_repr(d, **kw, bare_str=True)})'
+
     mro = cls.__mro__
-    ign = ('object', 'list', 'set', 'dict')
+    ign = ('object', 'tuple', 'list', 'set', 'dict')
     pfx = [f"_{c.__name__.lstrip('_')}" for c in mro if c.__name__ not in ign]
     attrs = {}
     k: str
