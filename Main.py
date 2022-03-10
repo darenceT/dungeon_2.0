@@ -87,6 +87,7 @@ class Main:
     def game_loop(self):
         clock = pygame.time.Clock()
         while True:
+            delta_time = clock.tick(FPS) / 1000
             self.pause_on = self.player_controls.movement() #TODO improve pause logic
 
             if self.pause_on:
@@ -105,7 +106,7 @@ class Main:
             self.memo.message_box()
             self.drawing.weapon_and_ui(clock)
             pygame.display.flip()
-            clock.tick(FPS)
+            
 
 if __name__ == '__main__':
     while True:
