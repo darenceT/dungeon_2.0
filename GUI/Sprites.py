@@ -62,18 +62,18 @@ class SpritesContainer:
                 # 'animate_speed': 10, 
             },
             'gremlin':{
-                'sprite': pygame.image.load('GUI/img/ogre0.png').convert_alpha(),
+                'sprite': pygame.image.load('GUI/img/gremlin0.png').convert_alpha(),
                 'shift': 0.5,
                 'scale': 0.8,
-                'animation': deque([pygame.image.load(f'GUI/img/ogre{i}.png').convert_alpha() for i in range(1, 4)]),
+                'animation': deque([pygame.image.load(f'GUI/img/gremlin{i}.png').convert_alpha() for i in range(1, 4)]),
                 # 'animate_dist': 800,
                 # 'animate_speed': 10, 
             },
             'skeleton':{
-                'sprite': pygame.image.load('GUI/img/ogre0.png').convert_alpha(),
+                'sprite': pygame.image.load('GUI/img/skeleton0.png').convert_alpha(),
                 'shift': 0.5,
                 'scale': 0.8,
-                'animation': deque([pygame.image.load(f'GUI/img/ogre{i}.png').convert_alpha() for i in range(1, 4)]),
+                'animation': deque([pygame.image.load(f'GUI/img/skeleton{i}.png').convert_alpha() for i in range(1, 4)]),
                 # 'animate_dist': 800,
                 # 'animate_speed': 10, 
             },
@@ -94,9 +94,19 @@ class SpritesContainer:
                 if room.healing_potions:
                     for _ in range(room.healing_potions):
                         add(SpriteObject(self.images['H'], 'H', room.coords))
+                    add(SpriteObject(self.monsters['gremlin']['sprite'], 'gremlin', room.coords, 
+                                     scale=self.monsters['gremlin']['scale'], 
+                                     shift=self.monsters['gremlin']['shift'],
+                                     animation=self.monsters['gremlin']['animation'].copy(),
+                                     )) 
                 if room.vision_potions:
                     for _ in range(room.vision_potions):
                         add(SpriteObject(self.images['V'], 'V', room.coords))
+                    add(SpriteObject(self.monsters['skeleton']['sprite'], 'skeleton', room.coords, 
+                                     scale=self.monsters['skeleton']['scale'], 
+                                     shift=self.monsters['skeleton']['shift'],
+                                     animation=self.monsters['skeleton']['animation'].copy(),
+                                     )) 
                         # add(SpriteObject(self.images['M'], 'M', room.coords, scale=0.8, shift=0.2))            
                 if room.has_pit:
                     # room.has_pit = False
@@ -152,11 +162,9 @@ class SpritesContainer:
                 sprite.object = sprite.animation[0]
                 if sprite.animate_count < sprite.animate_speed:
                     sprite.animate_count += 1
-                    print('counting')
                 else:
                     sprite.animation.rotate()
                     sprite.animate_count = 0
-                    print('rotating')
                 if sprite.hitpoint <= 0:                # temp, should be in model logic
                     self.nearby_sprites.remove(sprite)
                     print('you defeated monster')
