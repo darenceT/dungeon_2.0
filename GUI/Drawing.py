@@ -1,6 +1,6 @@
 import pygame
 
-from .Memo import Memo
+# from .Memo import Memo
 from .Settings import *
 from .Utility import create_textline
 
@@ -16,7 +16,8 @@ class Drawing:
         self.player = player_controls
         self.hero = hero
         self.sprites = sprites
-        self.weapon_animate = 0
+        self.weapon_animate = 1
+        self.wep_time = 0
         self.textures = {
                         #  'floor': pygame.image.load('GUI/img/floor.jpg').convert(),
                          'ceiling': pygame.image.load('GUI/img/ceiling3.jpg').convert(),
@@ -28,7 +29,7 @@ class Drawing:
                          'Warrior0': pygame.image.load('GUI/img/sword0.png').convert_alpha(),
                          'Warrior1': pygame.image.load('GUI/img/sword1.png').convert_alpha(),
                          'Warrior2': pygame.image.load('GUI/img/sword2.png').convert_alpha(),
-                         'Warrior3': pygame.image.load('GUI/img/sword2.png').convert_alpha(),
+                         'Warrior3': pygame.image.load('GUI/img/sword3.png').convert_alpha(),
                          'Priest0': pygame.image.load('GUI/img/staff0.png').convert_alpha(),
                          'Priest1': pygame.image.load('GUI/img/staff1.png').convert_alpha(),
                          'Priest2': pygame.image.load('GUI/img/staff2.png').convert_alpha(),
@@ -36,7 +37,7 @@ class Drawing:
                          'Thief0': pygame.image.load('GUI/img/dagger0.png').convert_alpha(),
                          'Thief1': pygame.image.load('GUI/img/dagger1.png').convert_alpha(),
                          'Thief2': pygame.image.load('GUI/img/dagger2.png').convert_alpha(),
-                         'Thief3': pygame.image.load('GUI/img/dagger2.png').convert_alpha(),                         
+                         'Thief3': pygame.image.load('GUI/img/dagger3.png').convert_alpha(),                         
                         #  'wall': pygame.image.load('GUI/img/wall_vision2.png').convert_alpha()
                          }
 
@@ -54,19 +55,26 @@ class Drawing:
                 self.screen.blit(object, object_pos)
 
     def weapon_and_ui(self, clock):
-        self.weapon()
+        self.weapon_animation()
         self.hero_health_bar()
         self.enemy_health_bar()
         self.inventory()
         self.mini_map()
         self.fps_display(clock)
 
-    def weapon(self):
+    def weapon_animation(self):
         # TODO change weapon "S" based on hero's class
         wep_pos = (WIDTH * 2/5, HEIGHT - 280)
         wep_size = (HALF_WIDTH, HALF_HEIGHT)
+        
+        cool_down = 3
+
         if self.player.attacking and self.weapon_animate < 3:
-            self.weapon_animate += 1 
+            if self.wep_time < cool_down:
+                self.wep_time += 1
+            else:
+                self.weapon_animate += 1
+                self.wep_time = 0
         else: 
             self.weapon_animate = 0
 
