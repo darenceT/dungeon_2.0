@@ -63,12 +63,12 @@ class Drawing:
         self.fps_display(clock)
 
     def weapon_animation(self):
-        # TODO change weapon "S" based on hero's class
+        """
+        Animation of weapon using a timer (cool_down) to adjust animation speed
+        """
         wep_pos = (WIDTH * 2/5, HEIGHT - 280)
         wep_size = (HALF_WIDTH, HALF_HEIGHT)
-        
         cool_down = 3
-
         if self.player.attacking and self.weapon_animate < 3:
             if self.wep_time < cool_down:
                 self.wep_time += 1
@@ -77,7 +77,6 @@ class Drawing:
                 self.wep_time = 0
         else: 
             self.weapon_animate = 0
-
         weapon = pygame.transform.scale(self.textures[f'{self.hero_class}{self.weapon_animate}'], wep_size)
         self.screen.blit(weapon, wep_pos)
 
@@ -100,7 +99,7 @@ class Drawing:
         """
         bar_info = [HALF_WIDTH - 100, 80, 150, 40]
         for object in self.sprites.nearby_sprites:
-            if object.letter == 'M' and object.visible_health:
+            if object.name == 'M' and object.visible_health:
                 bar_info[2] *= object.hitpoint / 100
                 pygame.draw.rect(self.screen, PINK, bar_info)
 
