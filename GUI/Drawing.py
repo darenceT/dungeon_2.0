@@ -97,11 +97,38 @@ class Drawing:
         Display nearby enemy's health bar
         bar_info = [left_pos, top_pos, width(health amount), height]
         """
-        bar_info = [HALF_WIDTH - 100, 80, 150, 40]
-        for object in self.sprites.nearby_sprites:
-            if object.name == 'M' and object.visible_health:
-                bar_info[2] *= object.hitpoint / 100
+        bar_x = 20
+        bar_y = HALF_HEIGHT - 40
+        width = 150
+        height = 40
+        name_x = bar_x + 70
+        name_y = bar_y + 18
+        bar_info = [bar_x, bar_y, width, height]
+        boarders = [bar_x - 3, bar_y - 3, width + 8, height + 6]
+
+        count = 0
+        offset = 50
+        for enemy in self.sprites.nearby_sprites:
+            if enemy.animation and enemy.visible_health:
+                if count > 0: 
+                    name_y -= offset
+                    bar_info[1] -= offset
+                    boarders[1] = bar_y - 3
+                bar_info[2] *= enemy.hitpoint / 100
+                boarders[2] = bar_info[2] + 4
+                pygame.draw.rect(self.screen, BLACK, boarders)
                 pygame.draw.rect(self.screen, PINK, bar_info)
+
+                enemy_name = str(enemy.name.capitalize())    # substitute for name instead of type
+                if enemy_name == "Mgirl": enemy_name = "Mean Girl" 
+                print(len(enemy_name))
+                name, name_pos = create_textline(enemy_name, 
+                                                    pos=(name_x, name_y),
+                                                    font_type='GUI/font/28DaysLater.ttf', 
+                                                    size=30,
+                                                    color=BLACK)
+                self.screen.blit(name, name_pos)
+                count += 1
 
     def inventory(self):
         """
