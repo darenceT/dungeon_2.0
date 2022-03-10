@@ -9,7 +9,9 @@ from MeanGirl import MeanGirl
 class MonsterFactory:
 
     @staticmethod
-    def create_monster(mtype: str, *monster_data) -> Union[Ogre, Skeleton, Gremlin, MeanGirl]:
+    def create_monster(mtype: str, name: str, hit_points: int, attack_speed: int,
+                       chance_to_hit: float, minimum_damage: int, maximum_damage: int, chance_to_heal: float,
+                       minimum_heal_points: int, maximum_heal_points: int) -> Union[Ogre, Skeleton, Gremlin, MeanGirl]:
         """
         Creates a monster of the specified type using the necessary data
         for building that monster and returns that monster. e.g.:
@@ -28,46 +30,64 @@ class MonsterFactory:
             maker = MonsterFactory.create_meangirl
         else:
             raise ValueError(f"does not support monster_name {mtype}")
-        monster = maker(*monster_data)
+        monster = maker(mtype, name, hit_points, attack_speed,
+                       chance_to_hit, minimum_damage, maximum_damage, chance_to_heal,
+                       minimum_heal_points, maximum_heal_points)
         return monster
 
     @staticmethod
-    def create_ogre(*monster_data) -> Ogre:
+    def create_ogre(mtype, name, hit_points, attack_speed,
+                       chance_to_hit, minimum_damage, maximum_damage, chance_to_heal,
+                       minimum_heal_points, maximum_heal_points) -> Ogre:
         """
         Builds a new Ogre.
         :param monster_data: monster stats.
         :return: newly created Ogre.
         """
-        return Ogre(*monster_data)
+        return Ogre(mtype, name, hit_points, attack_speed,
+                       chance_to_hit, minimum_damage, maximum_damage, chance_to_heal,
+                       minimum_heal_points, maximum_heal_points)
 
     @staticmethod
-    def create_skeleton(*monster_data) -> Skeleton:
+    def create_skeleton(mtype, name, hit_points, attack_speed,
+                       chance_to_hit, minimum_damage, maximum_damage, chance_to_heal,
+                       minimum_heal_points, maximum_heal_points) -> Skeleton:
         """
         Builds a new Skeleton.
 
         :param monster_data: monster stats.
         :return: newly created Skeleton.
         """
-        return Skeleton(*monster_data)
+        return Skeleton(mtype, name, hit_points, attack_speed,
+                       chance_to_hit, minimum_damage, maximum_damage, chance_to_heal,
+                       minimum_heal_points, maximum_heal_points)
 
     @staticmethod
-    def create_gremlin(*monster_data) -> Gremlin:
+    def create_gremlin(mtype, name, hit_points, attack_speed,
+                       chance_to_hit, minimum_damage, maximum_damage, chance_to_heal,
+                       minimum_heal_points, maximum_heal_points) -> Gremlin:
         """
         Builds a new Gremlin.
 
         :param monster_data: monster stats.
         :return: newly created Gremlin.
         """
-        return Gremlin(*monster_data)
+        return Gremlin(mtype, name, hit_points, attack_speed,
+                       chance_to_hit, minimum_damage, maximum_damage, chance_to_heal,
+                       minimum_heal_points, maximum_heal_points)
 
     @staticmethod
-    def create_meangirl(*monster_data) -> MeanGirl:
+    def create_meangirl(mtype, name, hit_points, attack_speed,
+                       chance_to_hit, minimum_damage, maximum_damage, chance_to_heal,
+                       minimum_heal_points, maximum_heal_points) -> MeanGirl:
         """
         Builds a new MeanGirl.
 
         :param monster_data: monster stats.
         :return: newly created MeanGirl.
         """
-        return MeanGirl(*monster_data)
+        return MeanGirl(mtype, name, hit_points, attack_speed,
+                       chance_to_hit, minimum_damage, maximum_damage, chance_to_heal,
+                       minimum_heal_points, maximum_heal_points)
 
 # END

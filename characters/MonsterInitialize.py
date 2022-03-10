@@ -4,7 +4,7 @@ Creates Sqlite3 database (if it does not already exist) and creates monsterstats
 stats for each type of monster into monsterstats table. If table already exists, drops table and then recreates it 
 for a new game."""
 
-connection = sqlite3.connect("monster_db")
+connection = sqlite3.connect("monster.db")
 
 cursor = connection.cursor()
 dropstatement = "DROP TABLE IF EXISTS monsterstats"
@@ -27,8 +27,17 @@ cursor.execute("INSERT INTO monsterstats VALUES ('Vrorob', 'Ogre', 200, 2, 0.6, 
 cursor.execute("INSERT INTO monsterstats VALUES ('Wukur', 'Ogre', 200, 2, 0.6, 30, 60, 0.1, 30, 60)")
 cursor.execute("INSERT INTO monsterstats VALUES ('Blozug', 'Ogre', 200, 2, 0.6, 30, 60, 0.1, 30, 60)")
 cursor.execute("INSERT INTO monsterstats VALUES ('Nakorg', 'Ogre', 200, 2, 0.6, 30, 60, 0.1, 30, 60)")
-cursor.execute("INSERT INTO monsterstats VALUES ('Anna Wintour', 'Mean Girl', 100, 7, 0.9, 10, 30, 0.6, 10, 30)")
-cursor.execute("INSERT INTO monsterstats VALUES ('Regina George', 'Mean Girl', 100, 7, 0.9, 10, 30, 0.6, 10, 30)")
-cursor.execute("INSERT INTO monsterstats VALUES ('Joan Crawford', 'Mean Girl', 100, 7, 0.9, 10, 30, 0.6, 10, 30)")
-cursor.execute("INSERT INTO monsterstats VALUES ('Heather Duke', 'Mean Girl', 100, 7, 0.9, 10, 30, 0.6, 10, 30)")
-cursor.execute("INSERT INTO monsterstats VALUES ('Paris Geller', 'Mean Girl', 100, 7, 0.9, 10, 30, 0.6, 10, 30)")
+cursor.execute("INSERT INTO monsterstats VALUES ('Anna Wintour', 'MeanGirl', 100, 7, 0.9, 10, 30, 0.6, 10, 30)")
+cursor.execute("INSERT INTO monsterstats VALUES ('Regina George', 'MeanGirl', 100, 7, 0.9, 10, 30, 0.6, 10, 30)")
+cursor.execute("INSERT INTO monsterstats VALUES ('Joan Crawford', 'MeanGirl', 100, 7, 0.9, 10, 30, 0.6, 10, 30)")
+cursor.execute("INSERT INTO monsterstats VALUES ('Heather Duke', 'MeanGirl', 100, 7, 0.9, 10, 30, 0.6, 10, 30)")
+cursor.execute("INSERT INTO monsterstats VALUES ('Paris Geller', 'MeanGirl', 100, 7, 0.9, 10, 30, 0.6, 10, 30)")
+connection.commit()
+connection.close()
+
+# def monster_spawn():
+    #data = cursor.execute("SELECT * FROM monsterstats ORDER BY RANDOM() LIMIT 1")
+    #print(data.fetchall())
+
+#monster_spawn()
+
