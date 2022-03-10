@@ -2,13 +2,12 @@ from typing import NamedTuple, Optional, Union
 
 from Box import *
 
-IntPair = tuple[int, int]
 
+IntPair = tuple[int, int]
 
 class Coords(NamedTuple):
     x: int
     y: int
-
 
 Coordish = Union[IntPair, Coords]
 
@@ -17,17 +16,41 @@ class Cell(Box):
     """
     Represents the smallest unit of floor area.
     """
-    def __init__(self):
+    def __init__(self, owner=None, coords: Optional[Coordish] = None):
+        """TODO docs"""
         super().__init__()
-        self.__coords: Optional[Coords] = None
+        self.__owner = owner
+        self.__coords: Optional[Coords] = coords
+
+    @property
+    def owner(self):
+        """TODO docs"""
+        return self.__owner
+
+    @owner.setter
+    def owner(self, val):
+        """TODO docs"""
+        self.__owner = val
+
+    @property
+    def coords(self):
+        """TODO docs"""
+        return self.__coords
+
+    @coords.setter
+    def coords(self, val: Coordish):
+        """TODO docs"""
+        self.__coords = Coords(*val)
 
     @property
     def xy(self):
-        return self.__coords
+        """Shorthand for coords getter."""
+        return self.coords
 
     @xy.setter
     def xy(self, val: Coordish):
-        self.__coords = Coords(*val)
+        """Shorthand for coords setter."""
+        self.coords = val
 
 
 if __name__ == '__main__':
