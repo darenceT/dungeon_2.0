@@ -7,7 +7,7 @@ from .Utility import convert_coords_to_pixel
 
 class SpriteObject:
     def __init__(self, object, name, pos, shift=1.8, scale=0.4,
-                 animation=None, animate_dist=None, animate_speed=None):
+                 animation=None):
         self.object = object
         self.name = name
         self.x = convert_coords_to_pixel(pos[0]) + randint(1, 20)
@@ -16,8 +16,9 @@ class SpriteObject:
         self.scale = scale
         # self.visible_health = False
         self.animation = animation
-        self.animate_dist = animate_dist
-        self.animate_speed = animate_speed
+        # self.animate_dist = animate_dist
+        self.animate_count = 0
+        self.animate_speed = 5
 
         self.hitpoint = 150 # temporary
         self.attack_damage = 5 # temporary
@@ -46,27 +47,27 @@ class SpritesContainer:
         self.monsters = {
             'ogre':{
                 'sprite': pygame.image.load('GUI/img/ogre0.png').convert_alpha(),
-                'shift': 0.2,
+                'shift': 0.5,
                 'scale': 0.8,
                 'animation': deque([pygame.image.load(f'GUI/img/ogre{i}.png').convert_alpha() for i in range(1, 4)]),
-                'animate_dist': 800,
-                'animate_speed': 10, 
+                # 'animate_dist': 800,
+                # 'animate_speed': 10, 
             },
             'ogre1':{
                 'sprite': pygame.image.load('GUI/img/ogre0.png').convert_alpha(),
                 'shift': 0.2,
                 'scale': 0.8,
                 'animation': deque([pygame.image.load(f'GUI/img/ogre{i}.png').convert_alpha() for i in range(1, 4)]),
-                'animate_dist': 800,
-                'animate_speed': 10, 
+                # 'animate_dist': 800,
+                # 'animate_speed': 10, 
             },
             'ogre2':{
                 'sprite': pygame.image.load('GUI/img/ogre0.png').convert_alpha(),
                 'shift': 0.2,
                 'scale': 0.8,
                 'animation': deque([pygame.image.load(f'GUI/img/ogre{i}.png').convert_alpha() for i in range(1, 4)]),
-                'animate_dist': 800,
-                'animate_speed': 10, 
+                # 'animate_dist': 800,
+                # 'animate_speed': 10, 
             },
         }
 
@@ -94,10 +95,8 @@ class SpritesContainer:
                     add(SpriteObject(self.images['X'], 'X', room.coords))
                     add(SpriteObject(self.monsters['ogre']['sprite'], 'ogre', room.coords, 
                                      scale=self.monsters['ogre']['scale'], 
-                                     shift=self.monsters['ogre']['scale'],
-                                     animation=self.monsters['ogre']['animation'],
-                                     animate_dist=self.monsters['ogre']['animate_dist'],
-                                     animate_speed=self.monsters['ogre']['animate_speed'],
+                                     shift=self.monsters['ogre']['shift'],
+                                     animation=self.monsters['ogre']['animation'].copy(),
                                      ))    
                 if room.pillar:
                     add(SpriteObject(self.images[room.pillar], room.pillar, room.coords))
@@ -128,7 +127,7 @@ class SpritesContainer:
         sprite.visible_health = True if distance_to_sprite < 100 and sprite.name == 'M' else False
             
         # collect objects
-        if distance_to_sprite < 20:
+        if distance_to_sprite < 50:
             if sprite.name == 'H' and self.game.room.healing_potions:
                 self.game.find_healing_potion()
                 self.nearby_sprites.remove(sprite)
@@ -137,7 +136,14 @@ class SpritesContainer:
                 self.nearby_sprites.remove(sprite)
             elif sprite.name in ('ogre', 'mgirl', 'gremlin', 'skeleton'):
                 self.player.arena.fight(sprite)
-
+                sprite.object = sprite.animation[0]
+                if sprite.animate_count < sprite.animate_speed:
+                    sprite.animate_count += 1
+                    print('counting')
+                else:
+                    sprite.animation.rotate()
+                    sprite.animate_count = 0
+                    print('rotating')
                 if sprite.hitpoint <= 0:                # temp, should be in model logic
                     self.nearby_sprites.remove(sprite)
                     print('you defeated monster')
