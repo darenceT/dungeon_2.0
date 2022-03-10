@@ -53,17 +53,25 @@ class SpritesContainer:
                 # 'animate_dist': 800,
                 # 'animate_speed': 10, 
             },
-            'ogre1':{
+            'mgirl':{
+                'sprite': pygame.image.load('GUI/img/mgirl0.png').convert_alpha(),
+                'shift': 0.5,
+                'scale': 0.8,
+                'animation': deque([pygame.image.load(f'GUI/img/mgirl{i}.png').convert_alpha() for i in range(1, 4)]),
+                # 'animate_dist': 800,
+                # 'animate_speed': 10, 
+            },
+            'gremlin':{
                 'sprite': pygame.image.load('GUI/img/ogre0.png').convert_alpha(),
-                'shift': 0.2,
+                'shift': 0.5,
                 'scale': 0.8,
                 'animation': deque([pygame.image.load(f'GUI/img/ogre{i}.png').convert_alpha() for i in range(1, 4)]),
                 # 'animate_dist': 800,
                 # 'animate_speed': 10, 
             },
-            'ogre2':{
+            'skeleton':{
                 'sprite': pygame.image.load('GUI/img/ogre0.png').convert_alpha(),
-                'shift': 0.2,
+                'shift': 0.5,
                 'scale': 0.8,
                 'animation': deque([pygame.image.load(f'GUI/img/ogre{i}.png').convert_alpha() for i in range(1, 4)]),
                 # 'animate_dist': 800,
@@ -100,6 +108,11 @@ class SpritesContainer:
                                      ))    
                 if room.pillar:
                     add(SpriteObject(self.images[room.pillar], room.pillar, room.coords))
+                    add(SpriteObject(self.monsters['mgirl']['sprite'], 'mgirl', room.coords, 
+                                     scale=self.monsters['mgirl']['scale'], 
+                                     shift=self.monsters['mgirl']['shift'],
+                                     animation=self.monsters['mgirl']['animation'].copy(),
+                                     ))  
                 if room.is_exit:
                     add(SpriteObject(self.images['O'], 'O', room.coords, scale=1, shift=0))
     
