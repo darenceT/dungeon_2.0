@@ -14,9 +14,8 @@ class SpriteObject:
         self.y = convert_coords_to_pixel(pos[1]) + randint(1, 20)
         self.shift = shift
         self.scale = scale
-        # self.visible_health = False
+        self.visible_health = False
         self.animation = animation
-        # self.animate_dist = animate_dist
         self.animate_count = 0
         self.animate_speed = 5
 
@@ -38,44 +37,33 @@ class SpritesContainer:
             'H': pygame.image.load('GUI/img/h_potion.png').convert_alpha(),
             'V': pygame.image.load('GUI/img/v_potion.png').convert_alpha(),
             'X': pygame.image.load('GUI/img/trap.png').convert_alpha(),
-            'A': pygame.image.load('GUI/img/pillar.png').convert_alpha(),
-            'E': pygame.image.load('GUI/img/pillar.png').convert_alpha(),
-            'I': pygame.image.load('GUI/img/pillar.png').convert_alpha(),
-            'P': pygame.image.load('GUI/img/pillar.png').convert_alpha(),
+            'pillar': pygame.image.load('GUI/img/pillar.png').convert_alpha(),
             'O': pygame.image.load('GUI/img/exit.png').convert_alpha(),
         }
         self.monsters = {
             'ogre':{
                 'sprite': pygame.image.load('GUI/img/ogre0.png').convert_alpha(),
-                'shift': 0.5,
+                'shift': 0.2,
                 'scale': 0.8,
                 'animation': deque([pygame.image.load(f'GUI/img/ogre{i}.png').convert_alpha() for i in range(1, 4)]),
-                # 'animate_dist': 800,
-                # 'animate_speed': 10, 
             },
             'mgirl':{
                 'sprite': pygame.image.load('GUI/img/mgirl0.png').convert_alpha(),
-                'shift': 0.5,
+                'shift': 0.3,
                 'scale': 0.8,
                 'animation': deque([pygame.image.load(f'GUI/img/mgirl{i}.png').convert_alpha() for i in range(1, 4)]),
-                # 'animate_dist': 800,
-                # 'animate_speed': 10, 
             },
             'gremlin':{
                 'sprite': pygame.image.load('GUI/img/gremlin0.png').convert_alpha(),
-                'shift': 0.5,
+                'shift': 0.3,
                 'scale': 0.8,
                 'animation': deque([pygame.image.load(f'GUI/img/gremlin{i}.png').convert_alpha() for i in range(1, 4)]),
-                # 'animate_dist': 800,
-                # 'animate_speed': 10, 
             },
             'skeleton':{
                 'sprite': pygame.image.load('GUI/img/skeleton0.png').convert_alpha(),
-                'shift': 0.5,
+                'shift': 0.3,
                 'scale': 0.8,
                 'animation': deque([pygame.image.load(f'GUI/img/skeleton{i}.png').convert_alpha() for i in range(1, 4)]),
-                # 'animate_dist': 800,
-                # 'animate_speed': 10, 
             },
         }
 
@@ -106,8 +94,7 @@ class SpritesContainer:
                                      scale=self.monsters['skeleton']['scale'], 
                                      shift=self.monsters['skeleton']['shift'],
                                      animation=self.monsters['skeleton']['animation'].copy(),
-                                     )) 
-                        # add(SpriteObject(self.images['M'], 'M', room.coords, scale=0.8, shift=0.2))            
+                                     ))             
                 if room.has_pit:
                     # room.has_pit = False
                     add(SpriteObject(self.images['X'], 'X', room.coords))
@@ -117,7 +104,7 @@ class SpritesContainer:
                                      animation=self.monsters['ogre']['animation'].copy(),
                                      ))    
                 if room.pillar:
-                    add(SpriteObject(self.images[room.pillar], room.pillar, room.coords))
+                    add(SpriteObject(self.images['pillar'], 'pillar', room.coords))
                     add(SpriteObject(self.monsters['mgirl']['sprite'], 'mgirl', room.coords, 
                                      scale=self.monsters['mgirl']['scale'], 
                                      shift=self.monsters['mgirl']['shift'],
@@ -147,9 +134,9 @@ class SpritesContainer:
         distance_to_sprite = math.sqrt(dx ** 2 + dy ** 2)
         
         # display monster health
-        sprite.visible_health = True if distance_to_sprite < 100 and sprite.name == 'M' else False
+        sprite.visible_health = True if distance_to_sprite < 100 and sprite.animation else False
             
-        # collect objects
+        # interact with objects and monsters
         if distance_to_sprite < 50:
             if sprite.name == 'H' and self.game.room.healing_potions:
                 self.game.find_healing_potion()
