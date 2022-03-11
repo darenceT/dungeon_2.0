@@ -17,6 +17,7 @@ class Adventurer:
         self.__name: str = name
         self.__hit_points: int = hit_points
         self.__hit_points_max: int = hit_points_max
+        self.__special_mana: int = 25
         self.__healing_potions: int = 0
         self.__vision_potions: int = 0
         self.__pillars: set = set()  # empty
@@ -38,6 +39,22 @@ class Adventurer:
         """
         self.__name = val
 
+    @property
+    def special_mana(self):
+        return self.__special_mana
+    
+    @special_mana.setter
+    def special_mana(self, add=True):
+        if isinstance(add, bool):
+            if add:
+                self.__special_mana += 2
+                if self.__special_mana > 50:
+                    self.__special_mana = 50
+            else:
+                self.__special_mana -= 15
+                if self.__special_mana < 0:
+                    self.__special_mana = 0
+                    
     @property
     def game(self):
         """
