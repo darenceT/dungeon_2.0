@@ -13,7 +13,8 @@ def create_textline(message,
                     size=32, 
                     color=DARK_RED):
     """
-    Create text object for surface
+    Create text object for surface.
+    Credit: https://www.geeksforgeeks.org/python-display-text-to-pygame-window/
     """
     font = pygame.font.Font(font_type, size)
     text = font.render(message, True, color)

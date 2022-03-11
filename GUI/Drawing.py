@@ -70,7 +70,7 @@ class Drawing:
         """
         wep_pos = (WIDTH * 2/5, HEIGHT - 280)
         wep_size = (HALF_WIDTH, HALF_HEIGHT)
-        cool_down = 3
+        cool_down = 4
         if self.player.attacking and self.weapon_animate < 3:
             if self.wep_time < cool_down:
                 self.wep_time += 1
@@ -144,8 +144,10 @@ class Drawing:
                 count += 1
 
     def special_bar(self):
-        
-        cool_down = 10
+        """
+        Creates display for special skill mana & timer for mana ticking/increasing over time
+        """
+        cool_down = 60
         if self.special_tick < cool_down:
             self.special_tick += 1
         else:
@@ -160,7 +162,6 @@ class Drawing:
         
         column = [x_pos, y_pos, width, height]    
         
-
         if self.hero.special_mana < 50:
             text = ' Special'        # replace with hero skill name
         else:

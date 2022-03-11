@@ -7,18 +7,19 @@ class Cursor:
         self.size = 40
         self.surface, self.rect = create_textline(
                                     '*', 
-                                    pos=(HALF_WIDTH-140, HALF_HEIGHT + 100), 
+                                    pos=(HALF_WIDTH-150, HALF_HEIGHT + 100), 
                                     size=self.size)
 
 class Menu:
     def __init__(self, screen):
         self.screen = screen
-        # self.menu_options = {0:'New', 1:'Load', 2:'Settings'}
         self.menu_input = None
-        # self.option_count = None
         self.picked = False
         self.select_number = 1
         self.cursor = Cursor()
+        self.__x_pos = HALF_WIDTH
+        self.__y_pos = HALF_HEIGHT + 100
+        self.__y_offset = 40
         self.images = {
             1: pygame.image.load('GUI/img/thief.png').convert_alpha(),
             2: pygame.image.load('GUI/img/priestess.png').convert_alpha(),
@@ -26,27 +27,23 @@ class Menu:
         }
 
     def move_cursor(self, choices, move=None):
-        offset = 40
-        top_height = HALF_HEIGHT + 100
-        bottom_height = top_height + offset * (len(choices)-1)
+        top_height = self.__y_pos
+        bottom_height = top_height + self.__y_offset * (len(choices)-1)
         move_reference = {'DOWN':1, 'UP':-1}
 
         if move is not None:
-            self.cursor.rect.centery += offset * move_reference[move]
+            self.cursor.rect.centery += self.__y_offset * move_reference[move]
             self.select_number += move_reference[move]
             
             if self.select_number < 1:
-            # if self.cursor.rect.centery < top_height:
                 self.select_number = len(choices)
                 self.cursor.rect.centery = bottom_height
-            # if self.cursor.rect.centery > bottom_height:
-            if self.select_number > len(choices):
+            elif self.select_number > len(choices):
                 self.select_number = 1
                 self.cursor.rect.centery = top_height
         
         if self.picked:
             self.menu_input = choices[self.select_number]
-            self.select_number = 1
             self.picked = False
 
 
@@ -80,7 +77,6 @@ class Menu:
         TODO: input and return hero name
         """
         while True:
-            # print('menu_input:', self.menu_input, 'picked: ', self.picked)
             if self.menu_input in ('Warrior', 'Priest', "Thief"):
                 return self.menu_input
 
@@ -99,24 +95,24 @@ class Menu:
         """
         
         """
-        x_pos = HALF_WIDTH
-        x_offset = 50
-        y_pos = HALF_HEIGHT + 100
-        y_offset = 40
+        x = self.__x_pos
+        # x_offset = 50
+        y = self.__y_pos
+        off = self.__y_offset
         title1, title1_pos = create_textline('DUNGEON', 
-                                            pos=(x_pos - x_offset, y_pos - y_offset * 6), 
+                                            pos=(x - off, y - off * 6), 
                                             size=80)
         title2, title2_pos = create_textline('ESCAPE', 
-                                            pos=(x_pos, y_pos - y_offset * 4), 
+                                            pos=(x, y - off * 4), 
                                             size=80)
         new, new_pos = create_textline('New Game', 
-                                            pos=(x_pos, y_pos), 
+                                            pos=(x, y), 
                                             size=30)
         load, load_pos = create_textline('Load Game', 
-                                            pos=(x_pos, y_pos + y_offset), 
+                                            pos=(x, y + off), 
                                             size=30)
         setting, setting_pos = create_textline('Settings', 
-                                            pos=(x_pos, y_pos + y_offset * 2), 
+                                            pos=(x, y + off * 2), 
                                             size=30)
         messages = ((title1,title1_pos), (title2,title2_pos),
                     (new, new_pos), (load, load_pos), (setting, setting_pos))
@@ -131,31 +127,31 @@ class Menu:
     def hero_selection(self):
         """
         """
-        x_pos = HALF_WIDTH
-        y_pos = HALF_HEIGHT + 100
-        y_offset = 40
+        x = self.__x_pos
+        y = self.__y_pos
+        y_off = self.__y_offset
         thief, thief_pos = create_textline('Thief', 
-                                            pos=(x_pos, y_pos), 
+                                            pos=(x, y), 
                                             size=30)
         priestess, priestess_pos = create_textline('Priest', 
-                                            pos=(x_pos, y_pos + y_offset), 
+                                            pos=(x, y + y_off), 
                                             size=30)
         warrior, warrior_pos = create_textline('Warrior', 
-                                            pos=(x_pos, y_pos + y_offset * 2), 
+                                            pos=(x, y + y_off * 2), 
                                             size=30)
         messages = ((thief, thief_pos), (priestess, priestess_pos), (warrior, warrior_pos))
         choices = {1:'Thief', 2:'Priest', 3:'Warrior'}
         self.menu_controls(choices)
         self.__blit_txt(messages)
 
-        char_pos = (150, y_offset)
+        char_pos = (150, y_off)
         char_size = (HALF_WIDTH, HALF_HEIGHT)
         char = pygame.transform.scale(self.images[self.select_number], char_size)
         self.screen.blit(char, char_pos)
 
     def load_menu(self):
         load, load_pos = create_textline('Load this game?', 
-                                            pos=(HALF_WIDTH, HALF_HEIGHT), 
+                                            pos=(self.__x_pos, HALF_HEIGHT), 
                                             size=30)
         messages = ((load, load_pos))
         choices = {1:'Continue'}
@@ -163,39 +159,99 @@ class Menu:
         self.__blit_txt(messages)
 
     def pause_menu(self):
+        """
+        """
+        # resets cursor to bottom
+        self.select_number = 3
+        self.cursor.rect.centery = self.__y_pos + self.__y_offset * 2
+
+        x = self.__x_pos
+        y = self.__y_pos
+        y_off = self.__y_offset
         save, save_pos = create_textline('Save', 
-                                            pos=(HALF_WIDTH, HALF_HEIGHT), 
+                                            pos=(x, y), 
                                             size=30)
         reset, reset_pos = create_textline('Reset', 
-                                            pos=(HALF_WIDTH, HALF_HEIGHT+40), 
+                                            pos=(x, y + y_off), 
                                             size=30)
         unpause, unpause_pos = create_textline('Continue', 
-                                            pos=(HALF_WIDTH, HALF_HEIGHT+80), 
+                                            pos=(x, y + y_off * 2), 
                                             size=30)
         messages = ((save, save_pos), (reset, reset_pos), (unpause, unpause_pos))
-        self.option_count = len(messages)
+        choices = {1:'Save', 2: 'Reset', 3:'Continue'}
         while True:
-            if not self.menu_controls():
-                return False
+            if self.menu_input == 'Continue':
+                self.menu_input = None
+                return 
+            self.menu_controls(choices)
             self.__blit_txt(messages)
-            
-    def end_screen(self):
+            pygame.display.flip()
+       
+    def lose_screen(self):
         """
-        Credit: https://www.geeksforgeeks.org/python-display-text-to-pygame-window/
         """
+        # resets cursor to top
+        self.select_number = 1
+        self.cursor.rect.centery = self.__y_pos
+
+        x = self.__x_pos
+        y = self.__y_pos
+        y_off = self.__y_offset
         title, title_pos = create_textline('GAME OVER', 
-                                            pos=(HALF_WIDTH, HALF_HEIGHT * 3/4), 
+                                            pos=(x, y - y_off * 4), 
                                             size=60)
         reset, reset_pos = create_textline('Try again?', 
-                                            pos=(HALF_WIDTH, HALF_HEIGHT), 
+                                            pos=(x, y), 
                                             size=30)
-        done, done_pos = create_textline('I AM DONE', 
-                                            pos=(HALF_WIDTH, HALF_HEIGHT+40), 
+        exit, exit_pos = create_textline('Exit', 
+                                            pos=(x, y + y_off), 
                                             size=30)
-        messages = ((title, title_pos), (reset, reset_pos), (done, done_pos))
-        self.option_count = len(messages)-1
+        messages = ((title, title_pos), (reset, reset_pos), (exit, exit_pos))
+        choices = {1:'Reset', 2: 'Exit'}
         while True:
-            if not self.menu_controls():
-                return False
+            if self.menu_input == 'Exit':
+                pygame.quit()
+                exit()
+            elif self.menu_input == 'Reset':
+                self.menu_input = None
+                return
+            else:
+                self.menu_controls(choices)
+                self.__blit_txt(messages)
+                pygame.display.flip()
+    
+    def win_screen(self):
+        """
+        """
+        # resets cursor to top
+        self.select_number = 1
+        self.cursor.rect.centery = self.__y_pos
 
-            self.__blit_txt(messages)
+        x = self.__x_pos
+        y = self.__y_pos
+        off = self.__y_offset
+        title1, title1_pos = create_textline('You escaped!', 
+                                            pos=(x - off, y - off * 6), 
+                                            size=60)
+        title2, title2_pos = create_textline('Winner winner!', 
+                                            pos=(x, y - off * 4), 
+                                            size=60)
+        reset, reset_pos = create_textline('Play again?', 
+                                            pos=(x, y), 
+                                            size=30)
+        exit, exit_pos = create_textline('Exit', 
+                                            pos=(x, y + off), 
+                                            size=30)
+        messages = ((title1, title1_pos), (title2, title2_pos), (reset, reset_pos), (exit, exit_pos))
+        choices = {1:'Reset', 2: 'Exit'}
+        while True:
+            if self.menu_input == 'Exit':
+                pygame.quit()
+                exit()
+            elif self.menu_input == 'Reset':
+                self.menu_input = None
+                return
+            else:
+                self.menu_controls(choices)
+                self.__blit_txt(messages)
+                pygame.display.flip()

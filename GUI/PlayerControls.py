@@ -7,12 +7,13 @@ from .Utility import convert_coords_to_pixel
 
 class PlayerControls:
     """
+    Contains player keyboard input in addition to controller code.
     game_data is object of DungeonAdventure to access "enter_room" method.
     room_change boolean to trigger loading of sprites
     """
     def __init__(self, screen, game_data, memo, collision_walls):
         self.angle = 0
-        self.player_speed = 4
+        self.player_speed = 3
         self.attacking = False
    
         self.cur_room = game_data.maze.ingress
@@ -21,6 +22,7 @@ class PlayerControls:
         self.room_change = True     # set initial to True to for initial 1 time loading of nearby sprites
 
         self.screen = screen
+        self.__pause_on = False
         self.game_data = game_data
         self.memo = memo
         self.arena = Arena(self, game_data.hero)
@@ -33,6 +35,7 @@ class PlayerControls:
         #self.collision_sprites = [pygame.Rect(*obj.pos, obj.side, obj.side) for obj in
                                   #self.sprites.list_of_objects if obj.blocked]
         self.collision_list = collision_walls #+ self.collision_sprites
+        self.__win_game = False
 
     @property
     def pos(self):
@@ -41,6 +44,20 @@ class PlayerControls:
     @property
     def pause_on(self):
         return self.__pause_on
+    
+    @pause_on.setter
+    def pause_on(self, change=True):
+        if isinstance(change, bool):
+            if not change:
+                self.__pause_on = False
+            else:
+                raise ValueError('True should not be accessed outside of PlayerControls')
+        else:
+            raise TypeError('Only boolean accepted for pause_on')
+
+    @property
+    def win_game(self):
+        return self.__win_game
 
     def detect_collision(self, dx, dy):
         """
@@ -73,8 +90,8 @@ class PlayerControls:
         self.y += dy
 
     def movement(self):
-        if self.keys_control():
-            return True
+        self.keys_control()
+            # return True
         # self.mouse_control()
         self.rect.center = self.x, self.y
         self.angle %= DOUBLE_PI
@@ -91,10 +108,11 @@ class PlayerControls:
                 self.memo.new_message(f'You found pillar {self.cur_room.pillar}!')
             
             if self.cur_room.is_exit:
-                # print(self.cur_room.is_exit)
-                # print()
-                # print(len(self.game_data.hero.pillars))
-                self.memo.new_message(f'You need to find {4-len(self.game_data.hero.pillars)} more pillars!')
+                if len(self.game_data.hero.pillars) ==  4:
+                    self.__win_game = True
+                    return
+                else:
+                    self.memo.new_message(f'You need to find {4-len(self.game_data.hero.pillars)} more pillars!')
             
             self.game_data.enter_room(self.cur_room)
             self.room_change = True
@@ -122,8 +140,7 @@ class PlayerControls:
             height = 3
             x -= 1
             y -= 1
-        else:    #may run into == errors?
-        # elif 5/4*PI < self.angle < 7/4*PI: # north
+        else:  # 5/4*PI < self.angle < 7/4*PI: # north
             width = 3
             x -= 1
             y -= 1
@@ -151,15 +168,14 @@ class PlayerControls:
                     if self.game_data.hero.vision_potions:
                         self.memo.new_message('Vision potion used, check your map!')
                     self.game_data.hero.use_vision_potion()
+                elif event.key == pygame.K_SPACE:
+                    self.__pause_on = True
 
         # for continuous key input
         sin_a = math.sin(self.angle)
         cos_a = math.cos(self.angle)
         keys = pygame.key.get_pressed()
-
-        if keys[pygame.K_SPACE]:
-            return True
-            # self.__pause_on = True TODO refactor passing of pause_on from main
+            
         if keys[pygame.K_w] or keys[pygame.K_UP]:
             dx = self.player_speed * cos_a
             dy = self.player_speed * sin_a
