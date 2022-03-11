@@ -17,7 +17,7 @@ class SpriteObject:
         self.visible_health = False
         self.animation = animation
         self.animate_count = 0
-        self.animate_speed = 5
+        self.animate_speed = 6
 
         self.hitpoint = 150 # temporary
         self.attack_damage = 5 # temporary

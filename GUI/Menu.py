@@ -36,17 +36,15 @@ class Menu:
             self.select_number += move_reference[move]
             
             if self.select_number < 1:
-            # if self.cursor.rect.centery < top_height:
                 self.select_number = len(choices)
                 self.cursor.rect.centery = bottom_height
-            # if self.cursor.rect.centery > bottom_height:
-            if self.select_number > len(choices):
+            elif self.select_number > len(choices):
                 self.select_number = 1
                 self.cursor.rect.centery = top_height
         
         if self.picked:
             self.menu_input = choices[self.select_number]
-            self.select_number = 1
+            # self.select_number = 1
             self.picked = False
 
 
@@ -80,7 +78,6 @@ class Menu:
         TODO: input and return hero name
         """
         while True:
-            # print('menu_input:', self.menu_input, 'picked: ', self.picked)
             if self.menu_input in ('Warrior', 'Priest', "Thief"):
                 return self.menu_input
 
@@ -163,22 +160,31 @@ class Menu:
         self.__blit_txt(messages)
 
     def pause_menu(self):
+        """
+        """
+        x_pos = HALF_WIDTH
+        y_pos = HALF_HEIGHT + 100
+        y_offset = 40
         save, save_pos = create_textline('Save', 
-                                            pos=(HALF_WIDTH, HALF_HEIGHT), 
+                                            pos=(x_pos, y_pos), 
                                             size=30)
         reset, reset_pos = create_textline('Reset', 
-                                            pos=(HALF_WIDTH, HALF_HEIGHT+40), 
+                                            pos=(x_pos, y_pos + y_offset), 
                                             size=30)
         unpause, unpause_pos = create_textline('Continue', 
-                                            pos=(HALF_WIDTH, HALF_HEIGHT+80), 
+                                            pos=(x_pos, y_pos + y_offset * 2), 
                                             size=30)
         messages = ((save, save_pos), (reset, reset_pos), (unpause, unpause_pos))
         self.option_count = len(messages)
+        choices = {1:'Save', 2: 'Reset', 3:'Continue'}
         while True:
-            if not self.menu_controls():
-                return False
+            if self.menu_input == 'Continue':
+                self.menu_input = None
+                return 
+            self.menu_controls(choices)
             self.__blit_txt(messages)
-            
+            pygame.display.flip()
+       
     def end_screen(self):
         """
         Credit: https://www.geeksforgeeks.org/python-display-text-to-pygame-window/

@@ -15,7 +15,6 @@ class Main:
     def __init__(self):
         self.screen = None
         # self.intro_on = True
-        self.pause_on = False
         self.menu = None
         self.game_data = None
         self.dungeon = None
@@ -87,30 +86,29 @@ class Main:
     def game_loop(self):
         clock = pygame.time.Clock()
         while True:
-            delta_time = clock.tick(FPS) / 1000
-            self.pause_on = self.player_controls.movement() #TODO improve pause logic
-
-            if self.pause_on:
-                self.pause_on = self.menu.pause_menu()
+            clock.tick(FPS)
+            self.player_controls.movement() 
+            if self.player_controls.pause_on:
+                self.player_controls.pause_on = False
+                self.menu.pause_menu()
             elif not self.hero.is_alive:
                 self.menu.end_screen()
-                self.intro_on = True
+                # self.intro_on = True
+            else:
+                self.drawing.background()
+                self.sprites.load_sprites()
 
-            self.drawing.background()
-            self.sprites.load_sprites()
+                walls = self.raycast.view_3D()
+                objects = self.sprites.obtain_sprites(walls)
+                self.drawing.world(walls + objects)
 
-            walls = self.raycast.view_3D()
-            objects = self.sprites.obtain_sprites(walls)
-            self.drawing.world(walls + objects)
+                self.memo.message_box()
+                self.drawing.weapon_and_ui(clock)
+                pygame.display.flip()
 
-            self.memo.message_box()
-            self.drawing.weapon_and_ui(clock)
-            pygame.display.flip()
             
-
 if __name__ == '__main__':
     while True:
-        # TODO move menu function here to integrate with pickling/restart
         main = Main()  
         main.game_loop()
 
