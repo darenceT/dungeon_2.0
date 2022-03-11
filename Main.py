@@ -1,5 +1,5 @@
 import pygame
-import pickle
+# import pickle
 
 from DungeonAdventure import DungeonAdventure
 from GUI.Raycast3D import Raycast
@@ -39,9 +39,10 @@ class Main:
         # TODO: decrease/narrow params passed
         self.player_controls = PlayerControls(self.screen, self.game_data, self.memo, self.collision_walls)
         self.sprites = SpritesContainer(self.screen, self.game_data, self.player_controls)
-        self.drawing = Drawing(self.screen, self.hero_class, self.mini_map_coords, self.player_controls, self.hero, self.sprites)
+        self.drawing = Drawing(self.screen, self.hero_class, self.mini_map_coords, self.player_controls,
+                               self.hero, self.sprites)
         self.raycast = Raycast(self.player_controls, self.world_coords, self.drawing.textures)
-        self.player_controls.get_rooms_in_sight() # initiate sprites for 1st room 
+        self.player_controls.get_rooms_in_sight()  # initiate sprites for 1st room
 
     def __obtain_game_data(self):
         self.hero_class = self.menu.intro_menu()
@@ -66,7 +67,6 @@ class Main:
                     i += 1
                 if len(line) > 0:
                     row.append(temp)
-                i = 0
                 map_parsed.append(row)
                 row = []
             
@@ -80,7 +80,6 @@ class Main:
                         self.world_coords[(i * TILE, j * TILE)] = 'door'
 
         __parse_map(self.dungeon)
-        
 
     def game_loop(self):
         clock = pygame.time.Clock()
@@ -117,22 +116,4 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         print('\n\n                   Thank you for playing!\n\n')
         exit(0)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
