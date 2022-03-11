@@ -14,7 +14,6 @@ from GUI.Memo import Memo
 class Main:
     def __init__(self):
         self.screen = None
-        # self.intro_on = True
         self.menu = None
         self.game_data = None
         self.dungeon = None
@@ -85,15 +84,14 @@ class Main:
 
     def game_loop(self):
         clock = pygame.time.Clock()
-        while True:
+        while self.hero.is_alive:
             clock.tick(FPS)
             self.player_controls.movement() 
             if self.player_controls.pause_on:
                 self.player_controls.pause_on = False
                 self.menu.pause_menu()
-            elif not self.hero.is_alive:
-                self.menu.end_screen()
-                # self.intro_on = True
+            elif self.player_controls.win_game:
+                break
             else:
                 self.drawing.background()
                 self.sprites.load_sprites()
@@ -105,14 +103,20 @@ class Main:
                 self.memo.message_box()
                 self.drawing.weapon_and_ui(clock)
                 pygame.display.flip()
-
+        
+        if self.player_controls.win_game:
+            self.menu.win_screen()
+        else:
+            self.menu.lose_screen()
             
 if __name__ == '__main__':
-    while True:
-        main = Main()  
-        main.game_loop()
-
-
+    try:
+        while True:
+            m = Main()
+            m.game_loop()
+    except KeyboardInterrupt:
+        print('\n\n                   Thank you for playing!\n\n')
+        exit(0)
 
 
 

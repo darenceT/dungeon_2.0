@@ -35,6 +35,7 @@ class PlayerControls:
         #self.collision_sprites = [pygame.Rect(*obj.pos, obj.side, obj.side) for obj in
                                   #self.sprites.list_of_objects if obj.blocked]
         self.collision_list = collision_walls #+ self.collision_sprites
+        self.__win_game = False
 
     @property
     def pos(self):
@@ -53,6 +54,10 @@ class PlayerControls:
                 raise ValueError('True should not be accessed outside of PlayerControls')
         else:
             raise TypeError('Only boolean accepted for pause_on')
+
+    @property
+    def win_game(self):
+        return self.__win_game
 
     def detect_collision(self, dx, dy):
         """
@@ -103,10 +108,11 @@ class PlayerControls:
                 self.memo.new_message(f'You found pillar {self.cur_room.pillar}!')
             
             if self.cur_room.is_exit:
-                # print(self.cur_room.is_exit)
-                # print()
-                # print(len(self.game_data.hero.pillars))
-                self.memo.new_message(f'You need to find {4-len(self.game_data.hero.pillars)} more pillars!')
+                if len(self.game_data.hero.pillars) ==  4:
+                    self.__win_game = True
+                    return
+                else:
+                    self.memo.new_message(f'You need to find {4-len(self.game_data.hero.pillars)} more pillars!')
             
             self.game_data.enter_room(self.cur_room)
             self.room_change = True
