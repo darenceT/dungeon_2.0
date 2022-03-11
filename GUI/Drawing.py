@@ -87,10 +87,21 @@ class Drawing:
         bar_info = [left_pos, top_pos, width(health amount), height]
         """
         bar_info = [WIDTH - 180, HEIGHT - 60, 150, 30]
+        border = [WIDTH - 184, HEIGHT - 64, 158, 38]
 
+        pygame.draw.rect(self.screen, BLACK, border)
         pygame.draw.rect(self.screen, RED, bar_info)
         bar_info[2] *= self.hero.hit_points / 100
         pygame.draw.rect(self.screen, GREEN, bar_info)
+
+        text = 'Health'
+        hp_txt, hp_pos = create_textline(text, 
+                                            pos=(WIDTH - 145, HEIGHT - 46),
+                                            font_type='GUI/font/28DaysLater.ttf', 
+                                            size=20,
+                                            color=BLACK)
+        self.screen.blit(hp_txt, hp_pos)
+
 
     def enemy_health_bar(self):
         """
@@ -104,7 +115,9 @@ class Drawing:
         name_x = bar_x + 70
         name_y = bar_y + 18
         bar_info = [bar_x, bar_y, width, height]
-        boarders = [bar_x - 3, bar_y - 3, width + 8, height + 6]
+        border_offset = 3
+        borders = [bar_x - border_offset, bar_y - border_offset, 
+                   width + border_offset * 2, height + border_offset * 2]
 
         count = 0
         offset = 50
@@ -113,10 +126,10 @@ class Drawing:
                 if count > 0: 
                     name_y -= offset
                     bar_info[1] -= offset
-                    boarders[1] = bar_y - 3
+                    borders[1] = bar_info[1] - border_offset
                 bar_info[2] *= enemy.hitpoint / 100
-                boarders[2] = bar_info[2] + 4
-                pygame.draw.rect(self.screen, BLACK, boarders)
+                borders[2] = bar_info[2] + border_offset * 2
+                pygame.draw.rect(self.screen, BLACK, borders)
                 pygame.draw.rect(self.screen, PINK, bar_info)
 
                 enemy_name = str(enemy.name.capitalize())    # substitute for name instead of type
