@@ -16,7 +16,9 @@ class Memo:
         if len(self.lines) > 4: self.lines.pop()
 
     def message_box(self):
-        size = (5, HALF_HEIGHT + 225, 280, 120)
+        size = (8, HALF_HEIGHT + 228, 274, 114)
+        border = (5, HALF_HEIGHT + 225, 280, 120)
+        pygame.draw.rect(self.screen, BLACK, border)
         pygame.draw.rect(self.screen, WHITE, size)
         self.display_messages()
     

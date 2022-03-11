@@ -18,6 +18,7 @@ class Drawing:
         self.sprites = sprites
         self.weapon_animate = 1
         self.wep_time = 0
+        self.special_tick = 0
         self.textures = {
                         #  'floor': pygame.image.load('GUI/img/floor.jpg').convert(),
                          'ceiling': pygame.image.load('GUI/img/ceiling3.jpg').convert(),
@@ -57,6 +58,7 @@ class Drawing:
     def weapon_and_ui(self, clock):
         self.weapon_animation()
         self.hero_health_bar()
+        self.special_bar()
         self.enemy_health_bar()
         self.inventory()
         self.mini_map()
@@ -87,10 +89,20 @@ class Drawing:
         bar_info = [left_pos, top_pos, width(health amount), height]
         """
         bar_info = [WIDTH - 180, HEIGHT - 60, 150, 30]
+        border = [WIDTH - 184, HEIGHT - 64, 158, 38]
 
+        pygame.draw.rect(self.screen, BLACK, border)
         pygame.draw.rect(self.screen, RED, bar_info)
         bar_info[2] *= self.hero.hit_points / 100
         pygame.draw.rect(self.screen, GREEN, bar_info)
+
+        text = 'Health'
+        hp_txt, hp_pos = create_textline(text, 
+                                         pos=(WIDTH - 145, HEIGHT - 46),
+                                         font_type='GUI/font/28DaysLater.ttf', 
+                                         size=20,
+                                         color=BLACK)
+        self.screen.blit(hp_txt, hp_pos)
 
     def enemy_health_bar(self):
         """
@@ -104,7 +116,9 @@ class Drawing:
         name_x = bar_x + 70
         name_y = bar_y + 18
         bar_info = [bar_x, bar_y, width, height]
-        boarders = [bar_x - 3, bar_y - 3, width + 8, height + 6]
+        border_offset = 3
+        borders = [bar_x - border_offset, bar_y - border_offset, 
+                   width + border_offset * 2, height + border_offset * 2]
 
         count = 0
         offset = 50
@@ -113,15 +127,14 @@ class Drawing:
                 if count > 0: 
                     name_y -= offset
                     bar_info[1] -= offset
-                    boarders[1] = bar_y - 3
+                    borders[1] = bar_info[1] - border_offset
                 bar_info[2] *= enemy.hitpoint / 100
-                boarders[2] = bar_info[2] + 4
-                pygame.draw.rect(self.screen, BLACK, boarders)
+                borders[2] = bar_info[2] + border_offset * 2
+                pygame.draw.rect(self.screen, BLACK, borders)
                 pygame.draw.rect(self.screen, PINK, bar_info)
 
                 enemy_name = str(enemy.name.capitalize())    # substitute for name instead of type
                 if enemy_name == "Mgirl": enemy_name = "Mean Girl" 
-                print(len(enemy_name))
                 name, name_pos = create_textline(enemy_name, 
                                                     pos=(name_x, name_y),
                                                     font_type='GUI/font/28DaysLater.ttf', 
@@ -129,6 +142,47 @@ class Drawing:
                                                     color=BLACK)
                 self.screen.blit(name, name_pos)
                 count += 1
+
+    def special_bar(self):
+        
+        cool_down = 10
+        if self.special_tick < cool_down:
+            self.special_tick += 1
+        else:
+            self.special_tick = 0
+            self.hero.special_mana=True
+
+        width = 30
+        height = self.hero.special_mana * 4
+        x_pos = WIDTH - 58
+        y_bottom = HEIGHT - 100
+        y_pos = y_bottom - height
+        
+        column = [x_pos, y_pos, width, height]    
+        
+
+        if self.hero.special_mana < 50:
+            text = ' Special'        # replace with hero skill name
+        else:
+            text = ' Press R !'
+            border_offset = 6
+            border = [x_pos - border_offset, y_pos - border_offset, 
+                      width + border_offset * 2, height + border_offset * 2]
+            pygame.draw.rect(self.screen, RED, border)
+
+        pygame.draw.rect(self.screen, YELLOW, column)
+        s_txt, _ = create_textline(text, 
+                                    pos=(x_pos, y_bottom),
+                                    font_type='GUI/font/28DaysLater.ttf', 
+                                    size=23,
+                                    color=BLACK)
+        s_txt = pygame.transform.rotate(s_txt, 90)
+        txt_pos = s_txt.get_rect()
+        padding = 4
+        txt_pos.bottomleft = (x_pos + padding, y_bottom - padding)                           
+        self.screen.blit(s_txt, txt_pos)
+
+
 
     def inventory(self):
         """
