@@ -18,7 +18,7 @@ class SpriteObject:
         self.animation = animation
         self.animate_count = 0
         self.animate_speed = 6
-        self.sound = True
+        # self.sound = True
 
         self.hitpoint = 150 # temporary
         self.attack_damage = 5 # temporary
@@ -40,7 +40,7 @@ class SpritesContainer:
             'V': pygame.image.load('GUI/img/v_potion.png').convert_alpha(),
             'X': pygame.image.load('GUI/img/trap.png').convert_alpha(),
             'pillar': pygame.image.load('GUI/img/pillar.png').convert_alpha(),
-            'O': pygame.image.load('GUI/img/exit.png').convert_alpha(),
+            'exit': pygame.image.load('GUI/img/exit.png').convert_alpha(),
         }
         self.monsters = {
             'ogre':{
@@ -101,21 +101,11 @@ class SpritesContainer:
                                      ))             
                 if room.has_pit:
                     # room.has_pit = False
-                    add(SpriteObject(self.images['X'], 'X', room.coords))
-                    # add(SpriteObject(self.monsters['ogre']['sprite'], 'ogre', room.coords, 
-                    #                  scale=self.monsters['ogre']['scale'], 
-                    #                  shift=self.monsters['ogre']['shift'],
-                    #                  animation=self.monsters['ogre']['animation'].copy(),
-                    #                  ))    
+                    add(SpriteObject(self.images['X'], 'X', room.coords)) 
                 if room.pillar:
                     add(SpriteObject(self.images['pillar'], 'pillar', room.coords))
-                    # add(SpriteObject(self.monsters['mgirl']['sprite'], 'mgirl', room.coords, 
-                    #                  scale=self.monsters['mgirl']['scale'], 
-                    #                  shift=self.monsters['mgirl']['shift'],
-                    #                  animation=self.monsters['mgirl']['animation'].copy(),
-                    #                  ))  
                 if room.is_exit:
-                    add(SpriteObject(self.images['O'], 'O', room.coords, scale=1, shift=0))
+                    add(SpriteObject(self.images['exit'], 'exit', room.coords, scale=1, shift=0))
     
     def obtain_sprites(self, walls):
         """"
@@ -127,8 +117,8 @@ class SpritesContainer:
 
     def object_locate(self, sprite, walls):
         """
-        
-        Credit most of algo to: Credit: https://github.com/StanislavPetrovV/Raycasting-3d-game-tutorial/blob/master/part%20%232/ray_casting.py
+        Use raycasting to determine distance between hero and sprite objects
+        Credit algo to: https://github.com/StanislavPetrovV/Raycasting-3d-game-tutorial/blob/master/part%20%232/ray_casting.py
         """
         fake_walls0 = [walls[0] for _ in range(FAKE_RAYS)]
         fake_walls1 = [walls[-1] for _ in range(FAKE_RAYS)]
@@ -137,44 +127,9 @@ class SpritesContainer:
         dx, dy = sprite.x - self.player.x, sprite.y - self.player.y
         distance_to_sprite = math.sqrt(dx ** 2 + dy ** 2)
         
-        # display monster health
-        sprite.visible_health = True if distance_to_sprite < 100 and sprite.animation else False
-            
-        # interact with objects and monsters
-        if distance_to_sprite < 50:
-            if sprite.name == 'H' and self.game.room.healing_potions:
-                self.game.find_healing_potion()
-                self.sound.pickup()
-                self.nearby_sprites.remove(sprite)
-            elif sprite.name == 'V' and self.game.room.vision_potions:
-                self.game.find_vision_potion()
-                self.sound.pickup()
-                self.nearby_sprites.remove(sprite)
-            elif sprite.name in ('ogre', 'mgirl', 'gremlin', 'skeleton'):
-                self.player.arena.fight(sprite)
-                # if sprite.name == "ogre":       #temp code
-                #     sound = self.sound.ogre()       #temp code
-                # elif sprite.name == "skeleton":       #temp code
-                #     sound = self.sound.ogre()       #temp code
-                # elif sprite.name == "gremlin":       #temp code
-                #     sound = self.sound.gremlin()       #temp code
-                sound = None
-                if sprite.name == "mgirl":       #temp code
-                    sound = self.sound.mgirl()       #temp code
-                if sound is not None and sprite.sound:       #temp code
-                    sprite.sound = False
-                    sound()       #temp code
-                sprite.object = sprite.animation[0]
-                if sprite.animate_count < sprite.animate_speed:
-                    sprite.animate_count += 1
-                else:
-                    sprite.animation.rotate()
-                    sprite.animate_count = 0
-                if sprite.hitpoint <= 0:                # temp, should be in model logic
-                    self.nearby_sprites.remove(sprite)
-                    print('you defeated monster')
+        # trigger game events by distance
+        self.__interact_sprites(sprite, distance_to_sprite)
 
-            # insert interaction with PIT and Pillars ???
 
         theta = math.atan2(dy, dx)
         gamma = theta - self.player.angle
@@ -198,3 +153,51 @@ class SpritesContainer:
         else:
             return (False,)
     
+
+    def __interact_sprites(self, sprite, distance):
+        """
+        Use distance calculated from object_locate() to trigger model & view events
+        """
+        # display monster health
+        sprite.visible_health = True if distance < 100 and sprite.animation else False
+            
+        # interact with pillars, trap, and monsters
+        if distance < 50:
+            if sprite.name == 'pillar' and self.game.room.pillar and \
+            self.game.room.pillar not in self.game.hero.pillars:
+                self.sound.pillar()
+                self.player.new_pillar = self.game.room.pillar
+                self.game.find_pillar()
+            elif sprite.name in ('ogre', 'mgirl', 'gremlin', 'skeleton'):
+                # play monster sound
+                if sprite.name not in self.sound.monster_sounds:
+                    self.sound.monster_sounds = (sprite.name, False) 
+                    self.sound.monster_play(sprite.name)
+
+                # battle logic
+                self.player.arena.fight(sprite)
+
+                # animate monster
+                sprite.object = sprite.animation[0]
+                if sprite.animate_count < sprite.animate_speed:
+                    sprite.animate_count += 1
+                else:
+                    sprite.animation.rotate()
+                    sprite.animate_count = 0
+                
+                # remove monster GUI and stop monster sound
+                if sprite.hitpoint <= 0:
+                    self.sound.monster_play(sprite.name, off=True)
+                    self.sound.monster_sounds = (sprite.name, True)                
+                    self.nearby_sprites.remove(sprite)
+            # TODO insert pit interaction
+        
+        # pickup potions
+        if distance < 40: 
+            if sprite.name in ('H', 'V'):
+                self.sound.pickup()
+                self.nearby_sprites.remove(sprite)          
+                if sprite.name == 'H' and self.game.room.healing_potions:
+                    self.game.find_healing_potion()
+                elif sprite.name == 'V' and self.game.room.vision_potions:
+                    self.game.find_vision_potion()

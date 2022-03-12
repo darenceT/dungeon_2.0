@@ -5,6 +5,7 @@ from .Arena import Arena
 from .Settings import PI, DOUBLE_PI, MAP_TILE
 from .Utility import convert_coords_to_pixel
 
+
 class PlayerControls:
     """
     Contains player keyboard input in addition to controller code.
@@ -37,6 +38,7 @@ class PlayerControls:
         #self.collision_sprites = [pygame.Rect(*obj.pos, obj.side, obj.side) for obj in
                                   #self.sprites.list_of_objects if obj.blocked]
         self.collision_list = collision_walls #+ self.collision_sprites
+        self.__new_pillar = None
         self.__win_game = False
 
     @property
@@ -74,10 +76,30 @@ class PlayerControls:
                 raise ValueError('True should not be accessed outside of PlayerControls')
         else:
             raise TypeError('Only boolean accepted for pause_on')
+    @property
+    def new_pillar(self):
+        return self.__new_pillar
+
+    @new_pillar.setter
+    def new_pillar(self, pillar=None):
+        # if isinstance(pillar, Pillar):
+        self.__new_pillar = pillar
+        # else:
+        #     raise TypeError('Only Pillar object accepted outside PlayerControls')
 
     @property
     def win_game(self):
         return self.__win_game
+
+    @win_game.setter
+    def win_game(self, change=False):
+        if isinstance(change, bool):
+            if change:
+                self.__special_skill = change
+            else:
+                raise ValueError('False should not be accessed outside of PlayerControls')
+        else:
+            raise TypeError('Only boolean accepted for pause_on')
 
     def detect_collision(self, dx, dy):
         """
@@ -122,19 +144,22 @@ class PlayerControls:
         if self.cur_room.coords != (next_x, next_y):
             self.cur_room = self.game_data.maze.rooms[next_y][next_x]
 
-            # exit logic
+            # exit logic from sprites.object_locate() to detect hero near door
             if self.cur_room.is_exit:
-                if len(self.game_data.hero.pillars) ==  4:
+                pillars = 4-len(self.game_data.hero.pillars)
+                if pillars == 0:
                     self.__win_game = True
                     return
                 else:
-                    self.memo.new_message(f'You need to find {4-len(self.game_data.hero.pillars)} more pillars!')
-            # pillar found logic
-            elif self.cur_room.pillar and \
-            self.cur_room.pillar not in self.game_data.hero.pillars:
-                self.sound.pillar()
-                self.memo.new_message(f'You found pillar {self.cur_room.pillar}!')
-
+                    print('self.__win_game:', self.__win_game)
+                    if pillars == 0: 
+                        raise ValueError('Should win game instead of display 0 pillars remaining') 
+                    else:
+                        plur = 's!' if pillars > 1 else '!'
+                        self.memo.new_message(f'You need to find {4-len(self.game_data.hero.pillars)} more pillar{plur}')
+            elif self.__new_pillar and self.cur_room is not None:
+                self.memo.new_message(f'You found pillar {self.__new_pillar}!')
+                self.__new_pillar = None
             # move hero to new room, refresh nearby sprites
             self.game_data.enter_room(self.cur_room)
             self.room_change = True

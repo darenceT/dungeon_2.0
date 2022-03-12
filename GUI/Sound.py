@@ -7,7 +7,9 @@ class Sound:
     """
     Constructor/instance included so that a tracker can be used for sound options,
     to turn off and on the sound & music.
-    Music from https://www.chosic.com/free-music/all/
+    Sounds (intro, in-game, gremlin, mgirl, lose) from https://www.chosic.com/free-music/all/
+    Sounds (healing special, pickup potions) from https://mixkit.co/free-sound-effects/
+    Remaining sounds from https://www.zapsplat.com/sound-effect-categories/
     """
     def __init__(self):
         """
@@ -15,10 +17,11 @@ class Sound:
         allow sound option to turn off or on. 
         Set initial background music and sounds to medium level.
         """
-        self.__is_running = True
         pygame.init()
         mixer.music.set_volume(0.4)
         mixer.Channel(0).set_volume(0.75)
+        self.__is_running = True
+        self.__monster_sounds = []
 
     @property
     def is_running(self):
@@ -41,6 +44,18 @@ class Sound:
             self.__is_running = change
         else:
             raise TypeError("Only boolean param accepted")
+
+    @property
+    def monster_sounds(self):
+        return self.__monster_sounds
+
+    @monster_sounds.setter
+    def monster_sounds(self, info): 
+        npc_name, remove = info
+        if remove:
+            self.monster_sounds.remove(npc_name)
+        else:
+            self.monster_sounds.append(npc_name)
 
     def turn_off(self):
         """
@@ -100,7 +115,7 @@ class Sound:
         Music with player loses
         """
         if self.__is_running:
-            mixer.music.load(Path('GUI/sound/clown-laugh.mp3'))
+            mixer.music.load(Path('GUI/sound/lose.mp3'))
             mixer.music.play(-1)
 
     def win(self):
@@ -137,11 +152,11 @@ class Sound:
         Sound for effects of vision potion
         """
         if self.__is_running:
-            mixer.Channel(1).play(pygame.mixer.Sound(Path('sound', 'zapsplat_vision.mp3')))
+            mixer.Channel(1).play(pygame.mixer.Sound(Path('GUI', 'sound', 'zapsplat_vision.mp3')))
     
     def weapon(self):
         """
-        Sound for mean girl
+        Sound for using main weapon
         """
         if self.__is_running:
             mixer.Channel(1).play(pygame.mixer.Sound(Path('GUI','sound', 'zapsplat_wep_hit.mp3')))
@@ -151,39 +166,20 @@ class Sound:
         Sound for priest healing
         """
         if self.__is_running:
-            mixer.Channel(1).play(pygame.mixer.Sound(Path('GUI','sound', 'mixkit-healing.wav')))
+            mixer.Channel(2).play(pygame.mixer.Sound(Path('GUI','sound', 'mixkit-healing.wav')))
 
-    def mgirl(self):
-        """
-        Sound for mean girl
-        """
-        if self.__is_running:
-            mixer.Channel(2).play(pygame.mixer.Sound(Path('GUI','sound', 'mgirl.mp3')))
-    
-    def dsf(self):
-        """
-        Sound for ogre
-        """
-        if self.__is_running:
-            mixer.Channel(2).play(pygame.mixer.Sound(Path('GUI','sound', 'zapsplat_ogre.mp3')))
+    def monster_play(self, mtype, off=False):
+        if mtype in ('mgirl', 'ogre', 'gremlin', 'skeleton') and self.__is_running:
+            channel = self.__monster_sounds.index(mtype) + 5
+            if off:
+                mixer.Channel(channel).stop()
+            else:
+                mixer.Channel(channel).play(pygame.mixer.Sound(Path('GUI','sound', f'{mtype}.mp3')))
 
-    def sdf(self):
-        """
-        Sound for gremlin
-        """
-        if self.__is_running:
-            mixer.Channel(2).play(pygame.mixer.Sound(Path('GUI','sound', 'gremlin.mp3')))
-    
+
     def defeat_monster(self):
         """
         Sound for defeating monster
         """
         if self.__is_running:
             mixer.Channel(2).play(pygame.mixer.Sound(Path('GUI','sound', 'zapsplat_defeat_monster.mp3')))
-
-    def sdf(self):
-        """
-        Sound for skeleton
-        """
-        if self.__is_running:
-            mixer.Channel(2).play(pygame.mixer.Sound(Path('GUI','sound', 'zapsplat_fire.mp3')))

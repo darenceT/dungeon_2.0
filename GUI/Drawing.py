@@ -57,6 +57,8 @@ class Drawing:
         pygame.draw.rect(self.screen, DARK_TAN, (0, HALF_HEIGHT, WIDTH, HALF_HEIGHT))
 
     def world(self, world_objects): 
+        if self.player.win_game:
+            return
         for obj in sorted(world_objects, key=lambda n: n[0], reverse=True):
             if obj[0]:
                 _, object, object_pos = obj
@@ -202,7 +204,7 @@ class Drawing:
         if self.player.special_skill and self.__special_animate < 2:
             special_pos = (HALF_WIDTH / 2, HALF_HEIGHT - 100)
             special_size = (HALF_WIDTH, HALF_HEIGHT)
-            cool_down = 8
+            cool_down = 12
             if self.__special_time < cool_down:
                 self.__special_time += 1
             else:
