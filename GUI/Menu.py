@@ -11,8 +11,9 @@ class Cursor:
                                     size=self.size)
 
 class Menu:
-    def __init__(self, screen):
+    def __init__(self, screen, sound):
         self.screen = screen
+        self.sound = sound
         self.menu_input = None
         self.picked = False
         self.select_number = 1
@@ -76,6 +77,7 @@ class Menu:
         """
         TODO: input and return hero name
         """
+        self.sound.intro()
         while True:
             if self.menu_input in ('Warrior', 'Priest', "Thief"):
                 return self.menu_input
@@ -189,6 +191,7 @@ class Menu:
     def lose_screen(self):
         """
         """
+        self.sound.lose()
         # resets cursor to top
         self.select_number = 1
         self.cursor.rect.centery = self.__y_pos

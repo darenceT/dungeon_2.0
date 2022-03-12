@@ -3,7 +3,7 @@ from pygame import mixer
 from pathlib import Path
 
 
-class SoundFx:
+class Sound:
     """
     Constructor/instance included so that a tracker can be used for sound options,
     to turn off and on the sound & music.
@@ -73,7 +73,7 @@ class SoundFx:
         Play intro music. 
         """
         if self.__is_running:
-            mixer.music.load(Path('sound/Mysterious Strange Things - Yung Logos_short.mp3'))
+            mixer.music.load(Path('GUI/sound/Kai-Engel-Low-Horizon.mp3'))
             mixer.music.play(-1)
 
     def in_game(self):
@@ -81,7 +81,7 @@ class SoundFx:
         Play in-game music. 
         """
         if self.__is_running:
-            mixer.music.load(Path('sound/Subterranean Howl - ELPHNT_short.mp3'))
+            mixer.music.load(Path('GUI/sound/Komiku_-_52_-_Cave_of_time.mp3'))
             mixer.music.play(-1)
 
     def pause_menu(self, resume=False):
@@ -100,7 +100,7 @@ class SoundFx:
         Music with player loses
         """
         if self.__is_running:
-            mixer.music.load(Path('sound/gameover.mp3'))
+            mixer.music.load(Path('GUI/sound/clown-laugh.mp3'))
             mixer.music.play(-1)
 
     def win(self):

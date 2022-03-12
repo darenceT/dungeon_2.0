@@ -9,10 +9,12 @@ from GUI.Drawing import Drawing
 from GUI.Sprites import SpritesContainer
 from GUI.Menu import Menu
 from GUI.Memo import Memo
+from GUI.Sound import Sound
 
 
 class Main:
     def __init__(self):
+        self.sound = Sound()
         self.screen = None
         self.menu = None
         self.game_data = None
@@ -33,7 +35,7 @@ class Main:
         pygame.display.set_caption('Dungeon Escape')
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.memo = Memo(self.screen)
-        self.menu = Menu(self.screen)
+        self.menu = Menu(self.screen, self.sound)
         self.__obtain_game_data()
 
         # TODO: decrease/narrow params passed
@@ -81,6 +83,7 @@ class Main:
         __parse_map(self.dungeon)
 
     def game_loop(self):
+        self.sound.in_game()
         clock = pygame.time.Clock()
         while self.hero.is_alive:
             clock.tick(FPS)
