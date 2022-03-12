@@ -4,7 +4,6 @@ from .Settings import *
 
 def convert_coords_to_pixel(coord: int):
     adjust_center = 120
-    #TODO Variable for 2
     return int(2 * coord * WIDTH / TEXTURE_SCALE + adjust_center)
 
 def create_textline(message, 
