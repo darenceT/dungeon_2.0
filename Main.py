@@ -13,6 +13,10 @@ from GUI.Sound import Sound
 
 
 class Main:
+    """
+    Pygame controller for running game. This class works in tandem and gets information
+    from DungeonAdventure which is the non-GUI controller of Model
+    """
     def __init__(self):
         self.sound = Sound()
         self.screen = None
@@ -31,6 +35,14 @@ class Main:
         self.__load_game()   
 
     def __load_game(self):
+        """
+        Load data needed for game, mainly: 
+        1. Setup models for pygame, loading constructors for
+           GUI controls (PlayerControl), GUI objects (Sprites), 
+           drawing modules onto GUI sufrace (Drawing & Memo),
+           and "3D engine" of sorts by Raycasting
+        2. Grab Model information from DungeonAdventure.
+        """
         pygame.init()
         pygame.display.set_caption('Dungeon Escape')
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -47,13 +59,21 @@ class Main:
         self.player_controls.get_rooms_in_sight()  # initiate sprites for 1st room
 
     def __obtain_game_data(self):
+        """
+        Helper function for load game, obtains:
+        hero & dungeon maze (including its monsters & objects)
+        """
         self.hero_class = self.menu.intro_menu()
-        self.game_data = DungeonAdventure()
+        self.game_data = DungeonAdventure(self.hero_class)
         self.dungeon = self.game_data.maze
         self.hero = self.game_data.hero
         print(self.dungeon)                         # DELETE
 
         def __parse_map(maze):
+            """
+            Parse maze layout information into usable
+            information to create walls for GUI
+            """
             map_text = maze.str().splitlines()
             map_parsed = []
             row = []
@@ -83,6 +103,10 @@ class Main:
         __parse_map(self.dungeon)
 
     def game_loop(self):
+        """
+        Game engine that loops through all major components of game
+        to create real-time effect of GUI game
+        """
         self.sound.in_game()
         clock = pygame.time.Clock()
         while self.hero.is_alive:

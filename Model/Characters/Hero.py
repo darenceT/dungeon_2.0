@@ -1,4 +1,5 @@
-from DungeonCharacter import *
+from .DungeonCharacter import DungeonCharacter
+# from DungeonCharacter import DungeonCharacter
 
 class Hero(DungeonCharacter):
     def __init__(self, hero_type, name, hit_points, hit_points_max, attack_speed, chance_to_hit,
@@ -8,10 +9,29 @@ class Hero(DungeonCharacter):
         self.__game = game
         self.__hero_type = hero_type
         self.__chance_to_block = chance_to_block
+        self.__special_mana: int = 10
         self.__vision_potions: int = 0
         self.__healing_potions: int = 0
         self.__vision_potions: int = 0
         self.__pillars: set = set()  # empty
+
+    @property
+    def special_mana(self):
+        return self.__special_mana
+    
+    @special_mana.setter
+    def special_mana(self, add=True):
+        if isinstance(add, bool):
+            if add:
+                self.__special_mana += 2
+                if self.__special_mana > 50:
+                    self.__special_mana = 50
+            else:
+                self.__special_mana -= 15
+                if self.__special_mana < 0:
+                    self.__special_mana = 0
+        else:
+            raise TypeError('Can only accept boolean type')
 
     @property
     def game(self):
@@ -167,6 +187,7 @@ class Hero(DungeonCharacter):
 Stats:
 Health Points: {self.hit_points}
 Max Health: {self.hit_points_max}
+Special Mana: {self.__special_mana}
 Attack speed: {self.attack_speed}
 Chance to hit: {self.chance_to_hit}
 Mininum damage: {self.minimum_damage}

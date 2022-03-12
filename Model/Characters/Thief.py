@@ -1,4 +1,4 @@
-from Hero import *
+from .Hero import Hero
 
 
 class Thief(Hero):
