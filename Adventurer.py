@@ -17,7 +17,7 @@ class Adventurer:
         self.__name: str = name
         self.__hit_points: int = hit_points
         self.__hit_points_max: int = hit_points_max
-        self.__special_mana: int = 25
+        self.__special_mana: int = 10
         self.__healing_potions: int = 0
         self.__vision_potions: int = 0
         self.__pillars: set = set()  # empty
@@ -51,9 +51,9 @@ class Adventurer:
                 if self.__special_mana > 50:
                     self.__special_mana = 50
             else:
-                self.__special_mana -= 15
-                if self.__special_mana < 0:
-                    self.__special_mana = 0
+                raise ValueError('Cannot decrease mana outside of hero class')
+        else:
+            raise TypeError('Can only accept boolean type')
                     
     @property
     def game(self):
@@ -153,6 +153,26 @@ class Adventurer:
         """
         return self.__pillars
 
+    def special_skill(self):
+        mana_cost = 15
+        
+        # warrior
+        # if self.__special_mana > mana_cost:
+        #     self.__special_mana -= mana_cost
+            
+            # return 'Used Crushing Blow!'
+
+        # priest    
+        if self.__special_mana > mana_cost and self.__hit_points_max - self.hit_points > 5:
+            self.__special_mana -= mana_cost
+            self.hit_points += 20
+            if self.hit_points > self.hit_points_max:   
+                self.hit_points = self.hit_points_max
+            return 'You healed yourself by 20 points!'
+
+            # thief
+            # return 'Used extra surprise attack!'
+            
     def has_pillar(self, pillar):
         """
         Checks to see if a pillar has been collected, if so returns True
@@ -161,18 +181,18 @@ class Adventurer:
         """
         return bool(pillar in self.pillars)
 
-    def display_inventory(self):
-        """
-        Displays the player's current inventory of items, and hit points
-        :return:
-        """
-        # Keeps a list of items in inventory
-        print(f"Name:    {self.name}")
-        print(f"Health:  {self.hit_points}")
-        print(f"Pillars: {', '.join(self.pillars)}")
-        print(f"Potions...")
-        print(f"Healing: {self.healing_potions}")
-        print(f"Vision:  {self.vision_potions}")
+    # def display_inventory(self):
+    #     """
+    #     Displays the player's current inventory of items, and hit points
+    #     :return:
+    #     """
+    #     # Keeps a list of items in inventory
+    #     print(f"Name:    {self.name}")
+    #     print(f"Health:  {self.hit_points}")
+    #     print(f"Pillars: {', '.join(self.pillars)}")
+    #     print(f"Potions...")
+    #     print(f"Healing: {self.healing_potions}")
+    #     print(f"Vision:  {self.vision_potions}")
 
     def take_damage(self, damage: int = 1) -> int:
         """
