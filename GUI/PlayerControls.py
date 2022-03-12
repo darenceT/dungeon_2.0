@@ -5,13 +5,14 @@ from .Arena import Arena
 from .Settings import PI, DOUBLE_PI, MAP_TILE
 from .Utility import convert_coords_to_pixel
 
+
 class PlayerControls:
     """
     Contains player keyboard input in addition to controller code.
     game_data is object of DungeonAdventure to access "enter_room" method.
     room_change boolean to trigger loading of sprites
     """
-    def __init__(self, screen, game_data, memo, collision_walls):
+    def __init__(self, screen, sound, game_data, memo, collision_walls):
         self.angle = 0
         self.player_speed = 3
         self.__attacking = False
@@ -23,10 +24,11 @@ class PlayerControls:
         self.room_change = True     # set initial to True to for initial 1 time loading of nearby sprites
 
         self.screen = screen
+        self.sound = sound
         self.__pause_on = False
         self.game_data = game_data
         self.memo = memo
-        self.arena = Arena(self, game_data.hero)
+        self.arena = Arena(sound, self, game_data.hero)
 
         self.rooms_in_sight = set()
         self.map_visited = set()
@@ -36,6 +38,7 @@ class PlayerControls:
         #self.collision_sprites = [pygame.Rect(*obj.pos, obj.side, obj.side) for obj in
                                   #self.sprites.list_of_objects if obj.blocked]
         self.collision_list = collision_walls #+ self.collision_sprites
+        self.__new_pillar = None
         self.__win_game = False
 
     @property
@@ -73,10 +76,30 @@ class PlayerControls:
                 raise ValueError('True should not be accessed outside of PlayerControls')
         else:
             raise TypeError('Only boolean accepted for pause_on')
+    @property
+    def new_pillar(self):
+        return self.__new_pillar
+
+    @new_pillar.setter
+    def new_pillar(self, pillar=None):
+        # if isinstance(pillar, Pillar):
+        self.__new_pillar = pillar
+        # else:
+        #     raise TypeError('Only Pillar object accepted outside PlayerControls')
 
     @property
     def win_game(self):
         return self.__win_game
+
+    @win_game.setter
+    def win_game(self, change=False):
+        if isinstance(change, bool):
+            if change:
+                self.__special_skill = change
+            else:
+                raise ValueError('False should not be accessed outside of PlayerControls')
+        else:
+            raise TypeError('Only boolean accepted for pause_on')
 
     def detect_collision(self, dx, dy):
         """
@@ -121,18 +144,22 @@ class PlayerControls:
         if self.cur_room.coords != (next_x, next_y):
             self.cur_room = self.game_data.maze.rooms[next_y][next_x]
 
-            # exit logic
+            # exit logic from sprites.object_locate() to detect hero near door
             if self.cur_room.is_exit:
-                if len(self.game_data.hero.pillars) ==  4:
+                pillars = 4-len(self.game_data.hero.pillars)
+                if pillars == 0:
                     self.__win_game = True
                     return
                 else:
-                    self.memo.new_message(f'You need to find {4-len(self.game_data.hero.pillars)} more pillars!')
-            # pillar found logic
-            elif self.cur_room.pillar and \
-            self.cur_room.pillar not in self.game_data.hero.pillars:
-                self.memo.new_message(f'You found pillar {self.cur_room.pillar}!')
-
+                    print('self.__win_game:', self.__win_game)
+                    if pillars == 0: 
+                        raise ValueError('Should win game instead of display 0 pillars remaining') 
+                    else:
+                        plur = 's!' if pillars > 1 else '!'
+                        self.memo.new_message(f'You need to find {4-len(self.game_data.hero.pillars)} more pillar{plur}')
+            elif self.__new_pillar and self.cur_room is not None:
+                self.memo.new_message(f'You found pillar {self.__new_pillar}!')
+                self.__new_pillar = None
             # move hero to new room, refresh nearby sprites
             self.game_data.enter_room(self.cur_room)
             self.room_change = True
@@ -183,16 +210,19 @@ class PlayerControls:
                 if event.key == pygame.K_h:
                     if self.game_data.hero.healing_potions:
                         self.memo.new_message('You used a healing potion!')
+                        self.sound.health_potion()
                     self.game_data.hero.use_healing_potion()
                 elif event.key == pygame.K_v:
                     if self.game_data.hero.vision_potions:
                         self.memo.new_message('Vision potion used, check your map!')
+                        self.sound.vision_potion()
                     self.game_data.hero.use_vision_potion()
                 elif event.key == pygame.K_r:
                     special = self.game_data.hero.special_skill()
                     if special is not None:
                         self.__special_skill = True
                         self.memo.new_message(special)
+                        self.sound.special_heal()
                 elif event.key == pygame.K_SPACE:
                     self.__pause_on = True
 

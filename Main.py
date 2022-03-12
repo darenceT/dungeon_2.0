@@ -9,10 +9,12 @@ from GUI.Drawing import Drawing
 from GUI.Sprites import SpritesContainer
 from GUI.Menu import Menu
 from GUI.Memo import Memo
+from GUI.Sound import Sound
 
 
 class Main:
     def __init__(self):
+        self.sound = Sound()
         self.screen = None
         self.menu = None
         self.game_data = None
@@ -33,13 +35,13 @@ class Main:
         pygame.display.set_caption('Dungeon Escape')
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.memo = Memo(self.screen)
-        self.menu = Menu(self.screen)
+        self.menu = Menu(self.screen, self.sound)
         self.__obtain_game_data()
 
         # TODO: decrease/narrow params passed
-        self.player_controls = PlayerControls(self.screen, self.game_data, self.memo, self.collision_walls)
-        self.sprites = SpritesContainer(self.screen, self.game_data, self.player_controls)
-        self.drawing = Drawing(self.screen, self.hero_class, self.mini_map_coords, self.player_controls,
+        self.player_controls = PlayerControls(self.screen, self.sound, self.game_data, self.memo, self.collision_walls)
+        self.sprites = SpritesContainer(self.screen, self.sound, self.game_data, self.player_controls)
+        self.drawing = Drawing(self.screen, self.sound, self.hero_class, self.mini_map_coords, self.player_controls,
                                self.hero, self.sprites)
         self.raycast = Raycast(self.player_controls, self.world_coords, self.drawing.textures)
         self.player_controls.get_rooms_in_sight()  # initiate sprites for 1st room
@@ -81,6 +83,7 @@ class Main:
         __parse_map(self.dungeon)
 
     def game_loop(self):
+        self.sound.in_game()
         clock = pygame.time.Clock()
         while self.hero.is_alive:
             clock.tick(FPS)

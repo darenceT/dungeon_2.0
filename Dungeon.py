@@ -87,9 +87,9 @@ class Dungeon(Maze):
         """
         if randrange(100) < Dungeon.item_chance:
             room.has_pit = True
-        while randrange(100) < Dungeon.item_chance:
+        if randrange(100) < 40:
             room.healing_potions += 1
-        while randrange(100) < Dungeon.item_chance:
+        if randrange(100) < Dungeon.item_chance:
             room.vision_potions += 1
 
     def add_contents(self) -> None:

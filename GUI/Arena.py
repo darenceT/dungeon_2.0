@@ -1,22 +1,26 @@
 from random import random, randrange
 
 class Arena:
-    def __init__(self, player_controls, hero):
+    def __init__(self, sound, player_controls, hero):
+        self.sound = sound
         self.player_controls = player_controls
         self.hero = hero
         self.cool_down = 5
         self.count = 0
         self.attack_speed = 4 / 4   # will be from hero
         self.chance_to_hit = 0.8    # will be from hero
-        self.min_damage = 35        # will be from hero
-        self.max_damage = 60        # will be from hero
+        self.min_damage = int(35  /4)      # will be from hero
+        self.max_damage = int(60  /4)       # will be from hero
         self.chance_to_block = 0.2  # will be from hero
+        self.monster_sound = []
 
     def fight(self, monster):
         """
         Let the hero and monster stats clash.
         TODO: convert attack speed to time-based using pygame.get_ticks() 
         """
+
+
         if self.count < self.cool_down:
             self.count += 1
         else:

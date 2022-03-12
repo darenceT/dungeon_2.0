@@ -5,7 +5,6 @@ from Maze import Maze
 from Dungeon import Dungeon
 from Adventurer import Adventurer
 
-
 class DungeonAdventure:
     """
     Class that creates a game and pulls together all of the gameplay
@@ -351,10 +350,10 @@ class DungeonAdventure:
             # self.find_vision_potion()
         # Pillars and Exit are each supposed to be sole item in room, if present.
         # Ergo, cannot have both, so order of the following does not matter.
-        if room.pillar:
-            self.find_pillar()
-        if room.is_exit:
-            self.find_exit()
+        # if room.pillar:
+        #     self.find_pillar()
+        # if room.is_exit:
+        #     self.find_exit()
         # Drop breadcrumb AFTER finding Pillar or Exit, so announce differently.
         room.has_crumb = True
 

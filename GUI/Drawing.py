@@ -9,8 +9,9 @@ class Drawing:
     Class for drawing all images onto GUI surface. Sprite objects/images get 
     delivered here for blitting.
     """
-    def __init__(self, screen, hero_class, map_coords, player_controls, hero, sprites) -> None:
+    def __init__(self, screen, sound, hero_class, map_coords, player_controls, hero, sprites) -> None:
         self.screen = screen
+        self.sound = sound
         self.hero_class = hero_class
         self.map_coords = map_coords
         self.player = player_controls
@@ -56,6 +57,8 @@ class Drawing:
         pygame.draw.rect(self.screen, DARK_TAN, (0, HALF_HEIGHT, WIDTH, HALF_HEIGHT))
 
     def world(self, world_objects): 
+        if self.player.win_game:
+            return
         for obj in sorted(world_objects, key=lambda n: n[0], reverse=True):
             if obj[0]:
                 _, object, object_pos = obj
@@ -75,6 +78,9 @@ class Drawing:
         """
         Animation of weapon using a timer (cool_down) to adjust animation speed
         """
+        if self.__weapon_animate == 1:
+            self.sound.weapon()
+        
         wep_pos = (WIDTH * 2/5, HEIGHT - 280)
         wep_size = (HALF_WIDTH, HALF_HEIGHT)
         cool_down = 4
@@ -198,7 +204,7 @@ class Drawing:
         if self.player.special_skill and self.__special_animate < 2:
             special_pos = (HALF_WIDTH / 2, HALF_HEIGHT - 100)
             special_size = (HALF_WIDTH, HALF_HEIGHT)
-            cool_down = 8
+            cool_down = 12
             if self.__special_time < cool_down:
                 self.__special_time += 1
             else:
