@@ -73,7 +73,7 @@ class Sound:
         Play intro music. 
         """
         if self.__is_running:
-            mixer.music.load(Path('GUI/sound/Kai-Engel-Low-Horizon.mp3'))
+            mixer.music.load(Path('GUI/sound/Kai-Engel-Low-Horizon_s.mp3'))
             mixer.music.play(-1)
 
     def in_game(self):
@@ -81,7 +81,7 @@ class Sound:
         Play in-game music. 
         """
         if self.__is_running:
-            mixer.music.load(Path('GUI/sound/Komiku_-_52_-_Cave_of_time.mp3'))
+            mixer.music.load(Path('GUI/sound/Komiku_-_52_-_Cave_of_time_s.mp3'))
             mixer.music.play(-1)
 
     def pause_menu(self, resume=False):
@@ -108,27 +108,82 @@ class Sound:
         Music with player wins
         """
         if self.__is_running:
-            mixer.music.load(Path('sound/win.mp3'))
+            mixer.music.load(Path('GUI/sound/zapsplat_win.mp3'))
             mixer.music.play(-1)
-    
+
+    def pickup(self):
+        """
+        Sound for collecting potions
+        """
+        if self.__is_running:
+            mixer.Channel(1).play(pygame.mixer.Sound(Path('GUI', 'sound', 'mixkit-pickup.wav')))
+
     def pillar(self):
         """
         Sound for collecting pillar key
         """
         if self.__is_running:
-            mixer.Channel(1).play(pygame.mixer.Sound(Path('sound', 'pillar.mp3')))
+            mixer.Channel(1).play(pygame.mixer.Sound(Path('GUI', 'sound', 'zapsplat_pillar.mp3')))
 
     def health_potion(self):
         """
-        Sound for consuming health potion, obtained by Pranav
+        Sound for consuming health potion
         """
         if self.__is_running:
-            mixer.Channel(1).play(pygame.mixer.Sound(Path('sound', 'health_potion.mp3')))
+            mixer.Channel(1).play(pygame.mixer.Sound(Path('GUI', 'sound', 'zapsplat_health_pot.mp3')))
 
     def vision_potion(self):
         """
-        Sound for effects of vision potion, obtained by Pranav
+        Sound for effects of vision potion
         """
         if self.__is_running:
-            mixer.Channel(1).play(pygame.mixer.Sound(Path('sound', 'vision_potion.mp3')))
-            
+            mixer.Channel(1).play(pygame.mixer.Sound(Path('sound', 'zapsplat_vision.mp3')))
+    
+    def weapon(self):
+        """
+        Sound for mean girl
+        """
+        if self.__is_running:
+            mixer.Channel(1).play(pygame.mixer.Sound(Path('GUI','sound', 'zapsplat_wep_hit.mp3')))
+    
+    def special_heal(self):
+        """
+        Sound for priest healing
+        """
+        if self.__is_running:
+            mixer.Channel(1).play(pygame.mixer.Sound(Path('GUI','sound', 'mixkit-healing.wav')))
+
+    def mgirl(self):
+        """
+        Sound for mean girl
+        """
+        if self.__is_running:
+            mixer.Channel(2).play(pygame.mixer.Sound(Path('GUI','sound', 'mgirl.mp3')))
+    
+    def dsf(self):
+        """
+        Sound for ogre
+        """
+        if self.__is_running:
+            mixer.Channel(2).play(pygame.mixer.Sound(Path('GUI','sound', 'zapsplat_ogre.mp3')))
+
+    def sdf(self):
+        """
+        Sound for gremlin
+        """
+        if self.__is_running:
+            mixer.Channel(2).play(pygame.mixer.Sound(Path('GUI','sound', 'gremlin.mp3')))
+    
+    def defeat_monster(self):
+        """
+        Sound for defeating monster
+        """
+        if self.__is_running:
+            mixer.Channel(2).play(pygame.mixer.Sound(Path('GUI','sound', 'zapsplat_defeat_monster.mp3')))
+
+    def sdf(self):
+        """
+        Sound for skeleton
+        """
+        if self.__is_running:
+            mixer.Channel(2).play(pygame.mixer.Sound(Path('GUI','sound', 'zapsplat_fire.mp3')))

@@ -11,7 +11,7 @@ class PlayerControls:
     game_data is object of DungeonAdventure to access "enter_room" method.
     room_change boolean to trigger loading of sprites
     """
-    def __init__(self, screen, game_data, memo, collision_walls):
+    def __init__(self, screen, sound, game_data, memo, collision_walls):
         self.angle = 0
         self.player_speed = 3
         self.__attacking = False
@@ -23,10 +23,11 @@ class PlayerControls:
         self.room_change = True     # set initial to True to for initial 1 time loading of nearby sprites
 
         self.screen = screen
+        self.sound = sound
         self.__pause_on = False
         self.game_data = game_data
         self.memo = memo
-        self.arena = Arena(self, game_data.hero)
+        self.arena = Arena(sound, self, game_data.hero)
 
         self.rooms_in_sight = set()
         self.map_visited = set()
@@ -131,6 +132,7 @@ class PlayerControls:
             # pillar found logic
             elif self.cur_room.pillar and \
             self.cur_room.pillar not in self.game_data.hero.pillars:
+                self.sound.pillar()
                 self.memo.new_message(f'You found pillar {self.cur_room.pillar}!')
 
             # move hero to new room, refresh nearby sprites
@@ -183,16 +185,19 @@ class PlayerControls:
                 if event.key == pygame.K_h:
                     if self.game_data.hero.healing_potions:
                         self.memo.new_message('You used a healing potion!')
+                        self.sound.health_potion()
                     self.game_data.hero.use_healing_potion()
                 elif event.key == pygame.K_v:
                     if self.game_data.hero.vision_potions:
                         self.memo.new_message('Vision potion used, check your map!')
+                        self.sound.vision_potion()
                     self.game_data.hero.use_vision_potion()
                 elif event.key == pygame.K_r:
                     special = self.game_data.hero.special_skill()
                     if special is not None:
                         self.__special_skill = True
                         self.memo.new_message(special)
+                        self.sound.special_heal()
                 elif event.key == pygame.K_SPACE:
                     self.__pause_on = True
 

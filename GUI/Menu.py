@@ -225,6 +225,7 @@ class Menu:
     def win_screen(self):
         """
         """
+        self.sound.win()
         # resets cursor to top
         self.select_number = 1
         self.cursor.rect.centery = self.__y_pos

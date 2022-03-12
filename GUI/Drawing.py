@@ -9,8 +9,9 @@ class Drawing:
     Class for drawing all images onto GUI surface. Sprite objects/images get 
     delivered here for blitting.
     """
-    def __init__(self, screen, hero_class, map_coords, player_controls, hero, sprites) -> None:
+    def __init__(self, screen, sound, hero_class, map_coords, player_controls, hero, sprites) -> None:
         self.screen = screen
+        self.sound = sound
         self.hero_class = hero_class
         self.map_coords = map_coords
         self.player = player_controls
@@ -75,6 +76,9 @@ class Drawing:
         """
         Animation of weapon using a timer (cool_down) to adjust animation speed
         """
+        if self.__weapon_animate == 1:
+            self.sound.weapon()
+        
         wep_pos = (WIDTH * 2/5, HEIGHT - 280)
         wep_size = (HALF_WIDTH, HALF_HEIGHT)
         cool_down = 4

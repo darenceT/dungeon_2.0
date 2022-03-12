@@ -1,5 +1,5 @@
 import pygame
-from random import randint
+from random import randint, randrange
 from collections import deque
 from .Settings import *
 from .Utility import convert_coords_to_pixel
@@ -18,18 +18,20 @@ class SpriteObject:
         self.animation = animation
         self.animate_count = 0
         self.animate_speed = 6
+        self.sound = True
 
         self.hitpoint = 150 # temporary
         self.attack_damage = 5 # temporary
 
 class SpritesContainer:
-    def __init__(self, screen, game, player):
+    def __init__(self, screen, sound, game, player):
         """
         Initial loading images of sprites
         Container of sprites for current and nearby rooms 
         images from www.pngegg.com
         """
         self.screen = screen
+        self.sound = sound
         self.player = player
         self.game = game
         self.nearby_sprites = set()
@@ -82,11 +84,13 @@ class SpritesContainer:
                 if room.healing_potions:
                     for _ in range(room.healing_potions):
                         add(SpriteObject(self.images['H'], 'H', room.coords))
-                    add(SpriteObject(self.monsters['gremlin']['sprite'], 'gremlin', room.coords, 
-                                     scale=self.monsters['gremlin']['scale'], 
-                                     shift=self.monsters['gremlin']['shift'],
-                                     animation=self.monsters['gremlin']['animation'].copy(),
-                                     )) 
+                        types = ('ogre', 'mgirl', 'gremlin')
+                        npc = types[randrange(3)] 
+                        add(SpriteObject(self.monsters[npc]['sprite'], npc, room.coords, 
+                                        scale=self.monsters[npc]['scale'], 
+                                        shift=self.monsters[npc]['shift'],
+                                        animation=self.monsters[npc]['animation'].copy(),
+                                        )) 
                 if room.vision_potions:
                     for _ in range(room.vision_potions):
                         add(SpriteObject(self.images['V'], 'V', room.coords))
@@ -98,18 +102,18 @@ class SpritesContainer:
                 if room.has_pit:
                     # room.has_pit = False
                     add(SpriteObject(self.images['X'], 'X', room.coords))
-                    add(SpriteObject(self.monsters['ogre']['sprite'], 'ogre', room.coords, 
-                                     scale=self.monsters['ogre']['scale'], 
-                                     shift=self.monsters['ogre']['shift'],
-                                     animation=self.monsters['ogre']['animation'].copy(),
-                                     ))    
+                    # add(SpriteObject(self.monsters['ogre']['sprite'], 'ogre', room.coords, 
+                    #                  scale=self.monsters['ogre']['scale'], 
+                    #                  shift=self.monsters['ogre']['shift'],
+                    #                  animation=self.monsters['ogre']['animation'].copy(),
+                    #                  ))    
                 if room.pillar:
                     add(SpriteObject(self.images['pillar'], 'pillar', room.coords))
-                    add(SpriteObject(self.monsters['mgirl']['sprite'], 'mgirl', room.coords, 
-                                     scale=self.monsters['mgirl']['scale'], 
-                                     shift=self.monsters['mgirl']['shift'],
-                                     animation=self.monsters['mgirl']['animation'].copy(),
-                                     ))  
+                    # add(SpriteObject(self.monsters['mgirl']['sprite'], 'mgirl', room.coords, 
+                    #                  scale=self.monsters['mgirl']['scale'], 
+                    #                  shift=self.monsters['mgirl']['shift'],
+                    #                  animation=self.monsters['mgirl']['animation'].copy(),
+                    #                  ))  
                 if room.is_exit:
                     add(SpriteObject(self.images['O'], 'O', room.coords, scale=1, shift=0))
     
@@ -140,12 +144,26 @@ class SpritesContainer:
         if distance_to_sprite < 50:
             if sprite.name == 'H' and self.game.room.healing_potions:
                 self.game.find_healing_potion()
+                self.sound.pickup()
                 self.nearby_sprites.remove(sprite)
             elif sprite.name == 'V' and self.game.room.vision_potions:
                 self.game.find_vision_potion()
+                self.sound.pickup()
                 self.nearby_sprites.remove(sprite)
             elif sprite.name in ('ogre', 'mgirl', 'gremlin', 'skeleton'):
                 self.player.arena.fight(sprite)
+                # if sprite.name == "ogre":       #temp code
+                #     sound = self.sound.ogre()       #temp code
+                # elif sprite.name == "skeleton":       #temp code
+                #     sound = self.sound.ogre()       #temp code
+                # elif sprite.name == "gremlin":       #temp code
+                #     sound = self.sound.gremlin()       #temp code
+                sound = None
+                if sprite.name == "mgirl":       #temp code
+                    sound = self.sound.mgirl()       #temp code
+                if sound is not None and sprite.sound:       #temp code
+                    sprite.sound = False
+                    sound()       #temp code
                 sprite.object = sprite.animation[0]
                 if sprite.animate_count < sprite.animate_speed:
                     sprite.animate_count += 1
