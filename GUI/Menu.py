@@ -29,7 +29,7 @@ class Menu:
     def move_cursor(self, choices, move=None):
         top_height = self.__y_pos
         bottom_height = top_height + self.__y_offset * (len(choices)-1)
-        move_reference = {'DOWN':1, 'UP':-1}
+        move_reference = {'DOWN': 1, 'UP': -1}
 
         if move is not None:
             self.cursor.rect.centery += self.__y_offset * move_reference[move]
@@ -115,7 +115,7 @@ class Menu:
         setting, setting_pos = create_textline('Settings',
                                             pos=(x, y + off * 2),
                                             size=30)
-        messages = ((title1,title1_pos), (title2,title2_pos),
+        messages = ((title1, title1_pos), (title2, title2_pos),
                     (new, new_pos), (load, load_pos), (setting, setting_pos))
         
         choices = {1: 'New', 2: 'Load', 3: 'Settings'}
@@ -154,8 +154,8 @@ class Menu:
         load, load_pos = create_textline('Load this game?', 
                                             pos=(self.__x_pos, HALF_HEIGHT),
                                             size=30)
-        messages = ((load, load_pos))
-        choices = {1:'Continue'}
+        messages = ((load, load_pos),)
+        choices = {1: 'Continue'}
         self.menu_controls(choices)
         self.__blit_txt(messages)
 
@@ -179,7 +179,7 @@ class Menu:
                                             pos=(x, y + y_off * 2),
                                             size=30)
         messages = ((save, save_pos), (reset, reset_pos), (unpause, unpause_pos))
-        choices = {1:'Save', 2: 'Reset', 3:'Continue'}
+        choices = {1: 'Save', 2: 'Reset', 3: 'Continue'}
         while True:
             if self.menu_input == 'Continue':
                 self.menu_input = None
@@ -204,11 +204,11 @@ class Menu:
         reset, reset_pos = create_textline('Try again?',
                                             pos=(x, y),
                                             size=30)
-        exit, exit_pos = create_textline('Exit',
+        exit_opt, exit_pos = create_textline('Exit',
                                             pos=(x, y + y_off),
                                             size=30)
-        messages = ((title, title_pos), (reset, reset_pos), (exit, exit_pos))
-        choices = {1:'Reset', 2: 'Exit'}
+        messages = ((title, title_pos), (reset, reset_pos), (exit_opt, exit_pos))
+        choices = {1: 'Reset', 2: 'Exit'}
         while True:
             if self.menu_input == 'Exit':
                 pygame.quit()
@@ -240,11 +240,11 @@ class Menu:
         reset, reset_pos = create_textline('Play again?',
                                             pos=(x, y),
                                             size=30)
-        exit, exit_pos = create_textline('Exit',
+        exit_opt, exit_pos = create_textline('Exit',
                                             pos=(x, y + off),
                                             size=30)
-        messages = ((title1, title1_pos), (title2, title2_pos), (reset, reset_pos), (exit, exit_pos))
-        choices = {1:'Reset', 2: 'Exit'}
+        messages = ((title1, title1_pos), (title2, title2_pos), (reset, reset_pos), (exit_opt, exit_pos))
+        choices = {1: 'Reset', 2: 'Exit'}
         while True:
             if self.menu_input == 'Exit':
                 pygame.quit()
@@ -256,3 +256,5 @@ class Menu:
                 self.menu_controls(choices)
                 self.__blit_txt(messages)
                 pygame.display.flip()
+
+# END
