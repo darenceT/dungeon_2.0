@@ -3,30 +3,37 @@ from Room import Room
 from Grid import Grid
 from Maze import Maze
 from Dungeon import Dungeon
-from Adventurer import Adventurer
+# from Adventurer import Adventurer
+from Model.Characters.Warrior import Warrior
+from Model.Characters.Thief import Thief
+from Model.Characters.Priestess import Priestess
 
 class DungeonAdventure:
     """
     Class that creates a game and pulls together all of the gameplay
     """
+    hero_ref = {'Warrior': Warrior, 'Priest': Priestess, 'Thief': Thief}
     default_hit_points_initial: int = 80    # start kinda weak
     default_hit_points_max: int = 100       # the strength of ten (wo)men!
     pit_damage: int = 10
 
-    def __init__(self, map_str: str = None):
+    def __init__(self, hero_class, map_str: str = None):
         """
         Initializes DungeonAdventure Class
         :param map_str: String of maze map
         """
         self.__maze = Dungeon(map_str=map_str)
         self.__room = self.maze.ingress
-        self.__hero = Adventurer(game=self,
+        self.__hero = DungeonAdventure.hero_ref[hero_class](game=self,
                                  hit_points=self.default_hit_points_initial,
                                  hit_points_max=self.default_hit_points_max)
+        # self.__hero = Adventurer(game=self,
+        #                          hit_points=self.default_hit_points_initial,
+        #                          hit_points_max=self.default_hit_points_max)
         self.__continues: bool = True
 
     @property
-    def hero(self) -> Adventurer:
+    def hero(self):
         """
         Returns the Hero from the Adventurer class
         :return:
@@ -34,7 +41,7 @@ class DungeonAdventure:
         return self.__hero
 
     @hero.setter
-    def hero(self, hero: Adventurer) -> None:
+    def hero(self, hero) -> None:
         """
         Sets the Hero from the Adventurer Class
         :param hero: object of type Adventurer, our player
