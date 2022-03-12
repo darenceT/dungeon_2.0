@@ -50,7 +50,6 @@ class Menu:
         """
         loop logic for putting objects on to screen.
         'blit' = put on surface
-        'flip' = show user the final surface
         """
         self.screen.fill(GRAY)
         for obj, pos in envelope:
@@ -97,7 +96,6 @@ class Menu:
         
         """
         x = self.__x_pos
-        # x_offset = 50
         y = self.__y_pos
         off = self.__y_offset
         title1, title1_pos = create_textline('DUNGEON',
@@ -231,7 +229,7 @@ class Menu:
         x = self.__x_pos
         y = self.__y_pos
         off = self.__y_offset
-        title1, title1_pos = create_textline('You escaped!',
+        title1, title1_pos = create_textline('You  escaped!',
                                             pos=(x - off, y - off * 6),
                                             size=60)
         title2, title2_pos = create_textline('Winner winner!',

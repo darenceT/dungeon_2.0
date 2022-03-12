@@ -16,9 +16,12 @@ class Drawing:
         self.player = player_controls
         self.hero = hero
         self.sprites = sprites
-        self.weapon_animate = 1
-        self.wep_time = 0
-        self.special_tick = 0
+        self.__weapon_animate = 1
+        self.__wep_time = 0
+        self.__special_tick = 0
+        self.__special_animate = 0
+        self.__special_time = 0
+        # TODO only load current hero class weapons/special
         self.textures = {
                         #  'floor': pygame.image.load('GUI/img/floor.jpg').convert(),
                          'ceiling': pygame.image.load('GUI/img/ceiling3.jpg').convert(),
@@ -38,7 +41,10 @@ class Drawing:
                          'Thief0': pygame.image.load('GUI/img/dagger0.png').convert_alpha(),
                          'Thief1': pygame.image.load('GUI/img/dagger1.png').convert_alpha(),
                          'Thief2': pygame.image.load('GUI/img/dagger2.png').convert_alpha(),
-                         'Thief3': pygame.image.load('GUI/img/dagger3.png').convert_alpha(),                         
+                         'Thief3': pygame.image.load('GUI/img/dagger3.png').convert_alpha(),
+                         'heal0': pygame.image.load('GUI/img/heal0.png').convert_alpha(),
+                         'heal1': pygame.image.load('GUI/img/heal1.png').convert_alpha(),
+                         'heal2': pygame.image.load('GUI/img/heal2.png').convert_alpha(),                         
                         #  'wall': pygame.image.load('GUI/img/wall_vision2.png').convert_alpha()
                          }
 
@@ -59,6 +65,7 @@ class Drawing:
         self.weapon_animation()
         self.hero_health_bar()
         self.special_bar()
+        self.special_animation()
         self.enemy_health_bar()
         self.inventory()
         self.mini_map()
@@ -71,15 +78,15 @@ class Drawing:
         wep_pos = (WIDTH * 2/5, HEIGHT - 280)
         wep_size = (HALF_WIDTH, HALF_HEIGHT)
         cool_down = 4
-        if self.player.attacking and self.weapon_animate < 3:
-            if self.wep_time < cool_down:
-                self.wep_time += 1
+        if self.player.attacking and self.__weapon_animate < 3:
+            if self.__wep_time < cool_down:
+                self.__wep_time += 1
             else:
-                self.weapon_animate += 1
-                self.wep_time = 0
+                self.__weapon_animate += 1
+                self.__wep_time = 0
         else: 
-            self.weapon_animate = 0
-        weapon = pygame.transform.scale(self.textures[f'{self.hero_class}{self.weapon_animate}'], wep_size)
+            self.__weapon_animate = 0
+        weapon = pygame.transform.scale(self.textures[f'{self.hero_class}{self.__weapon_animate}'], wep_size)
         self.screen.blit(weapon, wep_pos)
 
     def hero_health_bar(self):
@@ -148,10 +155,10 @@ class Drawing:
         Creates display for special skill mana & timer for mana ticking/increasing over time
         """
         cool_down = 60
-        if self.special_tick < cool_down:
-            self.special_tick += 1
+        if self.__special_tick < cool_down:
+            self.__special_tick += 1
         else:
-            self.special_tick = 0
+            self.__special_tick = 0
             self.hero.special_mana=True
 
         width = 30
@@ -183,8 +190,26 @@ class Drawing:
         txt_pos.bottomleft = (x_pos + padding, y_bottom - padding)                           
         self.screen.blit(s_txt, txt_pos)
 
-
-
+    def special_animation(self):
+        '''
+        Shows animation of special skill
+        TODO make animation specific to hero class
+        '''
+        if self.player.special_skill and self.__special_animate < 2:
+            special_pos = (HALF_WIDTH / 2, HALF_HEIGHT - 100)
+            special_size = (HALF_WIDTH, HALF_HEIGHT)
+            cool_down = 8
+            if self.__special_time < cool_down:
+                self.__special_time += 1
+            else:
+                self.__special_animate += 1
+                self.__special_time = 0
+            weapon = pygame.transform.scale(self.textures[f'heal{self.__special_animate}'], special_size)
+            self.screen.blit(weapon, special_pos)    
+        else: 
+            self.player.special_skill = False
+            self.__special_animate = 0
+        
     def inventory(self):
         """
         Display inventory counts of pillars, vision potion & healing potions

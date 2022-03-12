@@ -30,7 +30,7 @@ class Main:
 
     def __load_game(self):
         pygame.init()
-        pygame.display.set_caption('Dungeon 2.0')
+        pygame.display.set_caption('Dungeon Escape')
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.memo = Memo(self.screen)
         self.menu = Menu(self.screen)
@@ -49,7 +49,6 @@ class Main:
         self.game_data = DungeonAdventure()
         self.dungeon = self.game_data.maze
         self.hero = self.game_data.hero
-        # Extract more dungeon data here e.g. rooms, objects, etc.
         print(self.dungeon)                         # DELETE
 
         def __parse_map(maze):

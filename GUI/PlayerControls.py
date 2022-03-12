@@ -14,7 +14,8 @@ class PlayerControls:
     def __init__(self, screen, game_data, memo, collision_walls):
         self.angle = 0
         self.player_speed = 3
-        self.attacking = False
+        self.__attacking = False
+        self.__special_skill = False
    
         self.cur_room = game_data.maze.ingress
         self.x = convert_coords_to_pixel(self.cur_room.coords[0])
@@ -56,6 +57,24 @@ class PlayerControls:
             raise TypeError('Only boolean accepted for pause_on')
 
     @property
+    def attacking(self):
+        return self.__attacking
+
+    @property
+    def special_skill(self):
+        return self.__special_skill
+
+    @special_skill.setter
+    def special_skill(self, change=False):
+        if isinstance(change, bool):
+            if not change:
+                self.__special_skill = False
+            else:
+                raise ValueError('True should not be accessed outside of PlayerControls')
+        else:
+            raise TypeError('Only boolean accepted for pause_on')
+
+    @property
     def win_game(self):
         return self.__win_game
 
@@ -91,7 +110,6 @@ class PlayerControls:
 
     def movement(self):
         self.keys_control()
-            # return True
         # self.mouse_control()
         self.rect.center = self.x, self.y
         self.angle %= DOUBLE_PI
@@ -103,17 +121,19 @@ class PlayerControls:
         if self.cur_room.coords != (next_x, next_y):
             self.cur_room = self.game_data.maze.rooms[next_y][next_x]
 
-            if self.cur_room.pillar and \
-            self.cur_room.pillar not in self.game_data.hero.pillars:
-                self.memo.new_message(f'You found pillar {self.cur_room.pillar}!')
-            
+            # exit logic
             if self.cur_room.is_exit:
                 if len(self.game_data.hero.pillars) ==  4:
                     self.__win_game = True
                     return
                 else:
                     self.memo.new_message(f'You need to find {4-len(self.game_data.hero.pillars)} more pillars!')
-            
+            # pillar found logic
+            elif self.cur_room.pillar and \
+            self.cur_room.pillar not in self.game_data.hero.pillars:
+                self.memo.new_message(f'You found pillar {self.cur_room.pillar}!')
+
+            # move hero to new room, refresh nearby sprites
             self.game_data.enter_room(self.cur_room)
             self.room_change = True
             self.get_rooms_in_sight()
@@ -168,6 +188,11 @@ class PlayerControls:
                     if self.game_data.hero.vision_potions:
                         self.memo.new_message('Vision potion used, check your map!')
                     self.game_data.hero.use_vision_potion()
+                elif event.key == pygame.K_r:
+                    special = self.game_data.hero.special_skill()
+                    if special is not None:
+                        self.__special_skill = True
+                        self.memo.new_message(special)
                 elif event.key == pygame.K_SPACE:
                     self.__pause_on = True
 
@@ -197,6 +222,6 @@ class PlayerControls:
         if keys[pygame.K_RIGHT]:
             self.angle += 0.04
 
-        self.attacking = True if keys[pygame.K_e] else False
+        self.__attacking = True if keys[pygame.K_e] else False
         self.show_map = True if keys[pygame.K_TAB] else False
 
