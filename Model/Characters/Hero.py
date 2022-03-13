@@ -119,19 +119,6 @@ class Hero(DungeonCharacter):
         """
         return bool(pillar in self.pillars)
 
-    def display_inventory(self):
-        """
-        Displays the player's current inventory of items, and hit points
-        :return:
-        """
-        # Keeps a list of items in inventory
-        print(f"Name:    {self.__name}")
-        print(f"Health:  {self.__hit_points}")
-        print(f"Pillars: {', '.join(self.pillars)}")
-        print(f"Potions...")
-        print(f"Healing: {self.healing_potions}")
-        print(f"Vision:  {self.vision_potions}")
-
     def gain_healing_potion(self, ):
         """
         Increases the number of healing potions when Adventurer discovers one.

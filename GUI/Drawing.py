@@ -19,6 +19,7 @@ class Drawing:
         self.sprites = sprites
         self.__weapon_animate = 1
         self.__wep_time = 0
+        self.__enemy_in_sight = tuple()
         self.__special_tick = 0
         self.__special_animate = 0
         self.__special_time = 0
@@ -31,18 +32,18 @@ class Drawing:
                          'Hi': pygame.image.load('GUI/img/health_icon.png').convert_alpha(),
                          'Vi': pygame.image.load('GUI/img/vision_icon.png').convert_alpha(),
                          'Pi': pygame.image.load('GUI/img/pillar.png').convert_alpha(),
-                         'Warrior0': pygame.image.load('GUI/img/sword0.png').convert_alpha(),
-                         'Warrior1': pygame.image.load('GUI/img/sword1.png').convert_alpha(),
-                         'Warrior2': pygame.image.load('GUI/img/sword2.png').convert_alpha(),
-                         'Warrior3': pygame.image.load('GUI/img/sword3.png').convert_alpha(),
-                         'Priest0': pygame.image.load('GUI/img/staff0.png').convert_alpha(),
-                         'Priest1': pygame.image.load('GUI/img/staff1.png').convert_alpha(),
-                         'Priest2': pygame.image.load('GUI/img/staff2.png').convert_alpha(),
-                         'Priest3': pygame.image.load('GUI/img/staff3.png').convert_alpha(),
-                         'Thief0': pygame.image.load('GUI/img/dagger0.png').convert_alpha(),
-                         'Thief1': pygame.image.load('GUI/img/dagger1.png').convert_alpha(),
-                         'Thief2': pygame.image.load('GUI/img/dagger2.png').convert_alpha(),
-                         'Thief3': pygame.image.load('GUI/img/dagger3.png').convert_alpha(),
+                         'warrior0': pygame.image.load('GUI/img/sword0.png').convert_alpha(),
+                         'warrior1': pygame.image.load('GUI/img/sword1.png').convert_alpha(),
+                         'warrior2': pygame.image.load('GUI/img/sword2.png').convert_alpha(),
+                         'warrior3': pygame.image.load('GUI/img/sword3.png').convert_alpha(),
+                         'priest0': pygame.image.load('GUI/img/staff0.png').convert_alpha(),
+                         'priest1': pygame.image.load('GUI/img/staff1.png').convert_alpha(),
+                         'priest2': pygame.image.load('GUI/img/staff2.png').convert_alpha(),
+                         'priest3': pygame.image.load('GUI/img/staff3.png').convert_alpha(),
+                         'thief0': pygame.image.load('GUI/img/dagger0.png').convert_alpha(),
+                         'thief1': pygame.image.load('GUI/img/dagger1.png').convert_alpha(),
+                         'thief2': pygame.image.load('GUI/img/dagger2.png').convert_alpha(),
+                         'thief3': pygame.image.load('GUI/img/dagger3.png').convert_alpha(),
                          'heal0': pygame.image.load('GUI/img/heal0.png').convert_alpha(),
                          'heal1': pygame.image.load('GUI/img/heal1.png').convert_alpha(),
                          'heal2': pygame.image.load('GUI/img/heal2.png').convert_alpha(),                         
@@ -92,7 +93,7 @@ class Drawing:
                 self.__wep_time = 0
         else: 
             self.__weapon_animate = 0
-        weapon = pygame.transform.scale(self.textures[f'{self.hero_class}{self.__weapon_animate}'], wep_size)
+        weapon = pygame.transform.scale(self.textures[f'{self.hero.hero_type}{self.__weapon_animate}'], wep_size)
         self.screen.blit(weapon, wep_pos)
 
     def hero_health_bar(self):
@@ -106,7 +107,7 @@ class Drawing:
 
         pygame.draw.rect(self.screen, BLACK, border)
         pygame.draw.rect(self.screen, RED, bar_info)
-        bar_info[2] *= self.hero.hit_points / 100
+        bar_info[2] *= self.hero.hit_points / self.hero.hit_points_max
         pygame.draw.rect(self.screen, GREEN, bar_info)
 
         text = 'Health'
@@ -126,35 +127,43 @@ class Drawing:
         bar_y = HALF_HEIGHT - 40
         width = 150
         height = 40
-        name_x = bar_x + 70
+        name_x = bar_x + 130
         name_y = bar_y + 18
         bar_info = [bar_x, bar_y, width, height]
         border_offset = 3
         borders = [bar_x - border_offset, bar_y - border_offset, 
                    width + border_offset * 2, height + border_offset * 2]
 
+        
+        #TODO refactor nested loops
+        temp_list = []
+        if self.player.room_change:
+            for room in self.player.rooms_in_sight:
+                for npc in room.occupants:
+                    for sprite in self.sprites.nearby_sprites:
+                        if npc.mtype == sprite.name and sprite.visible_health:
+                            temp_list.append(npc)
+            self.__enemy_in_sight = tuple(temp_list)
+        
         count = 0
         offset = 50
-        for enemy in self.sprites.nearby_sprites:
-            if enemy.animation and enemy.visible_health:
-                if count > 0: 
-                    name_y -= offset
-                    bar_info[1] -= offset
-                    borders[1] = bar_info[1] - border_offset
-                bar_info[2] *= enemy.hitpoint / 100
-                borders[2] = bar_info[2] + border_offset * 2
-                pygame.draw.rect(self.screen, BLACK, borders)
-                pygame.draw.rect(self.screen, PINK, bar_info)
+        for npc in self.__enemy_in_sight:
+            if count > 0: 
+                name_y -= offset
+                bar_info[1] -= offset
+                borders[1] = bar_info[1] - border_offset
+            bar_info[2] *= npc.hit_points / 100
+            borders[2] = bar_info[2] + border_offset * 2
+            pygame.draw.rect(self.screen, BLACK, borders)
+            pygame.draw.rect(self.screen, PINK, bar_info)
 
-                enemy_name = str(enemy.name.capitalize())    # substitute for name instead of type
-                if enemy_name == "Mgirl": enemy_name = "Mean Girl" 
-                name, name_pos = create_textline(enemy_name, 
-                                                    pos=(name_x, name_y),
-                                                    font_type='GUI/font/28DaysLater.ttf', 
-                                                    size=30,
-                                                    color=BLACK)
-                self.screen.blit(name, name_pos)
-                count += 1
+            name, name_pos = create_textline(str(npc.name), 
+                                                pos=(name_x, name_y),
+                                                font_type='GUI/font/28DaysLater.ttf', 
+                                                size=20,
+                                                color=BLACK)
+            self.screen.blit(name, name_pos)
+            count += 1
 
     def special_bar(self):
         """
