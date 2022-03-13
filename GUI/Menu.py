@@ -181,21 +181,22 @@ Good luck, brave hero!
         screens = {
             0: {
                 'text': text1,
-                'y': 15,
+                'x': 35,
+                'y': 15
             },
             1: {
                 'text': text2,
+                'x': 120,
                 'y': 100
             }
         }
-        x = 35
         y_off = 28
         page = 0
         while page < 2:
             text_rendered = []
             text_list = screens[page]['text'].splitlines()
             for number, line in enumerate(text_list):
-                txt, txt_pos = create_textline(line, pos=(x, screens[page]['y'] + y_off * number), 
+                txt, txt_pos = create_textline(line, pos=(screens[page]['x'], screens[page]['y'] + y_off * number), 
                                                     font_type='GUI/font/Titillium.ttf', size = 23, pos_type='xy')
                 text_rendered.append((txt, txt_pos))
             cont, cont_pos = create_textline('Continue', pos=(self.X_POS, self.Y_POS + self.Y_OFFSET * 3), size=30)
@@ -302,7 +303,10 @@ Good luck, brave hero!
                 # continue, still in pause_menu
 
     def lose_screen(self):
-        """ TODO docs
+        """ 
+        At this point game loop has ended as triggered by loop while hero.is_alive
+        No additional logic needed to reset game: 
+        Return continues loop outside of main class --> create new main then start loop again
         """
         self.sound.lose()
         x = self.X_POS
@@ -331,13 +335,16 @@ Good luck, brave hero!
                 pygame.quit()
                 exit()
             elif chose == 'Reset':
-                print(f"lose_screen -> reset, unimplemented")
-                # TODO
+                return
             else:
                 print(f"lose_screen <- unrecognized '{chose}")
 
     def win_screen(self):
-        """ TODO docs
+        """ 
+        At this point game loop has ended as triggered at PlayerControls when
+        hero has obtained 4 pillars and reached exit.
+        No additional logic needed to reset game: 
+        Return continues loop outside of main class --> create new main then start loop again
         """
         self.sound.win()
         x = self.X_POS
@@ -348,7 +355,7 @@ Good luck, brave hero!
                                             size=60)
         title2, title2_pos = create_textline('Winner winner!',
                                             pos=(x, y - y_off * 4),
-                                            size=60)
+                                            size=40)
         reset, reset_pos = create_textline('Play again?',
                                             pos=(x, y),
                                             size=30)
@@ -369,8 +376,7 @@ Good luck, brave hero!
                 pygame.quit()
                 exit()
             elif chose == 'Reset':
-                print(f"win_screen -> reset, unimplemented")
-                # TODO
+                return
             else:
                 print(f"win_screen <- unrecognized '{chose}")
 

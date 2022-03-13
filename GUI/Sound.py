@@ -1,14 +1,15 @@
 import pygame
 from pygame import mixer
 from pathlib import Path
-
+from random import randrange
 
 class Sound:
     """
     Constructor/instance included so that a tracker can be used for sound options,
     to turn off and on the sound & music.
-    Sounds (intro, in-game, gremlin, mgirl, lose) from https://www.chosic.com/free-music/all/
-    Sounds (healing special, pickup potions) from https://mixkit.co/free-sound-effects/
+    (intro, in-game, gremlin, mgirl, lose) from https://www.chosic.com/free-music/all/
+    (healing special, pickup potions) from https://mixkit.co/free-sound-effects/
+    (defeat monster) from https://freesound.org/people/MrFossy/sounds/521900/
     Remaining sounds from https://www.zapsplat.com/sound-effect-categories/
     """
     def __init__(self):
@@ -182,4 +183,4 @@ class Sound:
         Sound for defeating monster
         """
         if self.__is_running:
-            mixer.Channel(2).play(pygame.mixer.Sound(Path('GUI','sound', 'zapsplat_defeat_monster.mp3')))
+            mixer.Channel(2).play(pygame.mixer.Sound(Path('GUI','sound', f'defeat_monster{randrange(5)}.wav')))

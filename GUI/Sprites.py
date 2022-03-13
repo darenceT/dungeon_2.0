@@ -6,12 +6,13 @@ from .Utility import convert_coords_to_pixel
 
 
 class SpriteObject:
-    def __init__(self, image, name, pos, shift=1.8, scale=0.4,
+    def __init__(self, image, name, pos, object=None, shift=1.8, scale=0.4,
                  animation=None):
         self.image = image
         self.name = name
         self.x = convert_coords_to_pixel(pos[0]) # + randint(1, 20)
         self.y = convert_coords_to_pixel(pos[1]) # + randint(1, 20)
+        self.object = object
         self.shift = shift
         self.scale = scale
         self.visible_health = False
@@ -84,15 +85,14 @@ class SpritesContainer:
                 if room.occupants:
                     for npc in room.occupants:
                         add(SpriteObject(self.monsters[npc.mtype]['sprite'], npc.mtype, room.coords, 
+                                        object=npc, 
                                         scale=self.monsters[npc.mtype]['scale'], 
-                                        shift=self.monsters[npc.mtype]['shift'],
-                                        animation=self.monsters[npc.mtype]['animation'].copy(),
+                                        shift=self.monsters[npc.mtype]['shift'], 
+                                        animation=self.monsters[npc.mtype]['animation'].copy(), 
                                         )) 
                 if room.healing_potions:
                     for _ in range(room.healing_potions):
                         add(SpriteObject(self.images['H'], 'H', room.coords))
-                        # types = ('ogre', 'mgirl', 'gremlin')
-                        # npc = types[randrange(3)] 
                 if room.vision_potions:
                     for _ in range(room.vision_potions):
                         add(SpriteObject(self.images['V'], 'V', room.coords))        
@@ -124,9 +124,9 @@ class SpritesContainer:
         dx, dy = sprite.x - self.player.x, sprite.y - self.player.y
         distance_to_sprite = math.sqrt(dx ** 2 + dy ** 2)
         
+
         # trigger game events by distance
         self.__interact_sprites(sprite, distance_to_sprite)
-
 
         theta = math.atan2(dy, dx)
         gamma = theta - self.player.angle
@@ -158,28 +158,24 @@ class SpritesContainer:
         # display monster health
         sprite.visible_health = True if distance < 80 and sprite.animation else False
             
-        # interact with pillars, trap, and monsters
-        if distance < 50:
+        # interact ("seeing") pillars
+        if distance < 55:
             if sprite.name == 'pillar' and self.game.room.pillar and \
             self.game.room.pillar not in self.game.hero.pillars:
                 self.sound.pillar()
                 self.player.new_pillar = self.game.room.pillar
                 self.game.find_pillar()
-            elif sprite.name in ('ogre', 'mgirl', 'gremlin', 'skeleton'):
+
+        # interact with trap, and monsters
+        if distance < 50:
+
+            if sprite.name in ('ogre', 'mgirl', 'gremlin', 'skeleton'):
                 # play monster sound
                 if sprite.name not in self.sound.monster_sounds:
                     self.sound.monster_sounds = (sprite.name, False) 
                     self.sound.monster_play(sprite.name)
 
-                npc = None
-                for monster in self.game.room.occupants:
-                    if monster.mtype == sprite.name:
-                        npc = monster
-                # battle logic
-                if npc is not None:
-                    self.player.arena.fight(npc)
-                # else:
-                #     raise TypeError('Incongruency with monster sprite exist but actual monster does not')
+                self.player.arena.fight(sprite.object)
 
                 # animate monster
                 sprite.image = sprite.animation[0]
@@ -190,11 +186,16 @@ class SpritesContainer:
                     sprite.animate_count = 0
                 
                 # remove monster GUI and stop monster sound
-                if npc is not None and npc.hit_points <= 0:
+                if not sprite.object.is_alive:
+                    # turn off monster specific sound
                     self.sound.monster_play(sprite.name, off=True)
-                    self.sound.monster_sounds = (sprite.name, True)                
+                    self.sound.monster_sounds = (sprite.name, True)
+                    
+                    self.sound.defeat_monster()                
                     self.nearby_sprites.remove(sprite)
-            # TODO insert pit interaction
+                    self.player.cur_room.occupants = (sprite.object, True)
+                    
+            # TODO insert trap interaction
         
         # pickup potions
         if distance < 40: 

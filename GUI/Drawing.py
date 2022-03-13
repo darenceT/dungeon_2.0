@@ -19,7 +19,6 @@ class Drawing:
         self.sprites = sprites
         self.__weapon_animate = 1
         self.__wep_time = 0
-        self.__enemy_in_sight = tuple()
         self.__special_tick = 0
         self.__special_animate = 0
         self.__special_time = 0
@@ -125,45 +124,37 @@ class Drawing:
         """
         bar_x = 20
         bar_y = HALF_HEIGHT - 40
-        width = 150
+        width = 220
         height = 40
-        name_x = bar_x + 10
-        name_y = bar_y + 10
+        name_x = bar_x + 5
+        name_y = bar_y + 3
         bar_info = [bar_x, bar_y, width, height]
         border_offset = 3
         borders = [bar_x - border_offset, bar_y - border_offset, 
                    width + border_offset * 2, height + border_offset * 2]
         
-        #TODO refactor nested loops
-        temp_list = []
-        if self.player.room_change:
-            for room in self.player.rooms_in_sight:
-                for npc in room.occupants:
-                    for sprite in self.sprites.nearby_sprites:
-                        if npc.mtype == sprite.name and sprite.visible_health:
-                            temp_list.append(npc)
-            self.__enemy_in_sight = tuple(temp_list)
-        
         count = 0
         offset = 50
-        for npc in self.__enemy_in_sight:
-            if count > 0: 
-                name_y -= offset
-                bar_info[1] -= offset
-                borders[1] = bar_info[1] - border_offset
-            bar_info[2] *= npc.hit_points / 100
-            borders[2] = bar_info[2] + border_offset * 2
-            pygame.draw.rect(self.screen, BLACK, borders)
-            pygame.draw.rect(self.screen, PINK, bar_info)
+        
+        for sprite in self.sprites.nearby_sprites:
+            if sprite.visible_health and sprite.object.is_alive:
+                if count > 0: 
+                    name_y -= offset
+                    bar_info[1] -= offset
+                    borders[1] = bar_info[1] - border_offset
+                bar_info[2] *= sprite.object.hit_points / sprite.object.hit_points_max
+                borders[2] = bar_info[2] + border_offset * 2
+                pygame.draw.rect(self.screen, BLACK, borders)
+                pygame.draw.rect(self.screen, PINK, bar_info)
 
-            name, name_pos = create_textline(str(npc.name), 
-                                                pos=(name_x, name_y),
-                                                font_type='GUI/font/28DaysLater.ttf', 
-                                                size=20,
-                                                color=BLACK,
-                                                pos_type='xy')
-            self.screen.blit(name, name_pos)
-            count += 1
+                name, name_pos = create_textline(str(sprite.object.name), 
+                                                    pos=(name_x, name_y),
+                                                    font_type='GUI/font/Titillium.ttf', 
+                                                    size=20,
+                                                    color=BLACK,
+                                                    pos_type='xy')
+                self.screen.blit(name, name_pos)
+                count += 1
 
     def special_bar(self):
         """
