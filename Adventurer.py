@@ -1,3 +1,5 @@
+# retiring hero class from version 1.0
+
 class Adventurer:
     """
     Our brave hero. Sets up and updates game player, their inventory, potions and hit points.

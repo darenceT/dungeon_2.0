@@ -127,13 +127,12 @@ class Drawing:
         bar_y = HALF_HEIGHT - 40
         width = 150
         height = 40
-        name_x = bar_x + 130
-        name_y = bar_y + 18
+        name_x = bar_x + 10
+        name_y = bar_y + 10
         bar_info = [bar_x, bar_y, width, height]
         border_offset = 3
         borders = [bar_x - border_offset, bar_y - border_offset, 
                    width + border_offset * 2, height + border_offset * 2]
-
         
         #TODO refactor nested loops
         temp_list = []
@@ -161,7 +160,8 @@ class Drawing:
                                                 pos=(name_x, name_y),
                                                 font_type='GUI/font/28DaysLater.ttf', 
                                                 size=20,
-                                                color=BLACK)
+                                                color=BLACK,
+                                                pos_type='xy')
             self.screen.blit(name, name_pos)
             count += 1
 
