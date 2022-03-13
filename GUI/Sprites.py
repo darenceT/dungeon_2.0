@@ -193,6 +193,7 @@ class SpritesContainer:
                     
                     self.sound.defeat_monster()                
                     self.nearby_sprites.remove(sprite)
+                    # remove monster object from room
                     self.player.cur_room.occupants = (sprite.object, True)
                     
             # TODO insert trap interaction
