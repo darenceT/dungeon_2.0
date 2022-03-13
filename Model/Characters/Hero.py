@@ -55,11 +55,11 @@ class Hero(DungeonCharacter):
         # Consider moving this to DungeonCharacter. Then adding the heal capability for monster.
         # Could also use Factory to create each sub type character
         # don't declare the same data again, shadowing
-        self.__hit_points -= damage
-        if self.__hit_points <= 0:
-            self.__hit_points = 0
+        self.hit_points -= damage
+        if self.hit_points <= 0:
+            self.hit_points = 0
             self.__game.continues = False
-        return self.__hit_points
+        return self.hit_points
 
 
     def special_skill(self) -> None:
@@ -149,9 +149,9 @@ class Hero(DungeonCharacter):
         if self.healing_potions <= 0:
             return -1
         self.healing_potions -= 1
-        self.__hit_points += hit_points
-        if self.__hit_points > self.__hit_points_max:
-            self.__hit_points = self.__hit_points_max
+        self.hit_points += hit_points
+        if self.hit_points > self.hit_points_max:
+            self.hit_points = self.hit_points_max
         return self.healing_potions
 
     def gain_vision_potion(self):

@@ -24,9 +24,7 @@ class DungeonAdventure:
         """
         self.__maze = Dungeon(map_str=map_str)
         self.__room = self.maze.ingress
-        self.__hero = DungeonAdventure.hero_ref[hero_class](game=self,
-                                 hit_points=self.default_hit_points_initial,
-                                 hit_points_max=self.default_hit_points_max)
+        self.__hero = DungeonAdventure.hero_ref[hero_class](game=self)
         # self.__hero = Adventurer(game=self,
         #                          hit_points=self.default_hit_points_initial,
         #                          hit_points_max=self.default_hit_points_max)
