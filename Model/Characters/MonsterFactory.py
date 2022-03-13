@@ -1,9 +1,9 @@
 from typing import Union
 
-from Ogre import Ogre
-from Skeleton import Skeleton
-from Gremlin import Gremlin
-from MeanGirl import MeanGirl
+from .Ogre import Ogre
+from .Skeleton import Skeleton
+from .Gremlin import Gremlin
+from .MeanGirl import MeanGirl
 
 
 class MonsterFactory:
@@ -20,13 +20,13 @@ class MonsterFactory:
         :param monster_data: stats for the relevant monster.
         :return: newly created monster
         """
-        if mtype == "Ogre":
+        if mtype == "ogre":
             maker = MonsterFactory.create_ogre
-        elif mtype == "Skeleton":
+        elif mtype == "skeleton":
             maker = MonsterFactory.create_skeleton
-        elif mtype == "Gremlin":
+        elif mtype == "gremlin":
             maker = MonsterFactory.create_gremlin
-        elif mtype == "MeanGirl":
+        elif mtype == "mgirl":
             maker = MonsterFactory.create_meangirl
         else:
             raise ValueError(f"does not support monster_name {mtype}")

@@ -1,6 +1,7 @@
 from Room import Room
 from Grid import Grid
 from Maze import Maze
+from Model.Characters.MonsterSpawn import MonsterSpawn
 from random import randrange
 
 
@@ -8,7 +9,8 @@ class Dungeon(Maze):
     """
     Thin subclass Maze that handles autofilling of items, etc.
     """
-    item_chance: int = 30  # percent chance given item type appears in room
+    item_chance: int = 40  # percent chance given item type appears in room
+    monster_chance: int = 40 # percent as above but for monsters
 
     def __init__(self, *args, **kwargs):
         """ Create a Dungeon. Same usage as Maze constructor. """
@@ -85,11 +87,16 @@ class Dungeon(Maze):
         :param room: Room to have some random item(s) added.
         :return: None
         """
-        if randrange(100) < Dungeon.item_chance:
+
+        types = ('ogre', 'mgirl', 'skeleton', 'gremlin')
+        npc = types[randrange(4)]    
+        if randrange(100) < Dungeon.monster_chance:
+            room.occupants = (MonsterSpawn.make(npc), False)
+        elif randrange(100) < Dungeon.item_chance:
             room.has_pit = True
         if randrange(100) < 40:
             room.healing_potions += 1
-        if randrange(100) < Dungeon.item_chance:
+        if randrange(60) < Dungeon.item_chance:
             room.vision_potions += 1
 
     def add_contents(self) -> None:
@@ -97,6 +104,7 @@ class Dungeon(Maze):
         To be clear, if ANY are present, assume was intentional, so add nothing.
         :return: None
         """
+        MonsterSpawn.create_database()
         for row in self.rooms:
             for room in row:
                 if not room.is_empty and not room.pillar:

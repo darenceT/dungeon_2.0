@@ -355,7 +355,22 @@ class Room:
             self.__doors_mask = doors_mask
         self.__has_crumb: bool = has_crumb
         self.__has_hero: bool = has_hero
+        self.__occupants = []
 
+    @property
+    def occupants(self):
+        return self.__occupants
+    
+    @occupants.setter
+    def occupants(self, info):
+        #TODO: add check for monster class type else error
+        npc, remove = info
+        if npc is not None:
+            if remove:
+                self.__occupants.remove(npc) 
+            else:
+                self.__occupants.append(npc)
+    
     @property
     def grid(self):
         """

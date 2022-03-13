@@ -1,5 +1,5 @@
 import sqlite3
-from MonsterFactory import MonsterFactory
+from .MonsterFactory import MonsterFactory
 
 class MonsterSpawn:
 
@@ -69,8 +69,8 @@ if __name__ == '__main__':
     m = MonsterSpawn()
 
     print('\nNow to make specific monsters')
-    print(m.make('Ogre'))
+    print(m.make('ogre'))
     print('Ogre object should be created')
 
-    print(m.make('MeanGirl'))
+    print(m.make('mgirl'))
     print('MeanGirl object should be created')

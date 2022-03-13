@@ -1,5 +1,5 @@
-from DungeonCharacter import DungeonCharacter
-from Healable import Healable
+from .DungeonCharacter import DungeonCharacter
+from .Healable import Healable
 
 
 class Monster(DungeonCharacter, Healable):

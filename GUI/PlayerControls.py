@@ -30,7 +30,7 @@ class PlayerControls:
         self.memo = memo
         self.arena = Arena(sound, self, game_data.hero)
 
-        self.rooms_in_sight = set()
+        self.__rooms_in_sight = set()
         self.map_visited = set()
         self.show_map = False             
         self.side = 50
@@ -44,6 +44,10 @@ class PlayerControls:
     @property
     def pos(self):
         return (self.x, self.y)
+
+    @property
+    def rooms_in_sight(self):
+        return self.__rooms_in_sight
 
     @property
     def pause_on(self):
@@ -90,16 +94,6 @@ class PlayerControls:
     @property
     def win_game(self):
         return self.__win_game
-
-    # @win_game.setter
-    # def win_game(self, change=False):
-    #     if isinstance(change, bool):
-    #         if change:
-    #             self.__win_game = change
-    #         else:
-    #             raise ValueError('False should not be accessed outside of PlayerControls')
-    #     else:
-    #         raise TypeError('Only boolean accepted for pause_on')
 
     def detect_collision(self, dx, dy):
         """
@@ -192,9 +186,9 @@ class PlayerControls:
             x -= 1
             y -= 1
         
-        self.rooms_in_sight = set() # reset
+        self.__rooms_in_sight = set() # reset
         extent = Grid(width, height, from_grid=self.game_data.maze, from_coords=(x, y))
-        add = self.rooms_in_sight.add
+        add = self.__rooms_in_sight.add
         for row in extent.rooms:
             for room in row:
                 add(room)
