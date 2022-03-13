@@ -1,5 +1,5 @@
 import pygame
-# import pickle
+import pickle
 
 from DungeonAdventure import DungeonAdventure
 from GUI.Raycast3D import Raycast
@@ -17,6 +17,8 @@ class Main:
     Pygame controller for running game. This class works in tandem and gets information
     from DungeonAdventure which is the non-GUI controller of Model
     """
+    save_file = 'dungeon_save.pkl'
+
     def __init__(self):
         self.sound = Sound()
         self.screen = None
@@ -36,14 +38,16 @@ class Main:
 
     def __load_game(self):
         """
-        Load data needed for game, mainly: 
+        Load data needed for game, mainly:
         1. Setup models for pygame, loading constructors for
-           GUI controls (PlayerControl), GUI objects (Sprites), 
+           GUI controls (PlayerControl), GUI objects (Sprites),
            drawing modules onto GUI sufrace (Drawing & Memo),
            and "3D engine" of sorts by Raycasting
         2. Grab Model information from DungeonAdventure.
         """
         pygame.init()
+        pygame.event.set_blocked(None)  # start by block everything
+        pygame.event.set_allowed([pygame.QUIT, pygame.KEYDOWN])  # allow only those relevant
         pygame.display.set_caption('Dungeon Escape')
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.memo = Memo(self.screen)
@@ -63,8 +67,25 @@ class Main:
         Helper function for load game, obtains:
         hero & dungeon maze (including its monsters & objects)
         """
-        self.hero_class = self.menu.intro_menu()
-        self.game_data = DungeonAdventure(self.hero_class)
+        # self.hero_class = self.menu.intro_menu()
+        # self.game_data = DungeonAdventure(self.hero_class)
+        while not self.hero_class or not self.game_data:
+            op, dat = self.menu.intro_menu()
+            if op == 'new':
+                print('new game')
+                self.hero_class = dat[0]
+                self.game_data = DungeonAdventure(hero_class=self.hero_class)
+            elif op == 'load':
+                print('load from saved game')
+                try:
+                    with open(file=self.save_file, mode='r') as f:
+                        dat = pickle.load(f)
+                        self.game_hero = dat[0]
+                        self.game_data = dat[1]
+                except Exception as e:
+                    print(f"load failed: {e}")
+            else:
+                raise ValueError(f"unrecognized op '{op}'")
         self.dungeon = self.game_data.maze
         self.hero = self.game_data.hero
         print(self.dungeon)                         # DELETE
