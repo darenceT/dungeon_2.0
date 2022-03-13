@@ -10,7 +10,8 @@ def create_textline(message,
                     pos=(HALF_WIDTH, HALF_HEIGHT), 
                     font_type="GUI/font/Damned.ttf", 
                     size=32, 
-                    color=DARK_RED):
+                    color=DARK_RED,
+                    pos_type='center'):
     """
     Create text object for surface.
     Credit: https://www.geeksforgeeks.org/python-display-text-to-pygame-window/
@@ -18,5 +19,10 @@ def create_textline(message,
     font = pygame.font.Font(font_type, size)
     text = font.render(message, True, color)
     textRect = text.get_rect()
-    textRect.center = pos
+    if pos_type == 'center':
+        textRect.center = pos
+    elif pos_type == 'xy':
+        textRect.x, textRect.y = pos
+    else:
+        raise ValueError(f'{pos_type} not recognized or not implemented')
     return text, textRect

@@ -13,17 +13,14 @@ class Cursor:
 
 class Menu:
     # Constants
-    __x_pos = HALF_WIDTH
-    __y_pos = HALF_HEIGHT + 100
-    __y_offset = 40
+    X_POS = HALF_WIDTH
+    Y_POS = HALF_HEIGHT + 100
+    Y_OFFSET = 40
 
     def __init__(self, screen, sound):
         self.screen = screen
         self.sound = sound
-        # self.menu_input = None
-        # self.picked = False
         self.messages: tuple = tuple()
-        # self.choices = None
         self.select_number = 1
         self.cursor = Cursor()
         self.images = {
@@ -55,7 +52,7 @@ class Menu:
             num = 1
         print(f"move_cursor -> {num}:'{choices[num]}")
         self.select_number = num
-        self.cursor.rect.centery = self.__y_pos + self.__y_offset * (self.select_number - 1)
+        self.cursor.rect.centery = self.Y_POS + self.Y_OFFSET * (self.select_number - 1)
 
     def menu_controls(self, choices=None, also=None) -> Any:
         pygame.event.clear()
@@ -71,7 +68,8 @@ class Menu:
                 chose = choices[num]
                 print(f"menu_controls -> {num}'{chose}'")
                 return chose
-            if choices and event.type == pygame.KEYDOWN:
+            if len(choices) > 1 and event.type == pygame.KEYDOWN:
+            # if choices and event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
                     self.move_cursor(choices, 'UP')
                 elif event.key == pygame.K_DOWN:
@@ -93,9 +91,9 @@ class Menu:
         """
         TODO docs
         """
-        x = self.__x_pos
-        y = self.__y_pos
-        y_off = self.__y_offset
+        x = self.X_POS
+        y = self.Y_POS
+        y_off = self.Y_OFFSET
         # Static
         title1, title1_pos = create_textline('DUNGEON',
                                             pos=(x - y_off, y - y_off * 6),
@@ -124,13 +122,15 @@ class Menu:
             chose = self.menu_controls(choices)
             self.draw()
             if chose == 'New':
-                print(f"start_menu <- 'New'")
-                print(f"start_menu -> hero_selection")
-                hero_class = self.hero_selection()
+                print("start_menu <- 'New'")
+                print("start_menu -> hero_selection")
+                hero_class = self.hero_selection()  
+                print("hero_selected -> instructions")
+                self.instructions()           
                 print(f"start_menu <- hero_class '{hero_class}'")
                 return 'new', (hero_class, None)
             elif chose == 'Load':
-                print(f"start_menu <- 'Load'")
+                print("start_menu <- 'Load'")
                 return 'load', None
             elif chose == 'Settings':
                 print(f"start_menu <- unimplemented '{chose}'")
@@ -140,15 +140,77 @@ class Menu:
                 # continue, try again
 
     def instructions(self):
-        print('show some instructions')
-        # TODO
+        text1 = """
+Welcome to Dungeon Escape, brave Hero!
+
+The 4 pillars of object-oriented programming have been captured
+by the evil Sorcerer King Ca-Pul, and the world has been plunged
+into an age of darkness and endless scripts. Ca-Pu has placed
+the pillars under guard by fearsome monsters: 
+Ogres, Skeletons, Gremlins, and worst of all--Mean Girls.
+
+Your task--should you dare to accept it--is to locate the 
+four pillars and find the exit to Ca-Pul's dungeon before
+the monsters drain you of all of your health points.
+
+Take heart! For you will find that not all in Ca-Pul's realm 
+are in league with his evil scheme. Within the dungeon, 
+neutral wizards have placed Vision potions and Healing potions
+for your use. You have also been granted a special ability, 
+which you may use to vanquish Ca-Pul's evil brethren.        
+"""
+        
+        text2 = """
+Use the following commands to ease your journey:
+
+Arrow keys & A, D, W, S - find your way
+E - use your main weapon
+R - use your special ability, most useful in a fight
+H - use a healing potion
+V - use a vision potion (then look at your map)
+Tab - see a map of the maze, thus far explored
+Space - Take a breather, pause the game
+
+Good luck, brave hero!        
+"""
+        screens = {
+            0: {
+                'text': text1,
+                'y': 15,
+            },
+            1: {
+                'text': text2,
+                'y': 100
+            }
+        }
+        x = 35
+        y_off = 28
+        page = 0
+        while page < 2:
+            text_rendered = []
+            text_list = screens[page]['text'].splitlines()
+            for number, line in enumerate(text_list):
+                txt, txt_pos = create_textline(line, pos=(x, screens[page]['y'] + y_off * number), 
+                                                    font_type='GUI/font/Titillium.ttf', size = 23, pos_type='xy')
+                text_rendered.append((txt, txt_pos))
+            cont, cont_pos = create_textline('Continue', pos=(self.X_POS, self.Y_POS + self.Y_OFFSET * 3), size=30)
+            text_rendered.append((cont, cont_pos))
+
+            messages = tuple(text_rendered)
+            self.messages = messages
+            choices = {1: 'Continue'}
+            self.select_number = 1
+            self.cursor.rect.centery = self.Y_POS + self.Y_OFFSET * 3
+            self.draw()
+            self.menu_controls(choices)
+            page += 1
 
     def hero_selection(self):
         """ TODO docs
         """
-        x = self.__x_pos
-        y = self.__y_pos
-        y_off = self.__y_offset
+        x = self.X_POS
+        y = self.Y_POS
+        y_off = self.Y_OFFSET
         thief, thief_pos = create_textline('Thief',
                                             pos=(x, y),
                                             size=30)
@@ -160,7 +222,7 @@ class Menu:
                                             size=30)
         messages = ((thief, thief_pos), (priestess, priestess_pos), (warrior, warrior_pos))
         self.messages = messages
-        choices = {1: 'Thief', 2: 'Priest', 3: 'Warrior'}
+        choices = {1: 'thief', 2: 'priest', 3: 'warrior'}
         self.select_number = 1
         self.cursor.rect.centery = y + y_off * (self.select_number - 1)
         self.draw()
@@ -182,7 +244,7 @@ class Menu:
 
     def load_menu(self):
         load, load_pos = create_textline('Load this game?', 
-                                            pos=(self.__x_pos, HALF_HEIGHT),
+                                            pos=(self.X_POS, HALF_HEIGHT),
                                             size=30)
         messages = ((load, load_pos),)
         self.messages = messages
@@ -196,9 +258,9 @@ class Menu:
         """ TODO docs
         """
 
-        x = self.__x_pos
-        y = self.__y_pos
-        y_off = self.__y_offset
+        x = self.X_POS
+        y = self.Y_POS
+        y_off = self.Y_OFFSET
         unpause, unpause_pos = create_textline('Continue',
                                                pos=(x, y),
                                                size=30)
@@ -237,9 +299,9 @@ class Menu:
         """ TODO docs
         """
         self.sound.lose()
-        x = self.__x_pos
-        y = self.__y_pos
-        y_off = self.__y_offset
+        x = self.X_POS
+        y = self.Y_POS
+        y_off = self.Y_OFFSET
         title, title_pos = create_textline('GAME OVER',
                                             pos=(x, y - y_off * 4),
                                             size=60)
@@ -272,9 +334,9 @@ class Menu:
         """ TODO docs
         """
         self.sound.win()
-        x = self.__x_pos
-        y = self.__y_pos
-        y_off = self.__y_offset
+        x = self.X_POS
+        y = self.Y_POS
+        y_off = self.Y_OFFSET
         title1, title1_pos = create_textline('You  escaped!',
                                             pos=(x - y_off, y - y_off * 6),
                                             size=60)

@@ -12,7 +12,7 @@ class DungeonAdventure:
     """
     Class that creates a game and pulls together all of the gameplay
     """
-    hero_ref = {'Warrior': Warrior, 'Priest': Priestess, 'Thief': Thief}
+    hero_ref = {'warrior': Warrior, 'priest': Priestess, 'thief': Thief}
     default_hit_points_initial: int = 80    # start kinda weak
     default_hit_points_max: int = 100       # the strength of ten (wo)men!
     pit_damage: int = 10
