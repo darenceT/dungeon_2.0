@@ -170,7 +170,7 @@ class Sound:
 
     def monster_play(self, mtype, off=False):
         if mtype in ('mgirl', 'ogre', 'gremlin', 'skeleton') and self.__is_running:
-            channel = self.__monster_sounds.index(mtype) + 5
+            channel = self.__monster_sounds.index(mtype) + 2
             if off:
                 mixer.Channel(channel).stop()
             else:

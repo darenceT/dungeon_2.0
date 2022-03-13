@@ -91,15 +91,15 @@ class PlayerControls:
     def win_game(self):
         return self.__win_game
 
-    @win_game.setter
-    def win_game(self, change=False):
-        if isinstance(change, bool):
-            if change:
-                self.__special_skill = change
-            else:
-                raise ValueError('False should not be accessed outside of PlayerControls')
-        else:
-            raise TypeError('Only boolean accepted for pause_on')
+    # @win_game.setter
+    # def win_game(self, change=False):
+    #     if isinstance(change, bool):
+    #         if change:
+    #             self.__win_game = change
+    #         else:
+    #             raise ValueError('False should not be accessed outside of PlayerControls')
+    #     else:
+    #         raise TypeError('Only boolean accepted for pause_on')
 
     def detect_collision(self, dx, dy):
         """
@@ -151,7 +151,6 @@ class PlayerControls:
                     self.__win_game = True
                     return
                 else:
-                    print('self.__win_game:', self.__win_game)
                     if pillars == 0: 
                         raise ValueError('Should win game instead of display 0 pillars remaining') 
                     else:
@@ -160,6 +159,7 @@ class PlayerControls:
             elif self.__new_pillar and self.cur_room is not None:
                 self.memo.new_message(f'You found pillar {self.__new_pillar}!')
                 self.__new_pillar = None
+
             # move hero to new room, refresh nearby sprites
             self.game_data.enter_room(self.cur_room)
             self.room_change = True
