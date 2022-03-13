@@ -11,6 +11,9 @@ FPS = 60
 TILE = 80
 FPS_POS = (WIDTH - 65, 5)
 
+# player settings
+PLAYER_SPEED = 3
+
 # minimap settings
 MAP_SCALE = 5
 MAP_TILE = TILE // MAP_SCALE

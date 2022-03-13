@@ -2,7 +2,7 @@ import pygame
 import math
 from Grid import Grid
 from .Arena import Arena
-from .Settings import PI, DOUBLE_PI, MAP_TILE
+from .Settings import PI, DOUBLE_PI, MAP_TILE, PLAYER_SPEED
 from .Utility import convert_coords_to_pixel
 
 
@@ -14,7 +14,6 @@ class PlayerControls:
     """
     def __init__(self, screen, sound, game_data, memo, collision_walls):
         self.angle = 0
-        self.player_speed = 3
         self.__attacking = False
         self.__special_skill = False
    
@@ -132,8 +131,10 @@ class PlayerControls:
         self.angle %= DOUBLE_PI
 
         # update room location
-        next_x = int((self.x - 120) / 160)
-        next_y = int((self.y - 120) / 160)
+        next_x = round((self.x - 120) / 160)
+        next_y = round((self.y - 120) / 160)
+        # print('self.x, self.y:', self.x, self.y)
+        # print('self.cur_room.coords:', self.cur_room.coords, 'next_x, next_y:', next_x, next_y)
 
         if self.cur_room.coords != (next_x, next_y):
             self.cur_room = self.game_data.maze.rooms[next_y][next_x]
@@ -226,20 +227,20 @@ class PlayerControls:
         keys = pygame.key.get_pressed()
             
         if keys[pygame.K_w] or keys[pygame.K_UP]:
-            dx = self.player_speed * cos_a
-            dy = self.player_speed * sin_a
+            dx = PLAYER_SPEED * cos_a
+            dy = PLAYER_SPEED * sin_a
             self.detect_collision(dx, dy)
         if keys[pygame.K_s] or keys[pygame.K_DOWN]:
-            dx = -self.player_speed * cos_a
-            dy = -self.player_speed * sin_a
+            dx = -PLAYER_SPEED * cos_a
+            dy = -PLAYER_SPEED * sin_a
             self.detect_collision(dx, dy)
         if keys[pygame.K_a]:
-            dx = self.player_speed * sin_a
-            dy = -self.player_speed * cos_a
+            dx = PLAYER_SPEED * sin_a
+            dy = -PLAYER_SPEED * cos_a
             self.detect_collision(dx, dy)
         if keys[pygame.K_d]:
-            dx = -self.player_speed * sin_a
-            dy = self.player_speed * cos_a
+            dx = -PLAYER_SPEED * sin_a
+            dy = PLAYER_SPEED * cos_a
             self.detect_collision(dx, dy)
         if keys[pygame.K_LEFT]:
             self.angle -= 0.04

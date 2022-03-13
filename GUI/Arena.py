@@ -19,15 +19,16 @@ class Arena:
         Let the hero and monster clash, battle of stats
         TODO: convert attack speed to time-based using pygame.get_ticks() 
         """
-        if not monster.is_alive:
-            self.player_controls.cur_room.occupants = (monster, True)
+        # if not monster.is_alive:
+        #     self.player_controls.cur_room.occupants = (monster, True)
+        #     print("npc name: ", monster.name, 'has been removed from room')
 
         if self.count < self.cool_down:
             self.count += 1
         else:
             if self.player_controls.attacking and random() < self.chance_to_hit:
                 monster.hit_points -= randrange(self.min_damage, self.max_damage) * self.attack_speed
-            if random() > self.chance_to_block and random() < 0.6: 
+            if random() > self.chance_to_block and random() < monster.chance_to_hit: 
                     
                 self.hero.hit_points -= randrange(monster.minimum_damage, monster.maximum_damage) * 2 / 40  # min, max, speed(2) from monster
             self.count = 0
