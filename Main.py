@@ -136,6 +136,8 @@ class Main:
             if self.player_controls.pause_on:
                 self.player_controls.pause_on = False
                 self.menu.pause_menu()
+                if self.menu.reset:
+                    break
             elif self.player_controls.win_game:
                 break
             else:
@@ -152,7 +154,7 @@ class Main:
         
         if self.player_controls.win_game:
             self.menu.win_screen()
-        else:
+        elif not self.menu.reset:
             self.menu.lose_screen()
             
 if __name__ == '__main__':

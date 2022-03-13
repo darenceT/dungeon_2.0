@@ -28,6 +28,11 @@ class Menu:
             2: pygame.image.load('GUI/img/priestess.png').convert_alpha(),
             3: pygame.image.load('GUI/img/warrior.png').convert_alpha()
         }
+        self.__reset = False
+
+    @property
+    def reset(self):
+        return self.__reset
 
     def draw(self):
         self.screen.fill(GRAY)
@@ -285,7 +290,8 @@ Good luck, brave hero!
             elif chose == 'Reset':
                 print(f"pause_menu -> reset, unimplemented")
                 # TODO quit game... then restart with trip through start_menu?
-                # continue, still in pause_menu
+                self.__reset = True
+                return
             elif chose == 'Save':
                 print(f"pause_menu -> save, unimplemented")
                 # TODO save game
