@@ -3,7 +3,7 @@ import math
 from Grid import Grid
 from .Arena import Arena
 from .Settings import PI, DOUBLE_PI, MAP_TILE, PLAYER_SPEED
-from .Utility import convert_coords_to_pixel
+from .Utility import convert_coords_to_pixel, direction_of_vision
 
 
 class PlayerControls:
@@ -12,17 +12,17 @@ class PlayerControls:
     game_data is object of DungeonAdventure to access "enter_room" method.
     room_change boolean to trigger loading of sprites
     """
-    def __init__(self, screen, sound, game_data, memo, collision_walls):
+    def __init__(self, sound, game_data, memo, collision_walls):
         self.angle = 0
+        self.__direction = 'east'
         self.__attacking = False
         self.__special_skill = False
-   
         self.cur_room = game_data.maze.ingress
         self.x = convert_coords_to_pixel(self.cur_room.coords[0])
         self.y = convert_coords_to_pixel(self.cur_room.coords[1])
-        self.room_change = True     # set initial to True to for initial 1 time loading of nearby sprites
-
-        self.screen = screen
+        
+        self.__room_change = True     # set initial to True to for initial 1 time loading of nearby sprites
+        self.__ready_for_new_sprites = True
         self.sound = sound
         self.__pause_on = False
         self.game_data = game_data
@@ -34,6 +34,7 @@ class PlayerControls:
         self.show_map = False             
         self.side = 50
         self.rect = pygame.Rect(*self.pos, self.side, self.side)
+        #TODO below to make monsters impassible
         #self.collision_sprites = [pygame.Rect(*obj.pos, obj.side, obj.side) for obj in
                                   #self.sprites.list_of_objects if obj.blocked]
         self.collision_list = collision_walls #+ self.collision_sprites
@@ -47,6 +48,10 @@ class PlayerControls:
     @property
     def rooms_in_sight(self):
         return self.__rooms_in_sight
+
+    @property
+    def ready_for_new_sprites(self):
+        return self.__ready_for_new_sprites
 
     @property
     def pause_on(self):
@@ -125,21 +130,17 @@ class PlayerControls:
         self.y += dy
 
     def movement(self):
-        self.keys_control()
-        # self.mouse_control()
+        self.__keys_control()
         self.rect.center = self.x, self.y
         self.angle %= DOUBLE_PI
 
         # update room location
         next_x = round((self.x - 120) / 160)
         next_y = round((self.y - 120) / 160)
-        # print('self.x, self.y:', self.x, self.y)
-        # print('self.cur_room.coords:', self.cur_room.coords, 'next_x, next_y:', next_x, next_y)
-
         if self.cur_room.coords != (next_x, next_y):
             self.cur_room = self.game_data.maze.rooms[next_y][next_x]
-
-            # exit logic from sprites.object_locate() to detect hero near door
+            
+            # win logic from sprites.object_locate() to detect hero near door
             if self.cur_room.is_exit:
                 pillars = 4-len(self.game_data.hero.pillars)
                 if pillars == 0:
@@ -157,44 +158,45 @@ class PlayerControls:
 
             # move hero to new room, refresh nearby sprites
             self.game_data.enter_room(self.cur_room)
-            self.room_change = True
-            self.get_rooms_in_sight()
+            self.__room_change = True
         else:
-            self.room_change = False
+            self.__room_change = False
+        self.get_rooms_in_sight()    
         self.map_visited.add((self.x // MAP_TILE * 3, self.y // MAP_TILE * 3)) # TODO optimize
         
-
     def get_rooms_in_sight(self):
         """
-        Determines direction player is facing using player angle,
-        then obtain coordinates of the 6 rooms (including current room)
-        allowing for use in loading sprites in these rooms
+        Determines direction player is facing using player angle, then 
+        obtain coordinates of anticipated next room in addition to current room.
+        List of these rooms will be used to loading sprites in field of vision.
         """
-        width = height = 2
-        x, y = self.cur_room.coords
-        if PI/4 >= self.angle >= 7/4*PI: # east
-            height = 3
-            y -= 1
-        elif PI/4 < self.angle <= 3/4*PI: # south
-            width = 3
-            x -= 1
-        elif 3/4*PI < self.angle <= 5/4*PI: # west
-            height = 3
-            x -= 1
-            y -= 1
-        else:  # 5/4*PI < self.angle < 7/4*PI: # north
-            width = 3
-            x -= 1
-            y -= 1
-        
-        self.__rooms_in_sight = set() # reset
-        extent = Grid(width, height, from_grid=self.game_data.maze, from_coords=(x, y))
-        add = self.__rooms_in_sight.add
-        for row in extent.rooms:
-            for room in row:
-                add(room)
+        direction = direction_of_vision(self.angle)
+        if direction != self.__direction or self.__room_change:
+            self.__direction = direction
+            x, y = self.cur_room.coords
+            width = height = 1
+            if direction == 'north':
+                height = 2
+                y -= 1
+            elif direction == 'south':
+                height = 2
+            elif direction == 'west':
+                width = 2
+                x -= 1
+            else:  
+                width = 2
 
-    def keys_control(self):
+            self.__rooms_in_sight = set() # reset
+            extent = Grid(width, height, from_grid=self.game_data.maze, from_coords=(x, y))
+            add = self.__rooms_in_sight.add
+            for row in extent.rooms:
+                for room in row:
+                    add(room)
+            self.__ready_for_new_sprites = True
+        else:
+            self.__ready_for_new_sprites = False
+
+    def __keys_control(self):
         # for non-continuous key input
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN

@@ -6,6 +6,17 @@ def convert_coords_to_pixel(coord: int):
     adjust_center = 120
     return int(2 * coord * WIDTH / TEXTURE_SCALE + adjust_center)
 
+def direction_of_vision(player_angle: float):
+    if 5/4 * PI < player_angle < 7/4 * PI:
+        direction = 'north'  
+    elif PI/4 < player_angle <= 3/4 * PI:
+        direction = 'south'
+    elif 3/4 * PI < player_angle <= 5/4 * PI:
+        direction = 'west'
+    else: # covers range of player_angle <= PI/4 or player_angle >= 7/4
+        direction = 'east'
+    return direction
+    
 def create_textline(message, 
                     pos=(HALF_WIDTH, HALF_HEIGHT), 
                     font_type="GUI/font/Damned.ttf", 
