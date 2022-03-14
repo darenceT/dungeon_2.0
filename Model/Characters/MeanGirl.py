@@ -2,6 +2,9 @@ from .Monster import Monster
 
 
 class MeanGirl(Monster):
+    """
+    TODO docstrings
+    """
     def __init__(self, mtype, name, hit_points=100, attack_speed=7, chance_to_hit=0.9,
                  minimum_damage=10, maximum_damage=30, chance_to_heal=0.6, minimum_heal_points=10,
                  maximum_heal_points=30):

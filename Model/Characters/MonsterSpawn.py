@@ -2,12 +2,17 @@ import sqlite3
 from .MonsterFactory import MonsterFactory
 
 class MonsterSpawn:
-
+    """
+    TODO docstrings
+    """
     def __init__(self):
         self.create_database()
 
     @staticmethod
     def make(monster_type):
+        """
+        TODO docstrings
+        """
         conn = sqlite3.connect("monster.db")
         conn.row_factory = sqlite3.Row
         cur = conn.cursor()
@@ -24,6 +29,9 @@ class MonsterSpawn:
 
     @staticmethod
     def create_database():
+            """
+            TODO docstrings
+            """
             connection = sqlite3.connect("monster.db")
             cursor = connection.cursor()
 

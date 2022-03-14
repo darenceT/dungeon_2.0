@@ -4,6 +4,9 @@ from .Healable import Healable
 # from Healable import Healable
 
 class Priestess(Hero, Healable):
+    """
+    TODO docstrings
+    """
     def __init__(self, hero_type='priest', name="Lena", hit_points=75, hit_points_max=120, attack_speed=5, chance_to_hit=.7,
                  minimum_damage=25, maximum_damage=45, chance_to_block=.3, chance_to_heal=0.5, minimum_heal_points=30,
                  maximum_heal_points=50, game=None):
@@ -13,6 +16,9 @@ class Priestess(Hero, Healable):
         self.__special_skill = 'Heal'
         
     def special_skill(self):
+        """
+        TODO docstrings
+        """
         mana_cost = 15
         
         if self.special_mana > mana_cost and self.hit_points_max - self.hit_points > 5:

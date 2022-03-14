@@ -1,5 +1,5 @@
 import pygame
-from random import randint, randrange
+from random import randrange
 from collections import deque
 from .Settings import *
 from .Utility import convert_coords_to_pixel
@@ -10,8 +10,8 @@ class SpriteObject:
                  animation=None):
         self.image = image
         self.name = name
-        self.x = convert_coords_to_pixel(pos[0]) # + randint(1, 20)
-        self.y = convert_coords_to_pixel(pos[1]) # + randint(1, 20)
+        self.x = convert_coords_to_pixel(pos[0]) # + randrange(6)
+        self.y = convert_coords_to_pixel(pos[1]) # + randrange(6)
         self.object = object
         self.shift = shift
         self.scale = scale
@@ -19,10 +19,6 @@ class SpriteObject:
         self.animation = animation
         self.animate_count = 0
         self.animate_speed = 6
-        # self.sound = True
-
-        # self.hitpoint = 150 # temporary
-        # self.attack_damage = 5 # temporary
 
 class SpritesContainer:
     def __init__(self, screen, sound, game, player):
@@ -124,7 +120,6 @@ class SpritesContainer:
         dx, dy = sprite.x - self.player.x, sprite.y - self.player.y
         distance_to_sprite = math.sqrt(dx ** 2 + dy ** 2)
         
-
         # trigger game events by distance
         self.__interact_sprites(sprite, distance_to_sprite)
 

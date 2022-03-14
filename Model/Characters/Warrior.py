@@ -2,7 +2,9 @@ from .Hero import Hero
 
 
 class Warrior(Hero):
-
+    """
+    TODO docstrings
+    """
     def __init__(self, hero_type='warrior', name="Xena", hit_points=125, hit_points_max=150, attack_speed=4, chance_to_hit=.8,
                  minimum_damage=35, maximum_damage=60, chance_to_block=.2, game=None ):
         super().__init__(hero_type, name, hit_points, hit_points_max, attack_speed, chance_to_hit,

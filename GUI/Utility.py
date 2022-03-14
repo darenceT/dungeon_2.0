@@ -3,10 +3,16 @@ from .Settings import *
 
 
 def convert_coords_to_pixel(coord: int):
+    """
+    TODO docstrings
+    """
     adjust_center = 120
     return int(2 * coord * WIDTH / TEXTURE_SCALE + adjust_center)
 
 def direction_of_vision(player_angle: float):
+    """
+    TODO docstrings
+    """
     if 5/4 * PI < player_angle < 7/4 * PI:
         direction = 'north'  
     elif PI/4 < player_angle <= 3/4 * PI:

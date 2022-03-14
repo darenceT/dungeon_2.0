@@ -10,7 +10,7 @@ class Dungeon(Maze):
     Thin subclass Maze that handles autofilling of items, etc.
     """
     ITEM_CHANCE: int = 40  # percent chance given item type appears in room
-    MONSTER_CHANCE: int = 40 # percent as above but for monsters
+    MONSTER_CHANCE: int = 70 # percent as above but for monsters
     MONSTER_MAX_COUNT: int = 5
 
     def __init__(self, *args, **kwargs):

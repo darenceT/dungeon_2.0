@@ -2,6 +2,9 @@ from .Monster import Monster
 
 
 class Skeleton(Monster):
+    """
+    TODO docstrings
+    """
     def __init__(self, mtype, name, hit_points=100, attack_speed=3, chance_to_hit=0.8,
                  minimum_damage=30, maximum_damage=50, chance_to_heal=0.3, minimum_heal_points=30,
                  maximum_heal_points=50):

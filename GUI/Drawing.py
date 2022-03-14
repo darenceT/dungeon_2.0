@@ -1,6 +1,7 @@
 import pygame
 
 # from .Memo import Memo
+# TODO import or create Memo here
 from .Settings import *
 from .Utility import create_textline
 
@@ -39,6 +40,9 @@ class Drawing:
                          }
 
     def background(self):
+        """
+        TODO docstrings
+        """
         sky_offset = -5 * math.degrees(self.player.angle) % WIDTH
         self.screen.blit(self.textures['ceiling'], (sky_offset, 0))
         self.screen.blit(self.textures['ceiling'], (sky_offset - WIDTH, 0))
@@ -46,6 +50,9 @@ class Drawing:
         pygame.draw.rect(self.screen, DARK_TAN, (0, HALF_HEIGHT, WIDTH, HALF_HEIGHT))
 
     def world(self, world_objects): 
+        """
+        TODO docstrings
+        """
         if self.player.win_game:
             return
         for obj in sorted(world_objects, key=lambda n: n[0], reverse=True):
@@ -54,6 +61,10 @@ class Drawing:
                 self.screen.blit(object, object_pos)
 
     def weapon_and_ui(self, clock):
+        """
+        Method to organize this class. Called by Main.game_loop() to run these methods
+        :return: None
+        """
         self.__weapon_animation()
         self.__hero_health_bar()
         self.__special_bar()
@@ -256,6 +267,10 @@ class Drawing:
         self.screen.blit(h_pot_count, hpc_pos)
 
     def __mini_map(self):
+        """
+        TODO docstrings
+        TODO add icon of exit when found
+        """
         if self.player.show_map:
             map_surf = pygame.Surface((WIDTH // MAP_SCALE, HEIGHT // MAP_SCALE))
             xx, yy = self.player.x // MAP_SCALE, self.player.y // MAP_SCALE
@@ -275,6 +290,9 @@ class Drawing:
             self.screen.blit(map_surf, MAP_POS)
 
     def __fps_display(self, clock):
+        """
+        TODO docstrings
+        """
         fps_text = 'FPS ' + str(int(clock.get_fps()))
         fps_txt, fps_pos = create_textline(fps_text, 
                                             pos=(WIDTH-45, 15),
