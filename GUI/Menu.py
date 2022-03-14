@@ -178,26 +178,32 @@ Space - Take a breather, pause the game
 
 Good luck, brave hero!        
 """
+        #TODO remove x,y in dict since they are same/similar
         screens = {
             0: {
                 'text': text1,
-                'x': 35,
-                'y': 15
+                'x': 100,
+                'y': 100,
+                'y_off' : 22,
+                'size': 20
             },
             1: {
                 'text': text2,
-                'x': 120,
-                'y': 100
+                'x': 100,
+                'y': 100,
+                'y_off' : 28,
+                'size': 25
             }
         }
-        y_off = 28
         page = 0
         while page < 2:
             text_rendered = []
             text_list = screens[page]['text'].splitlines()
             for number, line in enumerate(text_list):
-                txt, txt_pos = create_textline(line, pos=(screens[page]['x'], screens[page]['y'] + y_off * number), 
-                                                    font_type='GUI/font/Titillium.ttf', size = 23, pos_type='xy')
+                txt, txt_pos = create_textline(line, pos=(screens[page]['x'], 
+                                                screens[page]['y'] + screens[page]['y_off'] * number), 
+                                                font_type='GUI/font/Titillium.ttf', 
+                                                size = screens[page]['size'], pos_type='xy')
                 text_rendered.append((txt, txt_pos))
             cont, cont_pos = create_textline('Continue', pos=(self.X_POS, self.Y_POS + self.Y_OFFSET * 3), size=30)
             text_rendered.append((cont, cont_pos))

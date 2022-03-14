@@ -3,7 +3,6 @@ from Room import Room
 from Grid import Grid
 from Maze import Maze
 from Dungeon import Dungeon
-# from Adventurer import Adventurer
 from Model.Characters.Warrior import Warrior
 from Model.Characters.Thief import Thief
 from Model.Characters.Priestess import Priestess
@@ -13,8 +12,8 @@ class DungeonAdventure:
     Class that creates a game and pulls together all of the gameplay
     """
     hero_ref = {'warrior': Warrior, 'priest': Priestess, 'thief': Thief}
-    default_hit_points_initial: int = 80    # start kinda weak
-    default_hit_points_max: int = 100       # the strength of ten (wo)men!
+    default_hit_points_initial: int = 80    
+    default_hit_points_max: int = 100   
     pit_damage: int = 10
 
     def __init__(self, hero_class, map_str: str = None):

@@ -9,10 +9,9 @@ class Drawing:
     Class for drawing all images onto GUI surface. Sprite objects/images get 
     delivered here for blitting.
     """
-    def __init__(self, screen, sound, hero_class, map_coords, player_controls, hero, sprites) -> None:
+    def __init__(self, screen, sound, map_coords, player_controls, hero, sprites) -> None:
         self.screen = screen
         self.sound = sound
-        self.hero_class = hero_class
         self.map_coords = map_coords
         self.player = player_controls
         self.hero = hero
@@ -22,27 +21,17 @@ class Drawing:
         self.__special_tick = 0
         self.__special_animate = 0
         self.__special_time = 0
-        # TODO only load current hero class weapons/special
         self.textures = {
-                        #  'floor': pygame.image.load('GUI/img/floor.jpg').convert(),
                          'ceiling': pygame.image.load('GUI/img/ceiling3.jpg').convert(),
                          'door': pygame.image.load('GUI/img/door_portal.png').convert(),
                          'wall': pygame.image.load('GUI/img/wall_default2.png').convert_alpha(),
                          'Hi': pygame.image.load('GUI/img/health_icon.png').convert_alpha(),
                          'Vi': pygame.image.load('GUI/img/vision_icon.png').convert_alpha(),
                          'Pi': pygame.image.load('GUI/img/pillar.png').convert_alpha(),
-                         'warrior0': pygame.image.load('GUI/img/sword0.png').convert_alpha(),
-                         'warrior1': pygame.image.load('GUI/img/sword1.png').convert_alpha(),
-                         'warrior2': pygame.image.load('GUI/img/sword2.png').convert_alpha(),
-                         'warrior3': pygame.image.load('GUI/img/sword3.png').convert_alpha(),
-                         'priest0': pygame.image.load('GUI/img/staff0.png').convert_alpha(),
-                         'priest1': pygame.image.load('GUI/img/staff1.png').convert_alpha(),
-                         'priest2': pygame.image.load('GUI/img/staff2.png').convert_alpha(),
-                         'priest3': pygame.image.load('GUI/img/staff3.png').convert_alpha(),
-                         'thief0': pygame.image.load('GUI/img/dagger0.png').convert_alpha(),
-                         'thief1': pygame.image.load('GUI/img/dagger1.png').convert_alpha(),
-                         'thief2': pygame.image.load('GUI/img/dagger2.png').convert_alpha(),
-                         'thief3': pygame.image.load('GUI/img/dagger3.png').convert_alpha(),
+                         f'{self.hero.hero_type}0': pygame.image.load(f'GUI/img/{self.hero.hero_type}wep0.png').convert_alpha(),
+                         f'{self.hero.hero_type}1': pygame.image.load(f'GUI/img/{self.hero.hero_type}wep1.png').convert_alpha(),
+                         f'{self.hero.hero_type}2': pygame.image.load(f'GUI/img/{self.hero.hero_type}wep2.png').convert_alpha(),
+                         f'{self.hero.hero_type}3': pygame.image.load(f'GUI/img/{self.hero.hero_type}wep3.png').convert_alpha(),
                          'heal0': pygame.image.load('GUI/img/heal0.png').convert_alpha(),
                          'heal1': pygame.image.load('GUI/img/heal1.png').convert_alpha(),
                          'heal2': pygame.image.load('GUI/img/heal2.png').convert_alpha(),                         
@@ -65,16 +54,16 @@ class Drawing:
                 self.screen.blit(object, object_pos)
 
     def weapon_and_ui(self, clock):
-        self.weapon_animation()
-        self.hero_health_bar()
-        self.special_bar()
-        self.special_animation()
-        self.enemy_health_bar()
-        self.inventory()
-        self.mini_map()
-        self.fps_display(clock)
+        self.__weapon_animation()
+        self.__hero_health_bar()
+        self.__special_bar()
+        self.__special_animation()
+        self.__enemy_health_bar()
+        self.__inventory()
+        self.__mini_map()
+        self.__fps_display(clock)
 
-    def weapon_animation(self):
+    def __weapon_animation(self):
         """
         Animation of weapon using a timer (cool_down) to adjust animation speed
         """
@@ -95,7 +84,7 @@ class Drawing:
         weapon = pygame.transform.scale(self.textures[f'{self.hero.hero_type}{self.__weapon_animate}'], wep_size)
         self.screen.blit(weapon, wep_pos)
 
-    def hero_health_bar(self):
+    def __hero_health_bar(self):
         """
         Display hero's health bar, red as background for health lost, 
         underneath amount of current health
@@ -117,17 +106,17 @@ class Drawing:
                                          color=BLACK)
         self.screen.blit(hp_txt, hp_pos)
 
-    def enemy_health_bar(self):
+    def __enemy_health_bar(self):
         """
         Display nearby enemy's health bar
         bar_info = [left_pos, top_pos, width(health amount), height]
         """
         bar_x = 20
         bar_y = HALF_HEIGHT - 40
-        width = 220
+        width = 240
         height = 40
         name_x = bar_x + 5
-        name_y = bar_y + 3
+        name_y = bar_y + 2
         bar_info = [bar_x, bar_y, width, height]
         border_offset = 3
         borders = [bar_x - border_offset, bar_y - border_offset, 
@@ -150,13 +139,13 @@ class Drawing:
                 name, name_pos = create_textline(str(sprite.object.name), 
                                                     pos=(name_x, name_y),
                                                     font_type='GUI/font/Titillium.ttf', 
-                                                    size=20,
+                                                    size=22,
                                                     color=BLACK,
                                                     pos_type='xy')
                 self.screen.blit(name, name_pos)
                 count += 1
 
-    def special_bar(self):
+    def __special_bar(self):
         """
         Creates display for special skill mana & timer for mana ticking/increasing over time
         """
@@ -196,7 +185,7 @@ class Drawing:
         txt_pos.bottomleft = (x_pos + padding, y_bottom - padding)                           
         self.screen.blit(s_txt, txt_pos)
 
-    def special_animation(self):
+    def __special_animation(self):
         '''
         Shows animation of special skill
         TODO make animation specific to hero class
@@ -216,7 +205,7 @@ class Drawing:
             self.player.special_skill = False
             self.__special_animate = 0
         
-    def inventory(self):
+    def __inventory(self):
         """
         Display inventory counts of pillars, vision potion & healing potions
         above the memo box. First half of code displays the iconds then
@@ -266,7 +255,7 @@ class Drawing:
                                             color=RED)
         self.screen.blit(h_pot_count, hpc_pos)
 
-    def mini_map(self):
+    def __mini_map(self):
         if self.player.show_map:
             map_surf = pygame.Surface((WIDTH // MAP_SCALE, HEIGHT // MAP_SCALE))
             xx, yy = self.player.x // MAP_SCALE, self.player.y // MAP_SCALE
@@ -285,7 +274,7 @@ class Drawing:
 
             self.screen.blit(map_surf, MAP_POS)
 
-    def fps_display(self, clock):
+    def __fps_display(self, clock):
         fps_text = 'FPS ' + str(int(clock.get_fps()))
         fps_txt, fps_pos = create_textline(fps_text, 
                                             pos=(WIDTH-45, 15),

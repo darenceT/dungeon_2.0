@@ -9,8 +9,9 @@ class Dungeon(Maze):
     """
     Thin subclass Maze that handles autofilling of items, etc.
     """
-    item_chance: int = 40  # percent chance given item type appears in room
-    monster_chance: int = 40 # percent as above but for monsters
+    ITEM_CHANCE: int = 40  # percent chance given item type appears in room
+    MONSTER_CHANCE: int = 40 # percent as above but for monsters
+    MONSTER_MAX_COUNT: int = 5
 
     def __init__(self, *args, **kwargs):
         """ Create a Dungeon. Same usage as Maze constructor. """
@@ -90,13 +91,14 @@ class Dungeon(Maze):
 
         types = ('ogre', 'mgirl', 'skeleton', 'gremlin')
         npc = types[randrange(4)]    
-        if randrange(100) < Dungeon.monster_chance:
+        if randrange(100) < Dungeon.MONSTER_CHANCE and Dungeon.MONSTER_MAX_COUNT > 0:
+            Dungeon.MONSTER_MAX_COUNT -= 1
             room.occupants = (MonsterSpawn.make(npc), False)
-        elif randrange(100) < Dungeon.item_chance:
+        elif randrange(100) < Dungeon.ITEM_CHANCE:
             room.has_pit = True
         if randrange(100) < 40:
             room.healing_potions += 1
-        if randrange(60) < Dungeon.item_chance:
+        if randrange(60) < Dungeon.ITEM_CHANCE:
             room.vision_potions += 1
 
     def add_contents(self) -> None:
