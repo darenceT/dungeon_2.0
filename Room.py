@@ -1,3 +1,5 @@
+# from version 1.0. This will be retired, new version in Model
+
 from Compass import *
 
 Coords = tuple[int, int]
@@ -384,7 +386,7 @@ class Room:
         """ Get coordinates of room within grid, assuming part of one.
             Returned value is a tuple of ints (x,y) in a Cartesian system.
             x-coord runs West-to-East (rightward), most Westward column at x=0.
-            x-coord runs North-to-South (downward), most Northward row at y=0. """
+            y-coord runs North-to-South (downward), most Northward row at y=0. """
         return self.__coords
 
     @property

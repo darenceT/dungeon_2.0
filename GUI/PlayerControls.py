@@ -1,6 +1,6 @@
 import pygame
 import math
-from Grid import Grid
+# from Grid import Grid
 from .Arena import Arena
 from .Settings import PI, DOUBLE_PI, MAP_TILE, PLAYER_SPEED
 from .Utility import convert_coords_to_pixel, direction_of_vision
@@ -23,13 +23,13 @@ class PlayerControls:
         
         self.__room_change = True     # set initial to True to for initial 1 time loading of nearby sprites
         self.__ready_for_new_sprites = True
-        self.sound = sound
+        self.__sound = sound
         self.__pause_on = False
         self.game_data = game_data
         self.memo = memo
         self.arena = Arena(sound, self, game_data.hero)
 
-        self.__rooms_in_sight = set()
+        self.__rooms_in_sight = tuple()
         self.map_visited = set()
         self.show_map = False             
         self.side = 50
@@ -101,6 +101,7 @@ class PlayerControls:
 
     def detect_collision(self, dx, dy):
         """
+        TODO docstrings
         Credit: https://github.com/StanislavPetrovV/Raycasting-3d-game-tutorial/blob/master/part%20%232/ray_casting.py
         """
         next_rect = self.rect.copy()
@@ -130,6 +131,9 @@ class PlayerControls:
         self.y += dy
 
     def movement(self):
+        """
+        TODO docstrings
+        """
         self.__keys_control()
         self.rect.center = self.x, self.y
         self.angle %= DOUBLE_PI
@@ -174,29 +178,37 @@ class PlayerControls:
         if direction != self.__direction or self.__room_change:
             self.__direction = direction
             x, y = self.cur_room.coords
-            width = height = 1
+            next_x, next_y = x, y
             if direction == 'north':
-                height = 2
-                y -= 1
+                next_y -= 1
             elif direction == 'south':
-                height = 2
+                next_y += 1
             elif direction == 'west':
-                width = 2
-                x -= 1
-            else:  
-                width = 2
-
-            self.__rooms_in_sight = set() # reset
-            extent = Grid(width, height, from_grid=self.game_data.maze, from_coords=(x, y))
-            add = self.__rooms_in_sight.add
-            for row in extent.rooms:
-                for room in row:
-                    add(room)
+                next_x -= 1
+            else:           # east
+                next_x += 1
+            print('current: ', f'({x},{y})', 'next', f'{next_x}, {next_y}')
+            print('current room:', self.game_data.maze.rooms[y][x].coords)
+            
+            cur_room = self.game_data.maze.rooms[y][x]
+            max_x = self.game_data.maze.width
+            max_y = self.game_data.maze.height
+            if -1 < next_x < max_x and -1 < next_y < max_y:
+                next_room = self.game_data.maze.rooms[next_y][next_x]
+                self.__rooms_in_sight = (cur_room, next_room)
+                print('next room:', self.game_data.maze.rooms[next_y][next_x].coords)
+            else:
+                self.__rooms_in_sight = (cur_room,)
+                print('room skipped')
+            
             self.__ready_for_new_sprites = True
         else:
             self.__ready_for_new_sprites = False
 
     def __keys_control(self):
+        """
+        TODO docstrings
+        """
         # for non-continuous key input
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN
@@ -207,19 +219,19 @@ class PlayerControls:
                 if event.key == pygame.K_h:
                     if self.game_data.hero.healing_potions:
                         self.memo.new_message('You used a healing potion!')
-                        self.sound.health_potion()
+                        self.__sound.health_potion()
                     self.game_data.hero.use_healing_potion()
                 elif event.key == pygame.K_v:
                     if self.game_data.hero.vision_potions:
                         self.memo.new_message('Vision potion used, check your map!')
-                        self.sound.vision_potion()
+                        self.__sound.vision_potion()
                     self.game_data.hero.use_vision_potion()
                 elif event.key == pygame.K_r:
                     special = self.game_data.hero.special_skill()
                     if special is not None:
                         self.__special_skill = True
                         self.memo.new_message(special)
-                        self.sound.special_heal()
+                        self.__sound.special_heal()
                 elif event.key == pygame.K_SPACE:
                     self.__pause_on = True
 

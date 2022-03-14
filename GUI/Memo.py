@@ -3,11 +3,17 @@ from .Settings import *
 from .Utility import create_textline
 
 class Memo:
+    """
+    TODO docstrings
+    """
     def __init__(self, screen):
         self.screen = screen
         self.lines = ['Find all 4 pillars to escape, good luck!']
 
     def new_message(self, message):
+        """
+        TODO docstrings
+        """
         if len(message) > 40:
             raise ValueError('Message length cannot be longer than 45 characters')
         else:
@@ -16,6 +22,9 @@ class Memo:
         if len(self.lines) > 4: self.lines.pop()
 
     def message_box(self):
+        """
+        TODO docstrings
+        """
         size = (8, HALF_HEIGHT + 228, 274, 114)
         border = (5, HALF_HEIGHT + 225, 280, 120)
         pygame.draw.rect(self.screen, BLACK, border)
@@ -23,6 +32,9 @@ class Memo:
         self.display_messages()
     
     def display_messages(self):
+        """
+        TODO docstrings
+        """
         index = 0
         y_offset = 30
         while index < len(self.lines):

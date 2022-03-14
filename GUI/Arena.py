@@ -1,6 +1,9 @@
 from random import random, randrange
 
 class Arena:
+    """
+    TODO docstrings
+    """
     def __init__(self, sound, player_controls, hero):
         self.sound = sound
         self.player_controls = player_controls

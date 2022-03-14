@@ -2,6 +2,9 @@ from .DungeonCharacter import DungeonCharacter
 # from DungeonCharacter import DungeonCharacter
 
 class Hero(DungeonCharacter):
+    """
+    TODO docstrings
+    """
     def __init__(self, hero_type, name, hit_points, hit_points_max, attack_speed, chance_to_hit,
                  minimum_damage, maximum_damage, chance_to_block, game=None):
         super().__init__(name, hit_points, hit_points_max, attack_speed, chance_to_hit,
@@ -21,6 +24,9 @@ class Hero(DungeonCharacter):
     
     @special_mana.setter
     def special_mana(self, add=True):
+        """
+        TODO docstrings
+        """
         if isinstance(add, bool):
             if add:
                 self.__special_mana += 2
@@ -63,6 +69,9 @@ class Hero(DungeonCharacter):
 
 
     def special_skill(self) -> None:
+        """
+        TODO docstrings
+        """
         pass
 
     @property

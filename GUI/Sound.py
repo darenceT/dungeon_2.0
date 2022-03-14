@@ -48,10 +48,16 @@ class Sound:
 
     @property
     def monster_sounds(self):
+        """
+        TODO docstrings
+        """
         return self.__monster_sounds
 
     @monster_sounds.setter
     def monster_sounds(self, info): 
+        """
+        TODO docstrings
+        """
         npc_name, remove = info
         if remove:
             self.monster_sounds.remove(npc_name)
@@ -170,6 +176,9 @@ class Sound:
             mixer.Channel(2).play(pygame.mixer.Sound(Path('GUI','sound', 'mixkit-healing.wav')))
 
     def monster_play(self, mtype, off=False):
+        """
+        TODO docstrings
+        """
         if mtype in ('mgirl', 'ogre', 'gremlin', 'skeleton') and self.__is_running:
             channel = self.__monster_sounds.index(mtype) + 2
             if off:
