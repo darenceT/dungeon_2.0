@@ -55,7 +55,7 @@ class Main:
         self.__obtain_game_data()
 
         # TODO: decrease/narrow params passed
-        self.player_controls = PlayerControls(self.screen, self.sound, self.game_data, self.memo, self.collision_walls)
+        self.player_controls = PlayerControls(self.sound, self.game_data, self.memo, self.collision_walls)
         self.sprites = SpritesContainer(self.screen, self.sound, self.game_data, self.player_controls)
         self.drawing = Drawing(self.screen, self.sound, self.mini_map_coords, self.player_controls,
                                self.hero, self.sprites)

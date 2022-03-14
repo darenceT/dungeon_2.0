@@ -78,7 +78,7 @@ class SpritesContainer:
 
         Iterate through set of rooms in view to load sprites
         """
-        if self.player.room_change:
+        if self.player.ready_for_new_sprites:
             self.nearby_sprites = set()
             add = self.nearby_sprites.add
             for room in self.player.rooms_in_sight:
