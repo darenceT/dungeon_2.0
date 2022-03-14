@@ -4,6 +4,9 @@ from GUI.Settings import *
 from GUI.Utility import create_textline
 
 class Cursor:
+    """
+    Pointer object used in selecting choices in Menu system
+    """
     def __init__(self) -> None:
         self.size = 40
         self.surface, self.rect = create_textline(
@@ -12,6 +15,10 @@ class Cursor:
                                     size=self.size)
 
 class Menu:
+    """
+    Menu system that contains structure to deploy multiple selection screens.
+    There are 3 subparts that uses Menu's attributes: intro menu, pause menu, win/lose screen
+    """
     # Constants
     X_POS = HALF_WIDTH
     Y_POS = HALF_HEIGHT + 100
@@ -32,9 +39,16 @@ class Menu:
 
     @property
     def reset(self):
+        """
+        Getter for Main to pass trigger to reset game (from pause and win/lose menu)
+        """
         return self.__reset
 
     def draw(self):
+        """
+        Brings the menu to live, blits(paints) objects onto a surface then flip(reveal!)
+        Attribute self.message acts as param, containing text objects of choices.
+        """
         self.screen.fill(GRAY)
         for obj, pos in self.messages:
             self.screen.blit(obj, pos)
@@ -42,6 +56,15 @@ class Menu:
         pygame.display.flip()
 
     def move_cursor(self, choices, move=None):
+        """
+        Simple move up and down then enter to select choice.
+        However, this adapts to every menu screen and to the number of choices
+        :param choices: up or down from move_cursor()
+        :param type: str
+        :param move: choices for a particular menu
+        :param type: {int: str}
+        :return: None
+        """
         move_reference = {'DOWN': 1, 'UP': -1}
         if move not in move_reference:
             return
@@ -60,6 +83,14 @@ class Menu:
         self.cursor.rect.centery = self.Y_POS + self.Y_OFFSET * (self.select_number - 1)
 
     def menu_controls(self, choices=None, also=None) -> Any:
+        """
+        Allow user input to selection options. This is used by all menu
+        versions of game: intro, pause, ending, etc.
+        :param choices: container of choices for a menu screen
+        :param type: {int: str}
+        :return: specific option in choices
+        :rtype: str
+        """
         pygame.event.clear()
         while True:
             event = pygame.event.wait()
@@ -87,6 +118,11 @@ class Menu:
 
     def intro_menu(self):
         """
+        Controller for intro menu, triggered by Main.
+        For now mainly to allow further development
+        such as allowing user to input a unique hero name
+        :return: hero class selected by user
+        :rtype: str
         TODO: input and return hero name
         """
         self.sound.intro()
@@ -116,9 +152,8 @@ class Menu:
         setting, setting_pos = create_textline('Settings',
                                             pos=(x, y + y_off * 2),
                                             size=30)
-        messages = ((title1, title1_pos), (title2, title2_pos),
+        self.messages = ((title1, title1_pos), (title2, title2_pos),
                     (new, new_pos), (load, load_pos), (setting, setting_pos))
-        self.messages = messages
         choices = {1: 'New', 2: 'Load', 3: 'Settings'}
         self.select_number = 1
         self.cursor.rect.centery = y + y_off * (self.select_number - 1)
@@ -145,6 +180,11 @@ class Menu:
                 # continue, try again
 
     def instructions(self):
+        """
+        Simple 2-page screen for instructions as part of intro menu,
+        appears after hero selection before hero type is returned to Main
+        :return: None
+        """
         text1 = """
 Welcome to Dungeon Escape, brave Hero!
 
@@ -208,8 +248,7 @@ Good luck, brave hero!
             cont, cont_pos = create_textline('Continue', pos=(self.X_POS, self.Y_POS + self.Y_OFFSET * 3), size=30)
             text_rendered.append((cont, cont_pos))
 
-            messages = tuple(text_rendered)
-            self.messages = messages
+            self.messages = tuple(text_rendered)
             choices = {1: 'Continue'}
             self.select_number = 1
             self.cursor.rect.centery = self.Y_POS + self.Y_OFFSET * 3
@@ -218,31 +257,30 @@ Good luck, brave hero!
             page += 1
 
     def hero_selection(self):
-        """ TODO docs
+        """ 
+        Display and allow hero class selection as part of intro menu
+        :return: selected hero class
+        :rtype: str
         """
-        x = self.X_POS
-        y = self.Y_POS
-        y_off = self.Y_OFFSET
         thief, thief_pos = create_textline('Thief',
-                                            pos=(x, y),
+                                            pos=(self.X_POS, self.Y_POS),
                                             size=30)
         priestess, priestess_pos = create_textline('Priest',
-                                            pos=(x, y + y_off),
+                                            pos=(self.X_POS, self.Y_POS + self.Y_OFFSET),
                                             size=30)
         warrior, warrior_pos = create_textline('Warrior',
-                                            pos=(x, y + y_off * 2),
+                                            pos=(self.X_POS, self.Y_POS + self.Y_OFFSET * 2),
                                             size=30)
-        messages = ((thief, thief_pos), (priestess, priestess_pos), (warrior, warrior_pos))
-        self.messages = messages
+        self.messages = ((thief, thief_pos), (priestess, priestess_pos), (warrior, warrior_pos))
         choices = {1: 'thief', 2: 'priest', 3: 'warrior'}
         self.select_number = 1
-        self.cursor.rect.centery = y + y_off * (self.select_number - 1)
+        self.cursor.rect.centery = self.Y_POS + self.Y_OFFSET * (self.select_number - 1)
         self.draw()
 
         def draw_hero():
             # TODO after every cursor move, also update character image
             print(f"draw hero {self.select_number}")
-            char_pos = (150, y_off)
+            char_pos = (150, self.Y_OFFSET)
             char_size = (HALF_WIDTH, HALF_HEIGHT)
             char = pygame.transform.scale(self.images[self.select_number], char_size)
             self.screen.blit(char, char_pos)
@@ -255,6 +293,10 @@ Good luck, brave hero!
         return hero_class
 
     def load_menu(self):
+        """
+        Continue game from saved file
+        TODO in progress
+        """
         load, load_pos = create_textline('Load this game?', 
                                             pos=(self.X_POS, HALF_HEIGHT),
                                             size=30)
@@ -267,7 +309,12 @@ Good luck, brave hero!
         self.menu_controls(choices)
 
     def pause_menu(self):
-        """ TODO docs
+        """ 
+        In-game pause menu, accessed by Space key,
+        Functions independent of intro_menu but uses
+        similar methods of menu_controls() & draw().
+        Contains unique feature of saving game
+        :return: None
         """
 
         x = self.X_POS
