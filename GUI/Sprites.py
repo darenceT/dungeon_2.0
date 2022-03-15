@@ -10,8 +10,7 @@ class SpriteObject:
                  animation=None):
         self.image = image
         self.name = name
-        self.x = convert_coords_to_pixel(pos[0]) # + randrange(6)
-        self.y = convert_coords_to_pixel(pos[1]) # + randrange(6)
+        self.x, self.y = convert_coords_to_pixel(pos) # + randrange(6)
         self.object = object
         self.shift = shift
         self.scale = scale

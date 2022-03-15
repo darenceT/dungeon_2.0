@@ -26,7 +26,7 @@ class Main:
         self.game_data = None
         self.dungeon = None
         self.world_coords = {}
-        self.mini_map_coords = set()
+        self.__mini_map_coords = set()
         self.player_controls = None
         self.hero_class = None
         self.hero = None
@@ -35,6 +35,14 @@ class Main:
         self.raycast = None
         self.collision_walls = []
         self.__load_game()   
+
+    @property
+    def mini_map_coords(self):
+        return self.__mini_map_coords
+    
+    @property
+    def mini_map_exit_coords(self):
+        return self.__mini_map_exit_coords
 
     def __load_game(self):
         """
@@ -57,8 +65,8 @@ class Main:
         # TODO: decrease/narrow params passed
         self.player_controls = PlayerControls(self.sound, self.game_data, self.memo, self.collision_walls)
         self.sprites = SpritesContainer(self.screen, self.sound, self.game_data, self.player_controls)
-        self.drawing = Drawing(self.screen, self.sound, self.mini_map_coords, self.player_controls,
-                               self.hero, self.sprites)
+        self.drawing = Drawing(self.screen, self.sound, self.__mini_map_coords, self.player_controls, 
+                               self.hero, self.sprites, self.game_data.maze.egress.coords)
         self.raycast = Raycast(self.player_controls, self.world_coords, self.drawing.textures)
         self.player_controls.get_rooms_in_sight()  # initiate sprites for 1st room
 
@@ -113,18 +121,18 @@ class Main:
                 map_parsed.append(row)
                 row = []
             for j, line in enumerate(map_parsed):
-                for i, char in enumerate(line):
+                for i, char in enumerate(line):                                                                        
                     if char == '---' or '+' in char or '|' in char:
                         self.collision_walls.append(pygame.Rect(i * TILE, j * TILE, TILE, TILE))
                         self.world_coords[(i * TILE, j * TILE)] = 'wall'
-                        self.mini_map_coords.add((i * MAP_TILE, j * MAP_TILE))
-                    if '=' in char or char[0] == 'H':
-                        self.world_coords[(i * TILE, j * TILE)] = 'door'
+                        self.__mini_map_coords.add((i * MAP_TILE, j * MAP_TILE))
+                    elif '=' in char or char[0] == 'H':
+                        self.world_coords[(i * TILE, j * TILE)] = 'door'             
         __parse_map(self.dungeon)
 
     def game_loop(self):
         """
-        Game engine that loops through all major components of game
+        Game work-horse that loops through all major components of game
         to create real-time effect of GUI game
         """
         self.sound.in_game()
