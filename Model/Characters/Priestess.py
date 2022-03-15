@@ -17,16 +17,17 @@ class Priestess(Hero, Healable):
         
     def special_skill(self):
         """
-        TODO docstrings
+        Use special skill of healing. First check if can_use (in hero class),
+        heals self, returns caller (in Arena) damage effect to monster and memo message
+        :return: damage to monster, and memo message
+        :rtype: tuple of int and str 
         """
-        mana_cost = 15
-        
-        if self.special_mana > mana_cost and self.hit_points_max - self.hit_points > 5:
-            self.special_mana = False
+        if self.can_use_special:
+            self.special_mana = False   # decreases mana
             self.hit_points += 20
             if self.hit_points > self.hit_points_max:   
                 self.hit_points = self.hit_points_max
-            return 'You healed yourself by 20 points!'
+            return (0, 'You healed yourself by 20 points!')
 
 if __name__ == '__main__':
     p = Priestess()

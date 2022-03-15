@@ -1,9 +1,11 @@
+from abc import abstractclassmethod
 from .DungeonCharacter import DungeonCharacter
 # from DungeonCharacter import DungeonCharacter
 
 class Hero(DungeonCharacter):
     """
-    TODO docstrings
+    Abstract class that thief, priestess and warrior class will inherit from.
+    This abstract class is a child of abstract class DungeonCharacter
     """
     def __init__(self, hero_type, name, hit_points, hit_points_max, attack_speed, chance_to_hit,
                  minimum_damage, maximum_damage, chance_to_block, game=None):
@@ -16,7 +18,7 @@ class Hero(DungeonCharacter):
         self.__vision_potions: int = 0
         self.__healing_potions: int = 0
         self.__vision_potions: int = 0
-        self.__pillars: set = set()  # empty
+        self.__pillars: set = set() 
 
     @property
     def special_mana(self):
@@ -25,7 +27,8 @@ class Hero(DungeonCharacter):
     @special_mana.setter
     def special_mana(self, add=True):
         """
-        TODO docstrings
+        Allows change to mana by boolean, increase ticking by GUI timer in Drawing.py
+        and decrease by use in child hero classes
         """
         if isinstance(add, bool):
             if add:
@@ -50,27 +53,11 @@ class Hero(DungeonCharacter):
     @property
     def hero_type(self):
         return self.__hero_type
-
-    def take_damage(self, damage: int = 1) -> int:
-        """
-        Checks to see if damage has lowered hit points to zero or below, if so, ends game. If not, returns new
-        number of hit points after damage.
-        :param damage: number of hit points to subtract after falling into pit
-        :return:
-        """
-        # Consider moving this to DungeonCharacter. Then adding the heal capability for monster.
-        # Could also use Factory to create each sub type character
-        # don't declare the same data again, shadowing
-        self.hit_points -= damage
-        if self.hit_points <= 0:
-            self.hit_points = 0
-            self.__game.continues = False
-        return self.hit_points
-
-
+    
+    #@abstractclassmethod
     def special_skill(self) -> None:
         """
-        TODO docstrings
+        abstract method for which priestess, thief and warriors will have implementation
         """
         pass
 
@@ -119,6 +106,17 @@ class Hero(DungeonCharacter):
         :return:
         """
         return self.__pillars
+
+    def can_use_special(self):
+        """
+        Check to see if hero has enough mana to use special skill
+        Special case to check HP if hero is priest
+        """
+        if self.__hero_type == "priest" and self.__special_mana >= 15:
+            ready = self.hit_points_max - self.hit_points > 5
+        else:
+            ready = self.__special_mana >= 15
+        return ready
 
     def has_pillar(self, pillar):
         """

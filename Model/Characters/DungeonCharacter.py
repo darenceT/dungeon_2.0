@@ -2,7 +2,10 @@ from abc import ABC, abstractmethod
 
 
 class DungeonCharacter(ABC):
-
+    """
+    Abstract base class for all hero and monsters to inherit from, 
+    specifically, hero and monster class will inherit from this
+    """
     def __init__(self, name, hit_points, hit_points_max, attack_speed, chance_to_hit,
                  minimum_damage, maximum_damage):
         self.__name: str = name
@@ -110,6 +113,19 @@ class DungeonCharacter(ABC):
         elif self.game is not None:
             self.__maximum_damage = self.game.default_maximum_damage
 
+    def take_damage(self, damage: int = 1) -> int:
+        """
+        Checks to see if damage has lowered hit points to zero or below, if so, ends game. If not, returns new
+        number of hit points after damage.
+        :param damage: number of hit points to subtract after falling into pit
+        :return:
+        """
+        self.hit_points -= damage
+        if self.hit_points <= 0:
+            self.hit_points = 0
+            self.__game.continues = False
+        return self.hit_points
+        
     @property
     def attack_speed(self):
         return self.__attack_speed

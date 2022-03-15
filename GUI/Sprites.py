@@ -170,6 +170,7 @@ class SpritesContainer:
                     self.sound.monster_sounds = (sprite.name, False) 
                     self.sound.monster_play(sprite.name)
 
+                self.player.fight_alone = False
                 self.player.arena.fight(sprite.object)
 
                 # animate monster
@@ -190,7 +191,9 @@ class SpritesContainer:
                     self.nearby_sprites.remove(sprite)
                     # remove monster object from room
                     self.player.cur_room.occupants = (sprite.object, True)
-                    
+                    self.player.fight_alone = True
+            else:
+                self.player.fight_alone = True
             # TODO insert trap interaction
         
         # pickup potions
