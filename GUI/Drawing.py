@@ -3,25 +3,27 @@ import pygame
 # from .Memo import Memo
 # TODO import or create Memo here
 from .Settings import *
-from .Utility import create_textline
+from .Utility import convert_coords_to_map, create_textline
 
 class Drawing: 
     """
     Class for drawing all images onto GUI surface. Sprite objects/images get 
     delivered here for blitting.
     """
-    def __init__(self, screen, sound, map_coords, player_controls, hero, sprites) -> None:
+    def __init__(self, screen, sound, map_coords, player_controls, hero, sprites, exit_coords) -> None:
         self.screen = screen
         self.__sound = sound
         self.map_coords = map_coords
         self.player = player_controls
         self.hero = hero
         self.sprites = sprites
+        self.__exit_coords = exit_coords
         self.__weapon_animate = 1
         self.__wep_time = 0
         self.__special_tick = 0
         self.__special_animate = 0
         self.__special_time = 0
+        self.__vision_pot_tick = 0
         self.textures = {
                          'ceiling': pygame.image.load('GUI/img/ceiling3.jpg').convert(),
                          'door': pygame.image.load('GUI/img/door_portal.png').convert(),
@@ -29,6 +31,7 @@ class Drawing:
                          'Hi': pygame.image.load('GUI/img/health_icon.png').convert_alpha(),
                          'Vi': pygame.image.load('GUI/img/vision_icon.png').convert_alpha(),
                          'Pi': pygame.image.load('GUI/img/pillar.png').convert_alpha(),
+                         'exit': pygame.image.load('GUI/img/exit_icon.png').convert_alpha(),
                          f'{self.hero.guild}w0': pygame.image.load(f'GUI/img/{self.hero.guild}wep0.png').convert_alpha(),
                          f'{self.hero.guild}w1': pygame.image.load(f'GUI/img/{self.hero.guild}wep1.png').convert_alpha(),
                          f'{self.hero.guild}w2': pygame.image.load(f'GUI/img/{self.hero.guild}wep2.png').convert_alpha(),
@@ -37,9 +40,6 @@ class Drawing:
                          f'{self.hero.guild}s1': pygame.image.load(f'GUI/img/{self.hero.guild}sp1.png').convert_alpha(),
                          f'{self.hero.guild}s2': pygame.image.load(f'GUI/img/{self.hero.guild}sp2.png').convert_alpha(),
                          f'{self.hero.guild}s3': pygame.image.load(f'GUI/img/{self.hero.guild}sp3.png').convert_alpha(),
-                        #  'heal0': pygame.image.load('GUI/img/heal0.png').convert_alpha(),
-                        #  'heal1': pygame.image.load('GUI/img/heal1.png').convert_alpha(),
-                        #  'heal2': pygame.image.load('GUI/img/heal2.png').convert_alpha(),
                         #  'wall': pygame.image.load('GUI/img/wall_vision2.png').convert_alpha()
                          }
 
@@ -274,24 +274,56 @@ class Drawing:
 
     def __mini_map(self):
         """
-        TODO docstrings
-        TODO add icon of exit when found
+        Reveal map at top left corner when user holds down TAB key
+        Also reveals vision of nearby rooms for several seconds after using vision potion
+        TODO add pillars when found or when using vision potion
         """
         if self.player.show_map:
             map_surf = pygame.Surface((WIDTH // MAP_SCALE, HEIGHT // MAP_SCALE))
-            xx, yy = self.player.x // MAP_SCALE, self.player.y // MAP_SCALE
+            px, py = self.player.x // MAP_SCALE, self.player.y // MAP_SCALE
 
             # Draws visited path
-            for x, y in self.player.map_visited:
-                pygame.draw.rect(map_surf, 'red', (x-8, y-8, MAP_TILE * 2, MAP_TILE * 2))
+            for x, y in self.player.rooms_visited:
+                x, y = convert_coords_to_map((x, y))    
+                pygame.draw.rect(map_surf, RED, (x, y, MAP_TILE * 2, MAP_TILE * 2))
 
-            # Draws wall (can use to reveal entire map)
+            # vision potion
+            extra_rooms_visible = set()    # for seeing exit while using potion
+            if self.player.vision_pot_used:
+                if self.__vision_pot_tick < 150:
+                    pygame.draw.circle(map_surf, RED, (px, py), MAP_TILE * 3.15)
+                    pygame.draw.circle(map_surf, WHITE, (px, py), MAP_TILE * 3)
+                    self.__vision_pot_tick += 1
+                    x, y = self.player.cur_room.coords
+                    if x > 0:
+                        extra_rooms_visible.add((x - 1, y))
+                    if x < 3:                # replace with width of maze to scale game
+                        extra_rooms_visible.add((x + 1, y))
+                    if y > 0:
+                        extra_rooms_visible.add((x, y - 1))
+                    if y < 3:                 # replace with height of maze to scale game
+                        extra_rooms_visible.add((x, y - 1))
+                else:
+                    extra_rooms_visible = set()
+                    self.player.vision_pot_used = False
+                    self.__vision_pot_tick = 0
+
+            # Draws wall
             for x,y in self.map_coords:
-                pygame.draw.rect(map_surf, 'black', (x, y, MAP_TILE, MAP_TILE))
+                pygame.draw.rect(map_surf, BLACK, (x, y, MAP_TILE, MAP_TILE))
 
-            pygame.draw.circle(map_surf, 'green', (xx, yy), 5)
-            pygame.draw.line(map_surf, 'green', (xx, yy), (xx + 12 * math.cos(self.player.angle),
-                            yy + 12 * math.sin(self.player.angle)), 2)
+            # exit icon
+            if self.__exit_coords in self.player.rooms_visited or \
+                self.__exit_coords in extra_rooms_visible:
+                map_size = (30, 30)
+                exit = pygame.transform.scale(self.textures['exit'], map_size)
+                exit_x, exit_y = convert_coords_to_map(self.__exit_coords)
+                map_surf.blit(exit, (exit_x, exit_y))
+
+            # hero location & perspective
+            pygame.draw.circle(map_surf, GREEN, (px, py), 5)
+            pygame.draw.line(map_surf, GREEN, (px, py), (px + 12 * math.cos(self.player.angle),
+                            py + 12 * math.sin(self.player.angle)), 2)
 
             self.screen.blit(map_surf, MAP_POS)
 

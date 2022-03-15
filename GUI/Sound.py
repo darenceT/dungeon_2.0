@@ -180,7 +180,7 @@ class Sound:
         TODO docstrings
         """
         if mtype in ('mgirl', 'ogre', 'gremlin', 'skeleton') and self.__is_running:
-            channel = self.__monster_sounds.index(mtype) + 5
+            channel = self.__monster_sounds.index(mtype) + 4
             if off:
                 mixer.Channel(channel).stop()
             else:

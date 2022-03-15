@@ -1,8 +1,8 @@
 import pygame
 import math
 from .Arena import Arena
-from .Settings import PI, DOUBLE_PI, MAP_TILE, PLAYER_SPEED
-from .Utility import convert_coords_to_pixel, direction_of_vision
+from .Settings import DOUBLE_PI, PLAYER_SPEED
+from .Utility import convert_pixel_to_coords, convert_coords_to_pixel, direction_of_vision
 
 
 class PlayerControls:
@@ -13,14 +13,14 @@ class PlayerControls:
     """
     def __init__(self, sound, game_data, memo, collision_walls):
         self.angle = 0
-        self.__direction = 'east'
+        self.__direction = 'east'       
+        self.cur_room = game_data.maze.ingress
+        self.x, self.y = convert_coords_to_pixel(self.cur_room.coords)
         self.__attacking = False
         self.__fight_alone = True
         self.__special_skill_execute = False
         self.__special_skill_animate = False
-        self.cur_room = game_data.maze.ingress
-        self.x = convert_coords_to_pixel(self.cur_room.coords[0])
-        self.y = convert_coords_to_pixel(self.cur_room.coords[1])
+        self.__vision_pot_used = False 
         
         self.__room_change = True     # set initial to True to for initial 1 time loading of nearby sprites
         self.__ready_for_new_sprites = True
@@ -31,7 +31,8 @@ class PlayerControls:
         self.__arena = Arena(self, game_data.hero, memo)
 
         self.__rooms_in_sight = tuple()
-        self.map_visited = set()
+        self.__rooms_visited = set()
+        self.map_visited_old = set()
         self.show_map = False             
         self.side = 50
         self.rect = pygame.Rect(*self.pos, self.side, self.side)
@@ -45,6 +46,10 @@ class PlayerControls:
     @property
     def pos(self):
         return (self.x, self.y)
+
+    @property
+    def rooms_visited(self):
+        return self.__rooms_visited
 
     @property
     def rooms_in_sight(self):
@@ -119,6 +124,20 @@ class PlayerControls:
             raise TypeError('Only boolean accepted for special_skill_animate')
 
     @property
+    def vision_pot_used(self):
+        return self.__vision_pot_used
+
+    @vision_pot_used.setter
+    def vision_pot_used(self, change=False):
+        if isinstance(change, bool):
+            if not change:
+                self.__vision_pot_used = False
+            else:
+                raise ValueError('True should not be accessed outside of PlayerControls')
+        else:
+            raise TypeError('Only boolean accepted for vision_pot_used')
+            
+    @property
     def arena(self):
         return self.__arena
 
@@ -177,8 +196,7 @@ class PlayerControls:
         self.angle %= DOUBLE_PI
 
         # update room location
-        next_x = round((self.x - 120) / 160)
-        next_y = round((self.y - 120) / 160)
+        next_x, next_y = convert_pixel_to_coords((self.x, self.y))
         if self.cur_room.coords != (next_x, next_y):
             self.cur_room = self.game_data.maze.rooms[next_y][next_x]
             
@@ -204,8 +222,8 @@ class PlayerControls:
         else:
             self.__room_change = False
         self.get_rooms_in_sight()    
-        self.map_visited.add((self.x // MAP_TILE * 3, self.y // MAP_TILE * 3)) # TODO optimize
-        
+        self.__rooms_visited.add((next_x, next_y))
+
     def get_rooms_in_sight(self):
         """
         Determines direction player is facing using player angle, then 
@@ -241,7 +259,9 @@ class PlayerControls:
 
     def __keys_control(self):
         """
-        TODO docstrings
+        User input key controls, keyboard only because it's more fun!
+        First half for non-continuous input and 2nd half for continuous key-down input
+        :return: None
         """
         # for non-continuous key input
         for event in pygame.event.get():
@@ -257,6 +277,7 @@ class PlayerControls:
                     self.game_data.hero.use_healing_potion()
                 elif event.key == pygame.K_v:
                     if self.game_data.hero.vision_potions:
+                        self.__vision_pot_used = True
                         self.memo.new_message('Vision potion used, check your map!')
                         self.__sound.vision_potion()
                     self.game_data.hero.use_vision_potion()

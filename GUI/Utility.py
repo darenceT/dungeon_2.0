@@ -1,13 +1,26 @@
 import pygame
 from .Settings import *
 
-
-def convert_coords_to_pixel(coord: int):
+def convert_pixel_to_coords(loc: tuple):
     """
-    TODO docstrings
+    Convert pixel location into room coordinate, opposite of below
+    """
+    return round((loc[0] - 120) / 160), round((loc[1] - 120) / 160)
+
+def convert_coords_to_pixel(coord: tuple):
+    """
+    Convert room coordinates into pixel location, opposite of above
     """
     adjust_center = 120
-    return int(2 * coord * WIDTH / TEXTURE_SCALE + adjust_center)
+    return int(2 * coord[0] * WIDTH / TEXTURE_SCALE + adjust_center), \
+    int(2 * coord[1] * HEIGHT / TEXTURE_SCALE + adjust_center)
+
+def convert_coords_to_map(pos: tuple):
+    """
+    Convert room coordinates into pixel location for map
+    """
+    coord_x, coord_y = convert_coords_to_pixel(pos) 
+    return coord_x // MAP_SCALE - MAP_TILE, coord_y // MAP_SCALE - MAP_TILE
 
 def direction_of_vision(player_angle: float):
     """
