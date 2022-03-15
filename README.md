@@ -6,13 +6,13 @@ Darence Thong joined for v2.0
 
 v2.0 Features:  
   
-Pygame "3D" GUI using ray-casting algorithm, without game-engine
-Object-oriented programming
-Model view controller design
+Pygame "3D" GUI using ray-casting algorithm, without game-engine  
+Object-oriented programming  
+Model view controller design  
 SQLite database  
-Time-based fight interaction
+Time-based fight interaction  
 Hero classes  
-Hero specific special skills
+Hero specific special skills  
 Monster classes    
 Sound Effects  
 Save/Load Menu (pickling)  
