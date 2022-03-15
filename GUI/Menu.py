@@ -265,14 +265,14 @@ Good luck, brave hero!
         thief, thief_pos = create_textline('Thief',
                                             pos=(self.X_POS, self.Y_POS),
                                             size=30)
-        priestess, priestess_pos = create_textline('Priest',
+        priestess, priestess_pos = create_textline('Priestess',
                                             pos=(self.X_POS, self.Y_POS + self.Y_OFFSET),
                                             size=30)
         warrior, warrior_pos = create_textline('Warrior',
                                             pos=(self.X_POS, self.Y_POS + self.Y_OFFSET * 2),
                                             size=30)
         self.messages = ((thief, thief_pos), (priestess, priestess_pos), (warrior, warrior_pos))
-        choices = {1: 'thief', 2: 'priest', 3: 'warrior'}
+        choices = {1: 'thief', 2: 'priestess', 3: 'warrior'}
         self.select_number = 1
         self.cursor.rect.centery = self.Y_POS + self.Y_OFFSET * (self.select_number - 1)
         self.draw()
