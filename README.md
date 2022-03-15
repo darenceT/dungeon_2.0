@@ -6,14 +6,16 @@ Darence Thong joined for v2.0
 
 v2.0 Features:  
   
-Pygame "3D" GUI  
+Pygame "3D" GUI using ray-casting algorithm, without game-engine
+Object-oriented programming
+Model view controller design
 SQLite database  
-Model view controller design   
+Time-based fight interaction
 Hero classes  
-Monster classes  
-Pickling  
+Hero specific special skills
+Monster classes    
 Sound Effects  
-Save/Continue Menu  
+Save/Load Menu (pickling)  
 More to come...  
 
 [Software Requirement Specifications](https://github.com/darenceT/dungeon_2.0/blob/main/docs/Software_Requirements_Specifications.docx)
