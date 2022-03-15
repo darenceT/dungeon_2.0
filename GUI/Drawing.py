@@ -12,7 +12,7 @@ class Drawing:
     """
     def __init__(self, screen, sound, map_coords, player_controls, hero, sprites) -> None:
         self.screen = screen
-        self.sound = sound
+        self.__sound = sound
         self.map_coords = map_coords
         self.player = player_controls
         self.hero = hero
@@ -29,13 +29,17 @@ class Drawing:
                          'Hi': pygame.image.load('GUI/img/health_icon.png').convert_alpha(),
                          'Vi': pygame.image.load('GUI/img/vision_icon.png').convert_alpha(),
                          'Pi': pygame.image.load('GUI/img/pillar.png').convert_alpha(),
-                         f'{self.hero.hero_type}0': pygame.image.load(f'GUI/img/{self.hero.hero_type}wep0.png').convert_alpha(),
-                         f'{self.hero.hero_type}1': pygame.image.load(f'GUI/img/{self.hero.hero_type}wep1.png').convert_alpha(),
-                         f'{self.hero.hero_type}2': pygame.image.load(f'GUI/img/{self.hero.hero_type}wep2.png').convert_alpha(),
-                         f'{self.hero.hero_type}3': pygame.image.load(f'GUI/img/{self.hero.hero_type}wep3.png').convert_alpha(),
-                         'heal0': pygame.image.load('GUI/img/heal0.png').convert_alpha(),
-                         'heal1': pygame.image.load('GUI/img/heal1.png').convert_alpha(),
-                         'heal2': pygame.image.load('GUI/img/heal2.png').convert_alpha(),                         
+                         f'{self.hero.hero_type}w0': pygame.image.load(f'GUI/img/{self.hero.hero_type}wep0.png').convert_alpha(),
+                         f'{self.hero.hero_type}w1': pygame.image.load(f'GUI/img/{self.hero.hero_type}wep1.png').convert_alpha(),
+                         f'{self.hero.hero_type}w2': pygame.image.load(f'GUI/img/{self.hero.hero_type}wep2.png').convert_alpha(),
+                         f'{self.hero.hero_type}w3': pygame.image.load(f'GUI/img/{self.hero.hero_type}wep3.png').convert_alpha(),
+                         f'{self.hero.hero_type}s0': pygame.image.load(f'GUI/img/{self.hero.hero_type}sp0.png').convert_alpha(),
+                         f'{self.hero.hero_type}s1': pygame.image.load(f'GUI/img/{self.hero.hero_type}sp1.png').convert_alpha(),
+                         f'{self.hero.hero_type}s2': pygame.image.load(f'GUI/img/{self.hero.hero_type}sp2.png').convert_alpha(),
+                         f'{self.hero.hero_type}s3': pygame.image.load(f'GUI/img/{self.hero.hero_type}sp3.png').convert_alpha(),
+                        #  'heal0': pygame.image.load('GUI/img/heal0.png').convert_alpha(),
+                        #  'heal1': pygame.image.load('GUI/img/heal1.png').convert_alpha(),
+                        #  'heal2': pygame.image.load('GUI/img/heal2.png').convert_alpha(),                         
                         #  'wall': pygame.image.load('GUI/img/wall_vision2.png').convert_alpha()
                          }
 
@@ -79,7 +83,7 @@ class Drawing:
         Animation of weapon using a timer (cool_down) to adjust animation speed
         """
         if self.__weapon_animate == 1:
-            self.sound.weapon()
+            self.__sound.weapon()
         
         wep_pos = (WIDTH * 2/5, HEIGHT - 280)
         wep_size = (HALF_WIDTH, HALF_HEIGHT)
@@ -92,7 +96,7 @@ class Drawing:
                 self.__wep_time = 0
         else: 
             self.__weapon_animate = 0
-        weapon = pygame.transform.scale(self.textures[f'{self.hero.hero_type}{self.__weapon_animate}'], wep_size)
+        weapon = pygame.transform.scale(self.textures[f'{self.hero.hero_type}w{self.__weapon_animate}'], wep_size)
         self.screen.blit(weapon, wep_pos)
 
     def __hero_health_bar(self):
@@ -198,22 +202,24 @@ class Drawing:
 
     def __special_animation(self):
         '''
-        Shows animation of special skill
-        TODO make animation specific to hero class
+        Shows animation of special skill, used by all 3 different hero classes
         '''
-        if self.player.special_skill and self.__special_animate < 2:
+        if self.__special_animate == 1:
+            self.__sound.special_skill(self.hero.hero_type)
+
+        if self.player.special_skill_animate and self.__special_animate < 3:
             special_pos = (HALF_WIDTH / 2, HALF_HEIGHT - 100)
             special_size = (HALF_WIDTH, HALF_HEIGHT)
-            cool_down = 12
+            cool_down = 9
             if self.__special_time < cool_down:
                 self.__special_time += 1
             else:
                 self.__special_animate += 1
                 self.__special_time = 0
-            weapon = pygame.transform.scale(self.textures[f'heal{self.__special_animate}'], special_size)
+            weapon = pygame.transform.scale(self.textures[f'{self.hero.hero_type}s{self.__special_animate}'], special_size)
             self.screen.blit(weapon, special_pos)    
         else: 
-            self.player.special_skill = False
+            self.player.special_skill_animate = False
             self.__special_animate = 0
         
     def __inventory(self):

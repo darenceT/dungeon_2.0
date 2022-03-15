@@ -138,14 +138,14 @@ class Sound:
         Sound for collecting potions
         """
         if self.__is_running:
-            mixer.Channel(1).play(pygame.mixer.Sound(Path('GUI', 'sound', 'mixkit-pickup.wav')))
+            mixer.Channel(2).play(pygame.mixer.Sound(Path('GUI', 'sound', 'mixkit-pickup.wav')))
 
     def pillar(self):
         """
         Sound for collecting pillar key
         """
         if self.__is_running:
-            mixer.Channel(1).play(pygame.mixer.Sound(Path('GUI', 'sound', 'zapsplat_pillar.mp3')))
+            mixer.Channel(4).play(pygame.mixer.Sound(Path('GUI', 'sound', 'zapsplat_pillar.mp3')))
 
     def health_potion(self):
         """
@@ -168,28 +168,27 @@ class Sound:
         if self.__is_running:
             mixer.Channel(1).play(pygame.mixer.Sound(Path('GUI','sound', 'zapsplat_wep_hit.mp3')))
     
-    def special_heal(self):
+    def special_skill(self, h_class):
         """
-        Sound for priest healing
+        Sound for special skill for each hero class
         """
         if self.__is_running:
-            mixer.Channel(2).play(pygame.mixer.Sound(Path('GUI','sound', 'mixkit-healing.wav')))
+            mixer.Channel(3).play(pygame.mixer.Sound(Path('GUI','sound', f'{h_class}sp.mp3')))
 
     def monster_play(self, mtype, off=False):
         """
         TODO docstrings
         """
         if mtype in ('mgirl', 'ogre', 'gremlin', 'skeleton') and self.__is_running:
-            channel = self.__monster_sounds.index(mtype) + 2
+            channel = self.__monster_sounds.index(mtype) + 5
             if off:
                 mixer.Channel(channel).stop()
             else:
                 mixer.Channel(channel).play(pygame.mixer.Sound(Path('GUI','sound', f'{mtype}.mp3')))
-
 
     def defeat_monster(self):
         """
         Sound for defeating monster
         """
         if self.__is_running:
-            mixer.Channel(2).play(pygame.mixer.Sound(Path('GUI','sound', f'defeat_monster{randrange(5)}.wav')))
+            mixer.Channel(5).play(pygame.mixer.Sound(Path('GUI','sound', f'defeat_monster{randrange(4)}.wav')))

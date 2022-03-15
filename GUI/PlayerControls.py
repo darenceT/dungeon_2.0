@@ -1,6 +1,5 @@
 import pygame
 import math
-# from Grid import Grid
 from .Arena import Arena
 from .Settings import PI, DOUBLE_PI, MAP_TILE, PLAYER_SPEED
 from .Utility import convert_coords_to_pixel, direction_of_vision
@@ -16,7 +15,9 @@ class PlayerControls:
         self.angle = 0
         self.__direction = 'east'
         self.__attacking = False
-        self.__special_skill = False
+        self.__fight_alone = True
+        self.__special_skill_execute = False
+        self.__special_skill_animate = False
         self.cur_room = game_data.maze.ingress
         self.x = convert_coords_to_pixel(self.cur_room.coords[0])
         self.y = convert_coords_to_pixel(self.cur_room.coords[1])
@@ -27,7 +28,7 @@ class PlayerControls:
         self.__pause_on = False
         self.game_data = game_data
         self.memo = memo
-        self.arena = Arena(sound, self, game_data.hero)
+        self.__arena = Arena(self, game_data.hero, memo)
 
         self.__rooms_in_sight = tuple()
         self.map_visited = set()
@@ -72,18 +73,55 @@ class PlayerControls:
         return self.__attacking
 
     @property
-    def special_skill(self):
-        return self.__special_skill
+    def fight_alone(self):
+        return self.__fight_alone
 
-    @special_skill.setter
-    def special_skill(self, change=False):
+    @fight_alone.setter
+    def fight_alone(self, change):
+        """
+        Allow detection of nearby monsters to let you know if you're alone,
+        allowing additional use of arena for special skill when alone
+        """
+        if isinstance(change, bool):
+            if change:
+                self.__fight_alone = True
+            else:
+                self.__fight_alone = False
+        else:
+            raise TypeError('Only boolean accepted for fight_alone')
+
+    @property
+    def special_skill_execute(self):
+        return self.__special_skill_execute
+
+    @special_skill_execute.setter
+    def special_skill_execute(self, change=False):
         if isinstance(change, bool):
             if not change:
-                self.__special_skill = False
+                self.__special_skill_execute = False
             else:
                 raise ValueError('True should not be accessed outside of PlayerControls')
         else:
-            raise TypeError('Only boolean accepted for pause_on')
+            raise TypeError('Only boolean accepted for special_skill_execute')
+
+    @property
+    def special_skill_animate(self):
+        return self.__special_skill_animate
+
+    @special_skill_animate.setter
+    def special_skill_animate(self, change=False):
+        if isinstance(change, bool):
+            if not change:
+                self.__special_skill_animate = False
+            else:
+                raise ValueError('True should not be accessed outside of PlayerControls')
+        else:
+            raise TypeError('Only boolean accepted for special_skill_animate')
+
+    @property
+    def arena(self):
+        return self.__arena
+
     @property
     def new_pillar(self):
         return self.__new_pillar
@@ -187,8 +225,6 @@ class PlayerControls:
                 next_x -= 1
             else:           # east
                 next_x += 1
-            print('current: ', f'({x},{y})', 'next', f'{next_x}, {next_y}')
-            print('current room:', self.game_data.maze.rooms[y][x].coords)
             
             cur_room = self.game_data.maze.rooms[y][x]
             max_x = self.game_data.maze.width
@@ -196,10 +232,8 @@ class PlayerControls:
             if -1 < next_x < max_x and -1 < next_y < max_y:
                 next_room = self.game_data.maze.rooms[next_y][next_x]
                 self.__rooms_in_sight = (cur_room, next_room)
-                print('next room:', self.game_data.maze.rooms[next_y][next_x].coords)
             else:
                 self.__rooms_in_sight = (cur_room,)
-                print('room skipped')
             
             self.__ready_for_new_sprites = True
         else:
@@ -227,11 +261,11 @@ class PlayerControls:
                         self.__sound.vision_potion()
                     self.game_data.hero.use_vision_potion()
                 elif event.key == pygame.K_r:
-                    special = self.game_data.hero.special_skill()
-                    if special is not None:
-                        self.__special_skill = True
-                        self.memo.new_message(special)
-                        self.__sound.special_heal()
+                    if self.game_data.hero.can_use_special():
+                        self.__special_skill_animate = True
+                        self.__special_skill_execute = True
+                        if self.__fight_alone:
+                            self.__arena.fight()
                 elif event.key == pygame.K_SPACE:
                     self.__pause_on = True
 
