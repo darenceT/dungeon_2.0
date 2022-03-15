@@ -21,7 +21,7 @@ class DungeonAdventure:
         """
         self.__maze = Dungeon(map_str=map_str)
         self.__room = self.maze.ingress
-        self.__hero = HeroFactory.create_hero(guild=guild, name=name)
+        self.__hero = HeroFactory.create_hero(guild=guild, name=name, game=self)
         self.__continues: bool = True
 
     @property
