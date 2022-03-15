@@ -13,14 +13,16 @@ class PlayerControls:
     """
     def __init__(self, sound, game_data, memo, collision_walls):
         self.angle = 0
-        self.__direction = 'east'
+        self.__direction = 'east'       
+        self.cur_room = game_data.maze.ingress
+        self.x = convert_coords_to_pixel(self.cur_room.coords[0])
+        self.y = convert_coords_to_pixel(self.cur_room.coords[1])
         self.__attacking = False
         self.__fight_alone = True
         self.__special_skill_execute = False
         self.__special_skill_animate = False
-        self.cur_room = game_data.maze.ingress
-        self.x = convert_coords_to_pixel(self.cur_room.coords[0])
-        self.y = convert_coords_to_pixel(self.cur_room.coords[1])
+        self.__vision_pot_used = False 
+
         
         self.__room_change = True     # set initial to True to for initial 1 time loading of nearby sprites
         self.__ready_for_new_sprites = True
@@ -118,6 +120,20 @@ class PlayerControls:
         else:
             raise TypeError('Only boolean accepted for special_skill_animate')
 
+    @property
+    def vision_pot_used(self):
+        return self.__vision_pot_used
+
+    @vision_pot_used.setter
+    def vision_pot_used(self, change=False):
+        if isinstance(change, bool):
+            if not change:
+                self.__vision_pot_used = False
+            else:
+                raise ValueError('True should not be accessed outside of PlayerControls')
+        else:
+            raise TypeError('Only boolean accepted for vision_pot_used')
+            
     @property
     def arena(self):
         return self.__arena
@@ -257,6 +273,7 @@ class PlayerControls:
                     self.game_data.hero.use_healing_potion()
                 elif event.key == pygame.K_v:
                     if self.game_data.hero.vision_potions:
+                        self.__vision_pot_used = True
                         self.memo.new_message('Vision potion used, check your map!')
                         self.__sound.vision_potion()
                     self.game_data.hero.use_vision_potion()

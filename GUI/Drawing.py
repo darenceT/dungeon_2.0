@@ -22,6 +22,7 @@ class Drawing:
         self.__special_tick = 0
         self.__special_animate = 0
         self.__special_time = 0
+        self.__vision_pot_tick = 0
         self.textures = {
                          'ceiling': pygame.image.load('GUI/img/ceiling3.jpg').convert(),
                          'door': pygame.image.load('GUI/img/door_portal.png').convert(),
@@ -274,7 +275,8 @@ class Drawing:
 
     def __mini_map(self):
         """
-        TODO docstrings
+        Reveal map at top left corner when user holds down TAB key
+        Also reveals vision of nearby rooms for several seconds after using vision potion
         TODO add icon of exit when found
         """
         if self.player.show_map:
@@ -283,14 +285,23 @@ class Drawing:
 
             # Draws visited path
             for x, y in self.player.map_visited:
-                pygame.draw.rect(map_surf, 'red', (x-8, y-8, MAP_TILE * 2, MAP_TILE * 2))
+                pygame.draw.rect(map_surf, RED, (x-8, y-8, MAP_TILE * 2, MAP_TILE * 2))
+
+            if self.player.vision_pot_used:
+                if self.__vision_pot_tick < 150:
+                    pygame.draw.circle(map_surf, RED, (xx, yy), MAP_TILE * 3.15)
+                    pygame.draw.circle(map_surf, WHITE, (xx, yy), MAP_TILE * 3)
+                    self.__vision_pot_tick += 1
+                else:
+                    self.player.vision_pot_used = False
+                    self.__vision_pot_tick = 0
 
             # Draws wall (can use to reveal entire map)
             for x,y in self.map_coords:
-                pygame.draw.rect(map_surf, 'black', (x, y, MAP_TILE, MAP_TILE))
+                pygame.draw.rect(map_surf, BLACK, (x, y, MAP_TILE, MAP_TILE))
 
-            pygame.draw.circle(map_surf, 'green', (xx, yy), 5)
-            pygame.draw.line(map_surf, 'green', (xx, yy), (xx + 12 * math.cos(self.player.angle),
+            pygame.draw.circle(map_surf, GREEN, (xx, yy), 5)
+            pygame.draw.line(map_surf, GREEN, (xx, yy), (xx + 12 * math.cos(self.player.angle),
                             yy + 12 * math.sin(self.player.angle)), 2)
 
             self.screen.blit(map_surf, MAP_POS)
