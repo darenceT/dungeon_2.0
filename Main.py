@@ -28,7 +28,7 @@ class Main:
         self.world_coords = {}
         self.__mini_map_coords = set()
         self.player_controls = None
-        self.hero_class = None
+        self.guild = None
         self.hero = None
         self.drawing = None
         self.sprites = None
@@ -75,14 +75,12 @@ class Main:
         Helper function for load game, obtains:
         hero & dungeon maze (including its monsters & objects)
         """
-        # self.hero_class = self.menu.intro_menu()
-        # self.game_data = DungeonAdventure(self.hero_class)
-        while not self.hero_class or not self.game_data:
+        while not self.guild or not self.game_data:
             op, dat = self.menu.intro_menu()
             if op == 'new':
                 print('new game')
-                self.hero_class = dat[0]
-                self.game_data = DungeonAdventure(hero_class=self.hero_class)
+                self.guild = dat[0]
+                self.game_data = DungeonAdventure(guild=self.guild)
             elif op == 'load':
                 print('load from saved game')
                 try:

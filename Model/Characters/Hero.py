@@ -1,24 +1,46 @@
 from abc import abstractclassmethod
-from .DungeonCharacter import DungeonCharacter
-# from DungeonCharacter import DungeonCharacter
+from Model.Characters.DungeonCharacter import DungeonCharacter
+
 
 class Hero(DungeonCharacter):
     """
     Abstract class that thief, priestess and warrior class will inherit from.
     This abstract class is a child of abstract class DungeonCharacter
     """
-    def __init__(self, hero_type, name, hit_points, hit_points_max, attack_speed, chance_to_hit,
-                 minimum_damage, maximum_damage, chance_to_block, game=None):
-        super().__init__(name, hit_points, hit_points_max, attack_speed, chance_to_hit,
-                 minimum_damage, maximum_damage)  
+    def __init__(self, name: str = 'Sir Robin', guild: str = 'Coward',
+                 hit_points: int = 2, hit_points_max: int = 5,
+                 attack_speed: int = 1, chance_to_hit: float = 0.1,
+                 minimum_damage: int = 1, maximum_damage: int = 2,
+                 chance_to_block: float = 0.1, game=None):
+        super().__init__(name=name, hit_points=hit_points, hit_points_max=hit_points_max,
+                         attack_speed=attack_speed, chance_to_hit=chance_to_hit,
+                         minimum_damage=minimum_damage, maximum_damage=maximum_damage)
         self.__game = game
-        self.__hero_type = hero_type
+        self.__guild = guild
         self.__chance_to_block = chance_to_block
         self.__special_mana: int = 10
         self.__vision_potions: int = 0
         self.__healing_potions: int = 0
         self.__vision_potions: int = 0
-        self.__pillars: set = set() 
+        self.__pillars: set = set()  # empty
+
+    def display_inventory(self):
+        print(f'name:          {self.name}',
+              f'guild:         {self.guild}',
+              f'hit points:    {self.hit_points} (max: {self.hit_points_max})',
+              f'attack speed:  {self.attack_speed}',
+              f'attack chance: {self.chance_to_hit}',
+              f'attack damage: {self.minimum_damage}-{self.maximum_damage}',
+              f'block chance:  {self.chance_to_block}',
+              f'special mana:  {self.special_mana}',
+              f'vision potion: {self.vision_potions}',
+              f'health potion: {self.healing_potions}',
+              f'pillars seen:  {self.pillars}',
+              sep='\n')
+
+    @property
+    def guild(self):
+        return self.__guild
 
     @property
     def special_mana(self):
@@ -53,7 +75,7 @@ class Hero(DungeonCharacter):
     @property
     def hero_type(self):
         return self.__hero_type
-    
+
     #@abstractclassmethod
     def special_skill(self) -> None:
         """
@@ -110,9 +132,9 @@ class Hero(DungeonCharacter):
     def can_use_special(self):
         """
         Check to see if hero has enough mana to use special skill
-        Special case to check HP if hero is priest
+        Special case to check HP if hero is priestess
         """
-        if self.__hero_type == "priest" and self.__special_mana >= 15:
+        if self.__guild == "priestess" and self.__special_mana >= 15:
             ready = self.hit_points_max - self.hit_points > 5
         else:
             ready = self.__special_mana >= 15
@@ -176,14 +198,14 @@ class Hero(DungeonCharacter):
         self.pillars.add(pillar_name)
 
     def __str__(self):
-        return f"""
-{self.__hero_type.capitalize()} named {self.name}
-Stats:
-Health Points: {self.hit_points}
-Max Health: {self.hit_points_max}
-Special Mana: {self.__special_mana}
-Attack speed: {self.attack_speed}
-Chance to hit: {self.chance_to_hit}
-Mininum damage: {self.minimum_damage}
-Maximum damage: {self.maximum_damage}
-"""
+        return f"{self.guild}({self.name})"
+
+
+if __name__ == '__main__':
+    def example():
+        p = Hero()
+        print(p)
+
+    example()
+
+# END
