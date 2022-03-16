@@ -72,10 +72,6 @@ class Hero(DungeonCharacter):
         """
         return self.__game
 
-    @property
-    def hero_type(self):
-        return self.__hero_type
-
     #@abstractclassmethod
     def special_skill(self) -> None:
         """
