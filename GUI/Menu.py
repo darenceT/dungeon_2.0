@@ -204,11 +204,12 @@ class Menu:
                 if event.type==pygame.QUIT:
                     pygame.quit()
                     quit()
-                if event.type == pygame.KEYDOWN:
+                elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_BACKSPACE:
                         name_input = name_input[:-1]
-                    if event.key == pygame.K_RETURN and len(name_input) > 0:
+                    elif event.key == pygame.K_RETURN and len(name_input) > 0:
                         return name_input.strip().capitalize()  
+                        
                     if len(name_input) < 14: 
                         if event.key == pygame.K_a:
                             name_input += str(chr(event.key))
