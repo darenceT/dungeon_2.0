@@ -169,7 +169,7 @@ class Menu:
                 name = self.name_input()
                 print("name -> instructions")
                 self.instructions()           
-                print(f"start_menu <- hero_class '{hero_class}'")
+                print(f"start_menu <- hero_class '{hero_class}' named {name}")
                 return 'new', (hero_class, name)
             elif chose == 'Load':
                 print("start_menu <- 'Load'")
@@ -183,7 +183,9 @@ class Menu:
 
     def name_input(self):
         """
-        
+        Input hero name, more difficult than you'd think compared to using the terminal.
+        Loops through to show keys entered.
+        TODO: add more features such as backspace to delete characters, create error screens for wrong inputs
         credit https://stackoverflow.com/questions/27713855/how-to-get-an-input-from-user-in-pygame-and-save-it-as-a-variable
         """
         name_input=""
@@ -296,15 +298,11 @@ Good luck, brave hero!
         screens = {
             0: {
                 'text': text1,
-                'x': 100,
-                'y': 100,
                 'y_off' : 22,
                 'size': 20
             },
             1: {
                 'text': text2,
-                'x': 100,
-                'y': 100,
                 'y_off' : 28,
                 'size': 25
             }
@@ -314,8 +312,7 @@ Good luck, brave hero!
             text_rendered = []
             text_list = screens[page]['text'].splitlines()
             for number, line in enumerate(text_list):
-                txt, txt_pos = create_textline(line, pos=(screens[page]['x'], 
-                                                screens[page]['y'] + screens[page]['y_off'] * number), 
+                txt, txt_pos = create_textline(line, pos=(100, 100 + screens[page]['y_off'] * number), 
                                                 font_type='GUI/font/Titillium.ttf', 
                                                 size = screens[page]['size'], pos_type='xy')
                 text_rendered.append((txt, txt_pos))
