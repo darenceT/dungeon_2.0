@@ -165,10 +165,12 @@ class Menu:
                 print("start_menu <- 'New'")
                 print("start_menu -> hero_selection")
                 hero_class = self.hero_selection()  
-                print("hero_selected -> instructions")
+                print("hero_selected -> name")
+                name = self.name_input()
+                print("name -> instructions")
                 self.instructions()           
                 print(f"start_menu <- hero_class '{hero_class}'")
-                return 'new', (hero_class, None)
+                return 'new', (hero_class, name)
             elif chose == 'Load':
                 print("start_menu <- 'Load'")
                 return 'load', None
@@ -179,6 +181,78 @@ class Menu:
                 print(f"start_menu <- unrecognized '{chose}'")
                 # continue, try again
 
+    def name_input(self):
+        """
+        
+        credit https://stackoverflow.com/questions/27713855/how-to-get-an-input-from-user-in-pygame-and-save-it-as-a-variable
+        """
+        name_input=""
+        while True:
+            ask1, ask1_pos = create_textline("Please  enter  your  name: ",
+                                                pos=(self.X_POS, self.Y_POS - self.Y_OFFSET * 4), size=30)
+            ask2, ask2_pos = create_textline("Then  press  enter",
+                                                pos=(self.X_POS, self.Y_POS + self.Y_OFFSET * 2), size=20)
+            name, name_pos = create_textline(name_input, pos=(self.X_POS, self.Y_POS), size=20)
+            self.messages = ((ask1, ask1_pos), (ask2, ask2_pos), (name, name_pos))
+            self.draw()
+            for event in pygame.event.get():
+                if event.type==pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_a:
+                        name_input += str(chr(event.key))
+                    if event.key == pygame.K_b:
+                        name_input += str(chr(event.key))
+                    if event.key == pygame.K_c:
+                        name_input += str(chr(event.key))
+                    if event.key == pygame.K_d:
+                        name_input += str(chr(event.key))
+                    if event.key == pygame.K_e:
+                        name_input += str(chr(event.key))
+                    if event.key == pygame.K_f:
+                        name_input += str(chr(event.key))
+                    if event.key == pygame.K_g:
+                        name_input += str(chr(event.key))
+                    if event.key == pygame.K_h:
+                        name_input += str(chr(event.key))
+                    if event.key == pygame.K_i:
+                        name_input += str(chr(event.key))
+                    if event.key == pygame.K_j:
+                        name_input += str(chr(event.key))
+                    if event.key == pygame.K_k:
+                        name_input += str(chr(event.key))
+                    if event.key == pygame.K_l:
+                        name_input += str(chr(event.key))
+                    if event.key == pygame.K_m:
+                        name_input += str(chr(event.key))
+                    if event.key == pygame.K_n:
+                        name_input += str(chr(event.key))
+                    if event.key == pygame.K_o:
+                        name_input += str(chr(event.key))
+                    if event.key == pygame.K_p:
+                        name_input += str(chr(event.key)) 
+                    if event.key == pygame.K_q:
+                        name_input += str(chr(event.key))
+                    if event.key == pygame.K_r:
+                        name_input += str(chr(event.key))
+                    if event.key == pygame.K_s:
+                        name_input += str(chr(event.key))
+                    if event.key == pygame.K_t:
+                        name_input += str(chr(event.key))
+                    if event.key == pygame.K_u:
+                        name_input += str(chr(event.key))
+                    if event.key == pygame.K_v:
+                        name_input += str(chr(event.key))
+                    if event.key == pygame.K_x:
+                        name_input += str(chr(event.key))
+                    if event.key == pygame.K_y:
+                        name_input += str(chr(event.key))
+                    if event.key == pygame.K_z:
+                        name_input += str(chr(event.key))                                                                                                 
+                    if event.key == pygame.K_RETURN:
+                        return name_input.strip().capitalize()
+            
     def instructions(self):
         """
         Simple 2-page screen for instructions as part of intro menu,

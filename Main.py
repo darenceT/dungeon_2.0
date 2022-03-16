@@ -39,10 +39,6 @@ class Main:
     @property
     def mini_map_coords(self):
         return self.__mini_map_coords
-    
-    @property
-    def mini_map_exit_coords(self):
-        return self.__mini_map_exit_coords
 
     def __load_game(self):
         """
@@ -79,8 +75,8 @@ class Main:
             op, dat = self.menu.intro_menu()
             if op == 'new':
                 print('new game')
-                self.guild = dat[0]
-                self.game_data = DungeonAdventure(guild=self.guild)
+                self.guild, hero_name = dat
+                self.game_data = DungeonAdventure(guild=self.guild, name=hero_name)
             elif op == 'load':
                 print('load from saved game')
                 try:
@@ -94,7 +90,8 @@ class Main:
                 raise ValueError(f"unrecognized op '{op}'")
         self.dungeon = self.game_data.maze
         self.hero = self.game_data.hero
-        print(self.dungeon)                         # DELETE
+        print(self.dungeon)                                         # DELETE ###################### (or move to after winning)
+        print(self.hero.name)                                        # DELETE ###########################
 
         def __parse_map(maze):
             """
@@ -156,7 +153,6 @@ class Main:
                 self.memo.message_box()
                 self.drawing.weapon_and_ui(clock)
                 pygame.display.flip()
-        print(self.player_controls.cur_room.coords)
         if self.player_controls.win_game:
             self.menu.win_screen()
         elif not self.menu.reset:
