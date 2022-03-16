@@ -113,12 +113,12 @@ class Drawing:
         bar_info[2] *= self.hero.hit_points / self.hero.hit_points_max
         pygame.draw.rect(self.screen, GREEN, bar_info)
 
-        # text = 'Health'
         hp_txt, hp_pos = create_textline(self.hero.name, 
-                                         pos=(WIDTH - 145, HEIGHT - 46),
+                                         pos=(WIDTH - 173.5, HEIGHT - 55),
                                          font_type='GUI/font/28DaysLater.ttf', 
-                                         size=20,
-                                         color=BLACK)
+                                         size=20, 
+                                         color=BLACK, 
+                                         pos_type= 'xy')
         self.screen.blit(hp_txt, hp_pos)
 
     def __enemy_health_bar(self):
