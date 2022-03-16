@@ -189,7 +189,8 @@ class Menu:
         Loops through to show keys entered.
         TODO: Add more features such as error message for wrong inputs
         TODO: Consider giving default name (class specific?) for users eager to start playing!
-        credit https://stackoverflow.com/questions/27713855/how-to-get-an-input-from-user-in-pygame-and-save-it-as-a-variable
+        credit short but glitchy method: https://localcoder.org/pygame-is-there-any-easy-way-to-find-the-letter-number-of-any-alphanumeric-pres
+        credit verbose method: https://stackoverflow.com/questions/27713855/how-to-get-an-input-from-user-in-pygame-and-save-it-as-a-variable
         """
         name_input=""
         while True:
@@ -209,58 +210,64 @@ class Menu:
                         name_input = name_input[:-1]
                     elif event.key == pygame.K_RETURN and len(name_input) > 0:
                         return name_input.strip().capitalize()  
+                    elif len(name_input) < 14:    
+                        # Option 1: most letters stop working after using backspace
+                        name_input += str(event.unicode) 
+
+                        # Option 2: works better but prints out "space, tab, etc"                
+                        # name_input += str(pygame.key.name(event.key))
                         
-                    if len(name_input) < 14: 
-                        if event.key == pygame.K_a:
-                            name_input += str(chr(event.key))
-                        elif event.key == pygame.K_b:
-                            name_input += str(chr(event.key))
-                        elif event.key == pygame.K_c:
-                            name_input += str(chr(event.key))
-                        elif event.key == pygame.K_d:
-                            name_input += str(chr(event.key))
-                        elif event.key == pygame.K_e:
-                            name_input += str(chr(event.key))
-                        elif event.key == pygame.K_f:
-                            name_input += str(chr(event.key))
-                        elif event.key == pygame.K_g:
-                            name_input += str(chr(event.key))
-                        elif event.key == pygame.K_h:
-                            name_input += str(chr(event.key))
-                        elif event.key == pygame.K_i:
-                            name_input += str(chr(event.key))
-                        elif event.key == pygame.K_j:
-                            name_input += str(chr(event.key))
-                        elif event.key == pygame.K_k:
-                            name_input += str(chr(event.key))
-                        elif event.key == pygame.K_l:
-                            name_input += str(chr(event.key))
-                        elif event.key == pygame.K_m:
-                            name_input += str(chr(event.key))
-                        elif event.key == pygame.K_n:
-                            name_input += str(chr(event.key))
-                        elif event.key == pygame.K_o:
-                            name_input += str(chr(event.key))
-                        elif event.key == pygame.K_p:
-                            name_input += str(chr(event.key)) 
-                        elif event.key == pygame.K_q:
-                            name_input += str(chr(event.key))
-                        elif event.key == pygame.K_r:
-                            name_input += str(chr(event.key))
-                        elif event.key == pygame.K_s:
-                            name_input += str(chr(event.key))
-                        elif event.key == pygame.K_t:
-                            name_input += str(chr(event.key))
-                        elif event.key == pygame.K_u:
-                            name_input += str(chr(event.key))
-                        elif event.key == pygame.K_v:
-                            name_input += str(chr(event.key))
-                        elif event.key == pygame.K_x:
-                            name_input += str(chr(event.key))
-                        elif event.key == pygame.K_y:
-                            name_input += str(chr(event.key))
-                        elif event.key == pygame.K_z:
-                            name_input += str(chr(event.key))                                                                                             
+                        # Option 3: Unsightly but works best      
+                    #     if event.key == pygame.K_a:
+                    #         name_input += str(chr(event.key))
+                    #     elif event.key == pygame.K_b:
+                    #         name_input += str(chr(event.key))           
+                    #     elif event.key == pygame.K_c:
+                    #         name_input += str(chr(event.key))
+                    #     elif event.key == pygame.K_d:
+                    #         name_input += str(chr(event.key))
+                    #     elif event.key == pygame.K_e:
+                    #         name_input += str(chr(event.key))
+                    #     elif event.key == pygame.K_f:
+                    #         name_input += str(chr(event.key))
+                    #     elif event.key == pygame.K_g:
+                    #         name_input += str(chr(event.key))
+                    #     elif event.key == pygame.K_h:
+                    #         name_input += str(chr(event.key))
+                    #     elif event.key == pygame.K_i:
+                    #         name_input += str(chr(event.key))
+                    #     elif event.key == pygame.K_j:
+                    #         name_input += str(chr(event.key))
+                    #     elif event.key == pygame.K_k:
+                    #         name_input += str(chr(event.key))
+                    #     elif event.key == pygame.K_l:
+                    #         name_input += str(chr(event.key))
+                    #     elif event.key == pygame.K_m:
+                    #         name_input += str(chr(event.key))
+                    #     elif event.key == pygame.K_n:
+                    #         name_input += str(chr(event.key))
+                    #     elif event.key == pygame.K_o:
+                    #         name_input += str(chr(event.key))
+                    #     elif event.key == pygame.K_p:
+                    #         name_input += str(chr(event.key)) 
+                    #     elif event.key == pygame.K_q:
+                    #         name_input += str(chr(event.key))
+                    #     elif event.key == pygame.K_r:
+                    #         name_input += str(chr(event.key))
+                    #     elif event.key == pygame.K_s:
+                    #         name_input += str(chr(event.key))
+                    #     elif event.key == pygame.K_t:
+                    #         name_input += str(chr(event.key))
+                    #     elif event.key == pygame.K_u:
+                    #         name_input += str(chr(event.key))
+                    #     elif event.key == pygame.K_v:
+                    #         name_input += str(chr(event.key))
+                    #     elif event.key == pygame.K_x:
+                    #         name_input += str(chr(event.key))
+                    #     elif event.key == pygame.K_y:
+                    #         name_input += str(chr(event.key))
+                    #     elif event.key == pygame.K_z:
+                    #         name_input += str(chr(event.key))                                                                                             
             
     def instructions(self):
         """
