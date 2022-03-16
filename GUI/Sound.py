@@ -49,14 +49,19 @@ class Sound:
     @property
     def monster_sounds(self):
         """
-        TODO docstrings
+        Getter to obtain list of sounds involved in combat:
+        :return: said list
+        :rtype: list[str]
         """
         return self.__monster_sounds
 
     @monster_sounds.setter
     def monster_sounds(self, info): 
         """
-        TODO docstrings
+        Setter to add or remove monster sounds involved in combat
+        :param info: monster class and whether to remove or add
+        :param type: tuple(str, bool)
+        :return: None
         """
         npc_name, remove = info
         if remove:
@@ -67,6 +72,7 @@ class Sound:
     def turn_off(self):
         """
         Turn off all sounds
+        :return: None
         """
         self.__is_running = False
         mixer.quit()
@@ -93,6 +99,7 @@ class Sound:
     def intro(self):
         """
         Play intro music. 
+        :return: None
         """
         if self.__is_running:
             mixer.music.load(Path('GUI/sound/Kai-Engel-Low-Horizon_s.mp3'))
@@ -101,6 +108,7 @@ class Sound:
     def in_game(self):
         """
         Play in-game music. 
+        :return: None
         """
         if self.__is_running:
             mixer.music.load(Path('GUI/sound/Komiku_-_52_-_Cave_of_time_s.mp3'))
@@ -120,6 +128,7 @@ class Sound:
     def lose(self):
         """
         Music with player loses
+        :return: None
         """
         if self.__is_running:
             mixer.music.load(Path('GUI/sound/lose.mp3'))
@@ -128,6 +137,7 @@ class Sound:
     def win(self):
         """
         Music with player wins
+        :return: None
         """
         if self.__is_running:
             mixer.music.load(Path('GUI/sound/zapsplat_win.mp3'))
@@ -136,13 +146,15 @@ class Sound:
     def pickup(self):
         """
         Sound for collecting potions
+        :return: None
         """
         if self.__is_running:
             mixer.Channel(2).play(pygame.mixer.Sound(Path('GUI', 'sound', 'mixkit-pickup.wav')))
 
     def pillar(self):
         """
-        Sound for collecting pillar key
+        Sound for finding/"touching" pillar
+        :return: None
         """
         if self.__is_running:
             mixer.Channel(4).play(pygame.mixer.Sound(Path('GUI', 'sound', 'zapsplat_pillar.mp3')))
@@ -150,6 +162,7 @@ class Sound:
     def health_potion(self):
         """
         Sound for consuming health potion
+        :return: None
         """
         if self.__is_running:
             mixer.Channel(1).play(pygame.mixer.Sound(Path('GUI', 'sound', 'zapsplat_health_pot.mp3')))
@@ -157,6 +170,7 @@ class Sound:
     def vision_potion(self):
         """
         Sound for effects of vision potion
+        :return: None
         """
         if self.__is_running:
             mixer.Channel(1).play(pygame.mixer.Sound(Path('GUI', 'sound', 'zapsplat_vision.mp3')))
@@ -164,6 +178,7 @@ class Sound:
     def weapon(self):
         """
         Sound for using main weapon
+        :return: None
         """
         if self.__is_running:
             mixer.Channel(1).play(pygame.mixer.Sound(Path('GUI','sound', 'zapsplat_wep_hit.mp3')))
@@ -171,13 +186,21 @@ class Sound:
     def special_skill(self, h_class):
         """
         Sound for special skill for each hero class
+        :param h_class: hero class/guild
+        :param type: str
+        :return: None
         """
         if self.__is_running:
             mixer.Channel(3).play(pygame.mixer.Sound(Path('GUI','sound', f'{h_class}sp.mp3')))
 
     def monster_play(self, mtype, off=False):
         """
-        TODO docstrings
+        Noise from monsters when engaged, specific the monster type
+        :param mtype: monster class
+        :param type: str
+        :param off: allows method to turn off sound if True
+        :param type: bool
+        :return: None
         """
         if mtype in ('mgirl', 'ogre', 'gremlin', 'skeleton') and self.__is_running:
             channel = self.__monster_sounds.index(mtype) + 4
@@ -189,6 +212,7 @@ class Sound:
     def defeat_monster(self):
         """
         Sound for defeating monster
+        :return: None
         """
         if self.__is_running:
             mixer.Channel(5).play(pygame.mixer.Sound(Path('GUI','sound', f'defeat_monster{randrange(4)}.wav')))

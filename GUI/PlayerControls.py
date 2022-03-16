@@ -65,6 +65,9 @@ class PlayerControls:
     
     @pause_on.setter
     def pause_on(self, change=True):
+        """
+        Setter to change back to false after pause-menu accessed via Main
+        """
         if isinstance(change, bool):
             if not change:
                 self.__pause_on = False
@@ -101,6 +104,11 @@ class PlayerControls:
 
     @special_skill_execute.setter
     def special_skill_execute(self, change=False):
+        """
+        Setter to allow turning off special skill effects to allow 
+        looping only once each time, accessed in Arena
+        :return: None
+        """
         if isinstance(change, bool):
             if not change:
                 self.__special_skill_execute = False
@@ -115,6 +123,11 @@ class PlayerControls:
 
     @special_skill_animate.setter
     def special_skill_animate(self, change=False):
+        """
+        Setter to allow turning off special skill animation to allow 
+        looping only once each time, accessed in Drawing
+        :return: None
+        """
         if isinstance(change, bool):
             if not change:
                 self.__special_skill_animate = False
@@ -129,6 +142,10 @@ class PlayerControls:
 
     @vision_pot_used.setter
     def vision_pot_used(self, change=False):
+        """
+        Setter for vision potion used, to turn off
+        :return: None
+        """
         if isinstance(change, bool):
             if not change:
                 self.__vision_pot_used = False
@@ -158,7 +175,13 @@ class PlayerControls:
 
     def detect_collision(self, dx, dy):
         """
-        TODO docstrings
+        Creates impassible locations AKA do not walk through walls
+        TODO Can be applied to Sprites in future implementation
+        :param dx: change in player's movement horizontally
+        :param type: float
+        :param dy: change in player's movement vertically
+        :param type: float
+        :return: None
         Credit: https://github.com/StanislavPetrovV/Raycasting-3d-game-tutorial/blob/master/part%20%232/ray_casting.py
         """
         next_rect = self.rect.copy()
@@ -189,7 +212,9 @@ class PlayerControls:
 
     def movement(self):
         """
-        TODO docstrings
+        Controller code that triggers game events based off player's movement
+        and position in maze, and obtain user's keyboard input
+        :return: None
         """
         self.__keys_control()
         self.rect.center = self.x, self.y

@@ -45,7 +45,8 @@ class Drawing:
 
     def background(self):
         """
-        TODO docstrings
+        Create "open" ceiling and floor
+        TODO: as future implementation, add floor texture and shadows reflected on floor
         """
         sky_offset = -5 * math.degrees(self.player.angle) % WIDTH
         self.screen.blit(self.textures['ceiling'], (sky_offset, 0))
@@ -55,7 +56,10 @@ class Drawing:
 
     def world(self, world_objects): 
         """
-        TODO docstrings
+        Allows win painting of sprites and walls on GUI surface
+        :param world_objects: walls and sprites passed from Main
+        :param type: list [walls + SpriteObjects]
+        :return: None
         """
         if self.player.win_game:
             return
@@ -81,6 +85,7 @@ class Drawing:
     def __weapon_animation(self):
         """
         Animation of weapon using a timer (cool_down) to adjust animation speed
+        :return: None
         """
         if self.__weapon_animate == 1:
             self.__sound.weapon()
@@ -104,6 +109,7 @@ class Drawing:
         Display hero's health bar, red as background for health lost, 
         underneath amount of current health
         bar_info = [left_pos, top_pos, width(health amount), height]
+        :return: None
         """
         bar_info = [WIDTH - 180, HEIGHT - 60, 150, 30]
         border = [WIDTH - 184, HEIGHT - 64, 158, 38]
@@ -125,6 +131,7 @@ class Drawing:
         """
         Display nearby enemy's health bar
         bar_info = [left_pos, top_pos, width(health amount), height]
+        :return: None
         """
         bar_x = 20
         bar_y = HALF_HEIGHT - 40
@@ -163,6 +170,7 @@ class Drawing:
     def __special_bar(self):
         """
         Creates display for special skill mana & timer for mana ticking/increasing over time
+        :return: None
         """
         cool_down = 60
         if self.__special_tick < cool_down:
@@ -203,6 +211,7 @@ class Drawing:
     def __special_animation(self):
         '''
         Shows animation of special skill, used by all 3 different hero classes
+        :return: None
         '''
         if self.__special_animate == 1:
             self.__sound.special_skill(self.hero.guild)
@@ -329,7 +338,10 @@ class Drawing:
 
     def __fps_display(self, clock):
         """
-        TODO docstrings
+        Show active FPS, great to monitor software and hardware performance
+        :param clock: pygame clock passed from Main
+        :param type: pygame Clock object
+        :return: None
         """
         fps_text = 'FPS ' + str(int(clock.get_fps()))
         fps_txt, fps_pos = create_textline(fps_text, 
