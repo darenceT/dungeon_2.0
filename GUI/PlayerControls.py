@@ -289,6 +289,8 @@ class PlayerControls:
                             self.__arena.fight()
                 elif event.key == pygame.K_SPACE:
                     self.__pause_on = True
+                elif event.key == pygame.K_TAB:
+                    self.show_map = True if not self.show_map else False
 
         # for continuous key input
         sin_a = math.sin(self.angle)
@@ -317,5 +319,4 @@ class PlayerControls:
             self.angle += 0.04
 
         self.__attacking = True if keys[pygame.K_e] else False
-        self.show_map = True if keys[pygame.K_TAB] else False
 
