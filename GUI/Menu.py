@@ -83,14 +83,21 @@ class Menu:
         self.select_number = num
         self.cursor.rect.centery = self.Y_POS + self.Y_OFFSET * (self.select_number - 1)
 
-    def menu_controls(self, choices=None, also=None) -> Any:
+    def menu_controls(self, choices: dict = None, also=None) -> Any:
         """
         Allow user input to selection options. This is used by all menu
         versions of game: intro, pause, ending, etc.
-        :param choices: container of choices for a menu screen
-        :param type: {int: str}
-        :return: specific option in choices
-        :rtype: str
+        :param choices: container of choices for a menu screen. Container is a dict.
+          The dict values should be unique, as they are the method return value.
+          The dict keys must be unique ints, the 1-based index in the menu choices;
+          ergo, the range from 1 to the count of menu choices, inclusive.
+          For example: `{1:'First item', 2:'Second option', 3:'Third option'}`
+          `choices` may also be `None`, indicating an interstitial screen where
+          there is no selection for the user to make, only the option to hit return.
+        :param also: function to call after a cursor move; typically a "curried" function.
+          This is a hack to re-render the hero image in `hero_selection()`.
+        :return: value from selected option in `choices`, e.g. `'Second option'` above.
+          Or if `choices` was `None`, then `None` is returned.
         """
         pygame.event.clear()
         while True:
@@ -379,10 +386,9 @@ Good luck, brave hero!
             pygame.display.flip()
 
         draw_hero()
-        hero_class = self.menu_controls(choices, also=draw_hero)
-        print(f"hero_selection <- hero_class '{hero_class}'")
-        # TODO get name
-        return hero_class
+        guild = self.menu_controls(choices, also=draw_hero)
+        print(f"hero_selection <- hero_class '{guild}'")
+        return guild
 
     def load_menu(self):
         """
