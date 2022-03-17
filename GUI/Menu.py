@@ -58,12 +58,12 @@ class Menu:
 
     def move_cursor(self, choices, move=None):
         """
-        Simple move up and down then enter to select choice.
-        However, this adapts to every menu screen and to the number of choices
-        :param choices: up or down from move_cursor()
-        :param type: str
-        :param move: choices for a particular menu
-        :param type: {int: str}
+        Within the current menu's displayed set of choices, handle up/down movement of
+        the current (but not yet chosen) selection, shifting both the on-screen cursor
+        and the internally recorded `self.select_number` that is a key in `choices`.
+        Selection wraps around if already at top or bottom.
+        :param choices: dictionary of choices, see description in `menu_controls()`
+        :param move: str indicating direction of cursor movement, either 'UP' or 'DOWN'
         :return: None
         """
         move_reference = {'DOWN': 1, 'UP': -1}
@@ -98,6 +98,9 @@ class Menu:
           This is a hack to re-render the hero image in `hero_selection()`.
         :return: value from selected option in `choices`, e.g. `'Second option'` above.
           Or if `choices` was `None`, then `None` is returned.
+
+        In addition to returning one of the values in `choices`, the corresponding
+        key in `choices` is recorded as `self.select_number`.
         """
         pygame.event.clear()
         while True:
