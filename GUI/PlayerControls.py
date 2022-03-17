@@ -266,7 +266,7 @@ class PlayerControls:
                 next_y += 1
             elif direction == 'west':
                 next_x -= 1
-            else:           # east
+            else:            # east
                 next_x += 1
             
             cur_room = self.game_data.maze.rooms[y][x]

@@ -9,11 +9,19 @@ class Cursor:
     Pointer object used in selecting choices in Menu system
     """
     def __init__(self) -> None:
-        self.size = 40
-        self.surface, self.rect = create_textline(
+        self.__size = 40
+        self.__surface, self.__rect = create_textline(
                                     '*', 
                                     pos=(HALF_WIDTH-150, HALF_HEIGHT + 100),
-                                    size=self.size)
+                                    size=self.__size)
+
+    @property
+    def rect(self):
+        return self.__rect
+
+    @property
+    def surface(self):
+        return self.__surface
 
 class Menu:
     """
@@ -26,12 +34,12 @@ class Menu:
     Y_OFFSET = 40
 
     def __init__(self, screen, sound):
-        self.screen = screen
-        self.sound = sound
-        self.messages: tuple = tuple()
-        self.select_number = 1
-        self.cursor = Cursor()
-        self.images = {
+        self.__screen = screen
+        self.__sound = sound
+        self.__messages: tuple = tuple()
+        self.__select_number = 1
+        self.__cursor = Cursor()
+        self.__images = {
             1: pygame.image.load('GUI/img/thief.png').convert_alpha(),
             2: pygame.image.load('GUI/img/priestess.png').convert_alpha(),
             3: pygame.image.load('GUI/img/warrior.png').convert_alpha()
@@ -45,18 +53,18 @@ class Menu:
         """
         return self.__reset
 
-    def draw(self):
+    def __draw(self):
         """
-        Brings the menu to live, blits(paints) objects onto a surface then flip(reveal!)
+        Brings the menu to life, blits(paints) objects onto a surface then flip(reveal!)
         Attribute self.message acts as param, containing text objects of choices.
         """
-        self.screen.fill(GRAY)
-        for obj, pos in self.messages:
-            self.screen.blit(obj, pos)
-        self.screen.blit(self.cursor.surface, self.cursor.rect)
+        self.__screen.fill(GRAY)
+        for obj, pos in self.__messages:
+            self.__screen.blit(obj, pos)
+        self.__screen.blit(self.__cursor.surface, self.__cursor.rect)
         pygame.display.flip()
 
-    def move_cursor(self, choices, move=None):
+    def __move_cursor(self, choices, move=None):
         """
         Within the current menu's displayed set of choices, handle up/down movement of
         the current (but not yet chosen) selection, shifting both the on-screen cursor
@@ -69,7 +77,7 @@ class Menu:
         move_reference = {'DOWN': 1, 'UP': -1}
         if move not in move_reference:
             return
-        num = self.select_number
+        num = self.__select_number
         print(f"move_cursor <- {num}:'{choices[num]}' + {move}")
         chg = move_reference[move]
         num += chg
@@ -80,10 +88,10 @@ class Menu:
             print(f"move_cursor -> wrap to top")
             num = 1
         print(f"move_cursor -> {num}:'{choices[num]}")
-        self.select_number = num
-        self.cursor.rect.centery = self.Y_POS + self.Y_OFFSET * (self.select_number - 1)
+        self.__select_number = num
+        self.__cursor.rect.centery = self.Y_POS + self.Y_OFFSET * (self.__select_number - 1)
 
-    def menu_controls(self, choices: dict = None, also=None) -> Any:
+    def __menu_controls(self, choices: dict = None, also=None) -> Any:
         """
         Allow user input to selection options. This is used by all menu
         versions of game: intro, pause, ending, etc.
@@ -111,7 +119,7 @@ class Menu:
                 pygame.quit()
                 exit()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                num = self.select_number
+                num = self.__select_number
                 if choices and len(choices) > 1:
                     chose = choices[num]
                 else:
@@ -120,10 +128,10 @@ class Menu:
                 return chose
             if choices and len(choices) > 1 and event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
-                    self.move_cursor(choices, 'UP')
+                    self.__move_cursor(choices, 'UP')
                 elif event.key == pygame.K_DOWN:
-                    self.move_cursor(choices, 'DOWN')
-                self.draw()
+                    self.__move_cursor(choices, 'DOWN')
+                self.__draw()
                 # hack to update hero images
                 if also:
                     also()
@@ -137,10 +145,10 @@ class Menu:
         :return: game optin of new vs load, hero class, and hero name
         :rtype: tuple(str, tuple(str, str))
         """
-        self.sound.intro()
-        return self.start_screen()
+        self.__sound.intro()
+        return self.__start_screen()
 
-    def start_screen(self):
+    def __start_screen(self):
         """
         Handles logic for intro menu, allow load or new game, toggle through 
         hero selection, name input, and instructions. Returns information back to intro_menu()
@@ -167,44 +175,47 @@ class Menu:
         setting, setting_pos = create_textline('Settings',
                                             pos=(x, y + y_off * 2),
                                             size=30)
-        self.messages = ((title1, title1_pos), (title2, title2_pos),
+        self.__messages = ((title1, title1_pos), (title2, title2_pos),
                     (new, new_pos), (load, load_pos), (setting, setting_pos))
         choices = {1: 'New', 2: 'Load', 3: 'Settings'}
-        self.select_number = 1
-        self.cursor.rect.centery = y + y_off * (self.select_number - 1)
-        self.draw()
+        self.__select_number = 1
+        self.__cursor.rect.centery = y + y_off * (self.__select_number - 1)
+        self.__draw()
+        default_names = {'thief': "Theo", 'priestess': "Lena", 'warrior': 'Xena'}
         while True:
-            chose = self.menu_controls(choices)
-            self.draw()
+            chose = self.__menu_controls(choices)
+            self.__draw()
             if chose == 'New':
                 print("start_menu <- 'New'")
                 print("start_menu -> hero_selection")
-                guild = self.hero_selection()
+                guild = self.__hero_selection()
                 print(f"start_menu <- guild '{guild}'")
                 print("start_menu -> name_input")
-                name = self.name_input()
+                name = self.__name_input()
+                if name == '': name = default_names[guild]
                 print(f"start_menu <- name '{name}'")
                 print("name -> instructions")
-                self.instructions()           
+                self.__instructions()           
                 return 'new', {'guild': guild, 'name': name}
             elif chose == 'Load':
                 print("start_menu <- 'Load'")
-                # self.load_menu()
+                # TODO self.load_menu()
                 dat, err = dat_load()
                 return 'load', dat
             elif chose == 'Settings':
+                # TODO: sound menu or other settings
                 print(f"start_menu <- unimplemented '{chose}'")
                 # continue, try again
             else:
                 print(f"start_menu <- unrecognized '{chose}'")
                 # continue, try again
 
-    def name_input(self):
+    def __name_input(self):
         """
         Input hero name, more difficult than you'd think compared to using the terminal.
         Loops through to show keys entered.
         TODO: Add more features such as error message for wrong inputs
-        TODO: Consider giving default name (class specific?) for users eager to start playing!
+        TODO: Load default name for each class that disappears on user input
         credit short but glitchy method: https://localcoder.org/pygame-is-there-any-easy-way-to-find-the-letter-number-of-any-alphanumeric-pres
         credit verbose method: https://stackoverflow.com/questions/27713855/how-to-get-an-input-from-user-in-pygame-and-save-it-as-a-variable
         """
@@ -215,8 +226,8 @@ class Menu:
             ask2, ask2_pos = create_textline("Then  press  enter",
                                                 pos=(self.X_POS, self.Y_POS + self.Y_OFFSET * 2), size=20)
             name, name_pos = create_textline(name_input, pos=(self.X_POS, self.Y_POS), size=20)
-            self.messages = ((ask1, ask1_pos), (ask2, ask2_pos), (name, name_pos))
-            self.draw()
+            self.__messages = ((ask1, ask1_pos), (ask2, ask2_pos), (name, name_pos))
+            self.__draw()
             for event in pygame.event.get():
                 if event.type==pygame.QUIT:
                     pygame.quit()
@@ -224,7 +235,7 @@ class Menu:
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_BACKSPACE:
                         name_input = name_input[:-1]
-                    elif event.key == pygame.K_RETURN and len(name_input) > 0:
+                    elif event.key == pygame.K_RETURN:
                         return name_input.strip().capitalize()  
                     elif len(name_input) < 14:    
                         # Option 1: most letters stop working after using backspace
@@ -285,7 +296,7 @@ class Menu:
                         # elif event.key == pygame.K_z:
                         #     name_input += str(chr(event.key))                                                                                             
             
-    def instructions(self):
+    def __instructions(self):
         """
         Simple 2-page screen for instructions as part of intro menu,
         appears after hero selection before hero type is returned to Main
@@ -325,7 +336,6 @@ Escape - Give up & exit program (DANGER: not saved!)
 
 Good luck, brave hero!        
 """
-        #TODO remove x,y in dict since they are same/similar
         screens = {
             0: {
                 'text': text1,
@@ -350,15 +360,15 @@ Good luck, brave hero!
             cont, cont_pos = create_textline('Continue', pos=(self.X_POS, self.Y_POS + self.Y_OFFSET * 3), size=30)
             text_rendered.append((cont, cont_pos))
 
-            self.messages = tuple(text_rendered)
+            self.__messages = tuple(text_rendered)
             choices = {1: 'Continue'}
-            self.select_number = 1
-            self.cursor.rect.centery = self.Y_POS + self.Y_OFFSET * 3
-            self.draw()
-            self.menu_controls(choices)
+            self.__select_number = 1
+            self.__cursor.rect.centery = self.Y_POS + self.Y_OFFSET * 3
+            self.__draw()
+            self.__menu_controls(choices)
             page += 1
 
-    def hero_selection(self):
+    def __hero_selection(self):
         """ 
         Display and allow hero class selection as part of intro menu
         :return: selected hero class
@@ -373,41 +383,40 @@ Good luck, brave hero!
         warrior, warrior_pos = create_textline('Warrior',
                                             pos=(self.X_POS, self.Y_POS + self.Y_OFFSET * 2),
                                             size=30)
-        self.messages = ((thief, thief_pos), (priestess, priestess_pos), (warrior, warrior_pos))
+        self.__messages = ((thief, thief_pos), (priestess, priestess_pos), (warrior, warrior_pos))
         choices = {1: 'thief', 2: 'priestess', 3: 'warrior'}
-        self.select_number = 1
-        self.cursor.rect.centery = self.Y_POS + self.Y_OFFSET * (self.select_number - 1)
-        self.draw()
+        self.__select_number = 1
+        self.__cursor.rect.centery = self.Y_POS + self.Y_OFFSET * (self.__select_number - 1)
+        self.__draw()
 
-        def draw_hero():
+        def __draw_hero():
             # TODO after every cursor move, also update character image
-            print(f"draw hero {self.select_number}")
+            print(f"draw hero {self.__select_number}")
             char_pos = (150, self.Y_OFFSET)
             char_size = (HALF_WIDTH, HALF_HEIGHT)
-            char = pygame.transform.scale(self.images[self.select_number], char_size)
-            self.screen.blit(char, char_pos)
+            char = pygame.transform.scale(self.__images[self.__select_number], char_size)
+            self.__screen.blit(char, char_pos)
             pygame.display.flip()
 
-        draw_hero()
-        guild = self.menu_controls(choices, also=draw_hero)
+        __draw_hero()
+        guild = self.__menu_controls(choices, also=__draw_hero)
         print(f"hero_selection <- hero_class '{guild}'")
         return guild
 
-    def load_menu(self):
+    def __load_menu(self):
         """
-        Continue game from saved file
-        TODO in progress
+        Currently non-functional as only one saved file.
+        Place holder to allow selection of multiple saved files
         """
         load, load_pos = create_textline('Load this game?', 
                                             pos=(self.X_POS, HALF_HEIGHT),
                                             size=30)
-        messages = ((load, load_pos),)
-        self.messages = messages
+        self.__messages = ((load, load_pos),)
         choices = {1: 'Continue'}
-        self.select_number = 1
-        self.cursor.rect.centery = HALF_HEIGHT
-        self.draw()
-        self.menu_controls(choices)
+        self.__select_number = 1
+        self.__cursor.rect.centery = HALF_HEIGHT
+        self.__draw()
+        self.__menu_controls(choices)
 
     def pause_menu(self, game_data):
         """ 
@@ -431,15 +440,14 @@ Good luck, brave hero!
         reset, reset_pos = create_textline('Reset',
                                            pos=(x, y + y_off * 2),
                                            size=30)
-        messages = ((unpause, unpause_pos), (save, save_pos), (reset, reset_pos))
-        self.messages = messages
+        self.__messages = [(unpause, unpause_pos), (save, save_pos), (reset, reset_pos)]
         choices = {1: 'Continue', 2: 'Save', 3: 'Reset'}
-        self.select_number = 1
-        self.cursor.rect.centery = y + y_off * (self.select_number - 1)
-        self.draw()
+        self.__select_number = 1
+        self.__cursor.rect.centery = y + y_off * (self.__select_number - 1)
+        self.__draw()
         while True:
-            chose = self.menu_controls(choices)
-            self.draw()
+            chose = self.__menu_controls(choices)
+            self.__draw()
             if chose == 'Continue':
                 print(f"pause_menu -> continue game-play")
                 return 'continue'
@@ -448,10 +456,18 @@ Good luck, brave hero!
                 err = dat_save(game_data)
                 if err is not None:
                     print(f'Save failed: {err}')
-                    # TODO display some indication whether succeeded
-                # regardless: continue, still in pause_menu
+                else:
+                    saved, saved_pos = create_textline('Game progress saved !',
+                                               pos=(x, y - y_off * 2),
+                                               size=20)
+                    self.__messages.append((saved, saved_pos))
+                    
+                    # effect of removing message after moving cursor
+                    self.__draw()
+                    self.__messages.pop() 
             elif chose == 'Reset':
                 print(f"pause_menu -> reset")
+                self.__reset = True
                 return 'reset'
             else:
                 print(f"pause_menu <- unrecognized '{chose}'")
@@ -463,7 +479,7 @@ Good luck, brave hero!
         No additional logic needed to reset game: 
         Return continues loop outside of main class --> create new main then start loop again
         """
-        self.sound.lose()
+        self.__sound.lose()
         x = self.X_POS
         y = self.Y_POS
         y_off = self.Y_OFFSET
@@ -476,15 +492,14 @@ Good luck, brave hero!
         exit_opt, exit_pos = create_textline('Exit',
                                             pos=(x, y + y_off),
                                             size=30)
-        messages = ((title, title_pos), (reset, reset_pos), (exit_opt, exit_pos))
-        self.messages = messages
+        self.__messages = ((title, title_pos), (reset, reset_pos), (exit_opt, exit_pos))
         choices = {1: 'Reset', 2: 'Exit'}
-        self.select_number = 1
-        self.cursor.rect.centery = y + y_off * (self.select_number - 1)
-        self.draw()
+        self.__select_number = 1
+        self.__cursor.rect.centery = y + y_off * (self.__select_number - 1)
+        self.__draw()
         while True:
-            chose = self.menu_controls(choices)
-            self.draw()
+            chose = self.__menu_controls(choices)
+            self.__draw()
             if chose == 'Exit':
                 print(f"lose_screen -> exit")
                 pygame.quit()
@@ -501,7 +516,7 @@ Good luck, brave hero!
         No additional logic needed to reset game: 
         Return continues loop outside of main class --> create new main then start loop again
         """
-        self.sound.win()
+        self.__sound.win()
         x = self.X_POS
         y = self.Y_POS
         y_off = self.Y_OFFSET
@@ -517,15 +532,14 @@ Good luck, brave hero!
         exit_opt, exit_pos = create_textline('Exit',
                                             pos=(x, y + y_off),
                                             size=30)
-        messages = ((title1, title1_pos), (title2, title2_pos), (reset, reset_pos), (exit_opt, exit_pos))
-        self.messages = messages
+        self.__messages = ((title1, title1_pos), (title2, title2_pos), (reset, reset_pos), (exit_opt, exit_pos))
         choices = {1: 'Reset', 2: 'Exit'}
-        self.select_number = 1
-        self.cursor.rect.centery = y + y_off * (self.select_number - 1)
-        self.draw()
+        self.__select_number = 1
+        self.__cursor.rect.centery = y + y_off * (self.__select_number - 1)
+        self.__draw()
         while True:
-            chose = self.menu_controls(choices)
-            self.draw()
+            chose = self.__menu_controls(choices)
+            self.__draw()
             if chose == 'Exit':
                 print(f"win_screen -> exit")
                 pygame.quit()
