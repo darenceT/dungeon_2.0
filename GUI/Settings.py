@@ -1,7 +1,8 @@
 import math
 
 """
-TODO docstrings
+GUI settings. Centralized location to allow easy modification 
+of values that are constants.
 """
 
 PI = math.pi

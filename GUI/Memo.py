@@ -4,7 +4,7 @@ from .Utility import create_textline
 
 class Memo:
     """
-    TODO docstrings
+    Message box at bottom left corner, read-only. 
     """
     def __init__(self, screen):
         self.screen = screen
@@ -12,7 +12,10 @@ class Memo:
 
     def new_message(self, message):
         """
-        TODO docstrings
+        Allows other classes to deliver messages to this class for display
+        :param message: said message
+        :param type: str
+        :return: None
         """
         if len(message) > 40:
             raise ValueError('Message length cannot be longer than 45 characters')
@@ -23,7 +26,8 @@ class Memo:
 
     def message_box(self):
         """
-        TODO docstrings
+        Create background for message box
+        :return: None
         """
         size = (8, HALF_HEIGHT + 228, 274, 114)
         border = (5, HALF_HEIGHT + 225, 280, 120)
@@ -33,7 +37,10 @@ class Memo:
     
     def display_messages(self):
         """
-        TODO docstrings
+        Create GUI for text messages, roller-index formate.
+        New message is slightly larger and red-colored, then 
+        moves down as new message comes in. Older text becomes black.
+        :return: None
         """
         index = 0
         y_offset = 30

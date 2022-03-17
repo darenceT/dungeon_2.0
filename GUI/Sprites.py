@@ -1,11 +1,13 @@
 import pygame
-from random import randrange
 from collections import deque
 from .Settings import *
-from .Utility import convert_coords_to_pixel
+from .Utility import convert_coords_to_pixel, convert_pixel_to_coords
 
 
 class SpriteObject:
+    """
+    Objects that you see in GUI: potions, traps, exit door, monsters
+    """
     def __init__(self, image, name, pos, object=None, shift=1.8, scale=0.4,
                  animation=None):
         self.image = image
@@ -18,6 +20,14 @@ class SpriteObject:
         self.animation = animation
         self.animate_count = 0
         self.animate_speed = 6
+
+        def __str__(self): 
+            return f'{self.name} SpriteObject'
+
+        def __repr__(self):
+            return f'''SpriteObject({self.image}, {self.name}, 
+                        {convert_pixel_to_coords((self.x, self.y))}, object={self.object}, 
+                        shift={self.scale}, scale={self.scale})'''
 
 class SpritesContainer:
     def __init__(self, screen, sound, game, player):
@@ -72,6 +82,7 @@ class SpritesContainer:
         load sprites from rooms no longer in view
 
         Iterate through set of rooms in view to load sprites
+        :return: None
         """
         if self.player.ready_for_new_sprites:
             self.nearby_sprites = set()
@@ -103,6 +114,8 @@ class SpritesContainer:
         """"
         Obtain location of each sprite object in relation to player and nearby walls
         Copy of container used to avoid iteration error from object removal in object_locate
+        :return: list of objects with information of distance to player's field of vision
+        :rtype: list[tuple(float, SpriteObject, tuple(float, float))]
         """
         temp_container = self.nearby_sprites.copy()
         return [self.object_locate(obj, walls) for obj in temp_container]
@@ -111,6 +124,8 @@ class SpritesContainer:
         """
         Use raycasting to determine distance between hero and sprite objects
         Credit algo to: https://github.com/StanislavPetrovV/Raycasting-3d-game-tutorial/blob/master/part%20%232/ray_casting.py
+        :return: sprite object in player's field of vision, therefore sprite's position & distance
+        :rtype: tuple(float, SpriteObject, tuple(float, float))
         """
         fake_walls0 = [walls[0] for _ in range(FAKE_RAYS)]
         fake_walls1 = [walls[-1] for _ in range(FAKE_RAYS)]
@@ -148,6 +163,7 @@ class SpritesContainer:
     def __interact_sprites(self, sprite, distance):
         """
         Use distance calculated from object_locate() to trigger model & view events
+        :return: None
         """
         # display monster health
         sprite.visible_health = True if distance < 80 and sprite.animation else False

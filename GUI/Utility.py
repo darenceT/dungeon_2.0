@@ -1,6 +1,11 @@
 import pygame
 from .Settings import *
 
+"""
+Multiple helper functions for calculations in GUI/View code
+Used in Sprites, Drawing, and PlayerControls
+"""
+
 def convert_pixel_to_coords(loc: tuple):
     """
     Convert pixel location into room coordinate, opposite of below
