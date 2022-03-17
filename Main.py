@@ -28,7 +28,6 @@ class Main:
         self.world_coords = {}
         self.__mini_map_coords = set()
         self.player_controls = None
-        self.guild = None
         self.hero = None
         self.drawing = None
         self.sprites = None
@@ -66,28 +65,40 @@ class Main:
         self.raycast = Raycast(self.player_controls, self.world_coords, self.drawing.textures)
         self.player_controls.get_rooms_in_sight()  # initiate sprites for 1st room
 
+    @staticmethod
+    def __validate_intro_dat(dat):
+        if not isinstance(dat, dict):
+            print(f'invalid dat type {type(dat)}')
+            return False
+        for k in 'guild name'.split():
+            if k not in dat:
+                print(f'invalid dat, missing {k}')
+                return False
+        return True
+
     def __obtain_game_data(self):
         """
         Helper function for load game, obtains:
         hero & dungeon maze (including its monsters & objects)
         """
-        while not self.guild or not self.game_data:
+        while self.game_data is None:
             op, dat = self.menu.intro_menu()
             if op == 'new':
                 print('new game')
-                self.guild, hero_name = dat
-                self.game_data = DungeonAdventure(guild=self.guild, name=hero_name)
+                if not self.__validate_intro_dat(dat):
+                    continue
+                guild = dat['guild']
+                name = dat['name']
+                dat = DungeonAdventure(guild=guild, name=name)
             elif op == 'load':
                 print('load from saved game')
-                try:
-                    with open(file=self.save_file, mode='r') as f:
-                        dat = pickle.load(f)
-                        self.game_hero = dat[0]
-                        self.game_data = dat[1]
-                except Exception as e:
-                    print(f"load failed: {e}")
+                if dat is None:
+                    print(f'...but dat is None')
             else:
                 raise ValueError(f"unrecognized op '{op}'")
+            if dat is None:
+                continue
+            self.game_data = dat
         self.dungeon = self.game_data.maze
         self.hero = self.game_data.hero
         print(self.dungeon)                                         # DELETE ###################### (or move to after winning)
@@ -137,8 +148,16 @@ class Main:
             self.player_controls.movement() 
             if self.player_controls.pause_on:
                 self.player_controls.pause_on = False
-                self.menu.pause_menu()
-                if self.menu.reset:
+                op = self.menu.pause_menu(game_data=self.game_data)
+                if op == 'continue':
+                    print('Carry on as you were.')
+                elif op == 'reset':
+                    print('Back to square one!')
+                    self.game_data = None
+                    break
+                else:
+                    # "This is bad, Peter. This is very, very bad."
+                    print(f'pause_menu returned unrecognized op {op}')
                     break
             elif self.player_controls.win_game:
                 break

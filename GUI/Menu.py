@@ -1,5 +1,6 @@
 from typing import Any
 import pygame
+from Model.Util import dat_save, dat_load
 from GUI.Settings import *
 from GUI.Utility import create_textline
 
@@ -101,17 +102,19 @@ class Menu:
                 exit()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                 num = self.select_number
-                chose = choices[num]
+                if choices and len(choices) > 1:
+                    chose = choices[num]
+                else:
+                    chose = None
                 print(f"menu_controls -> {num}'{chose}'")
                 return chose
-            if len(choices) > 1 and event.type == pygame.KEYDOWN:
-            # if choices and event.type == pygame.KEYDOWN:
+            if choices and len(choices) > 1 and event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
                     self.move_cursor(choices, 'UP')
                 elif event.key == pygame.K_DOWN:
                     self.move_cursor(choices, 'DOWN')
                 self.draw()
-                # FIXME hack to update hero images
+                # hack to update hero images
                 if also:
                     also()
                 continue  # next event.get()
@@ -166,16 +169,19 @@ class Menu:
             if chose == 'New':
                 print("start_menu <- 'New'")
                 print("start_menu -> hero_selection")
-                hero_class = self.hero_selection()  
-                print("hero_selected -> name")
+                guild = self.hero_selection()
+                print(f"start_menu <- guild '{guild}'")
+                print("start_menu -> name_input")
                 name = self.name_input()
+                print(f"start_menu <- name '{name}'")
                 print("name -> instructions")
                 self.instructions()           
-                print(f"start_menu <- hero_class '{hero_class}' named {name}")
-                return 'new', (hero_class, name)
+                return 'new', {'guild': guild, 'name': name}
             elif chose == 'Load':
                 print("start_menu <- 'Load'")
-                return 'load', None
+                # self.load_menu()
+                dat, err = dat_load()
+                return 'load', dat
             elif chose == 'Settings':
                 print(f"start_menu <- unimplemented '{chose}'")
                 # continue, try again
@@ -394,13 +400,14 @@ Good luck, brave hero!
         self.draw()
         self.menu_controls(choices)
 
-    def pause_menu(self):
+    def pause_menu(self, game_data):
         """ 
         In-game pause menu, accessed by Space key,
         Functions independent of intro_menu but uses
         similar methods of menu_controls() & draw().
         Contains unique feature of saving game
-        :return: None
+        :param game_data: our game data, which might get saved
+        :return: string 'continue' or 'reset'
         """
 
         x = self.X_POS
@@ -426,17 +433,17 @@ Good luck, brave hero!
             self.draw()
             if chose == 'Continue':
                 print(f"pause_menu -> continue game-play")
-                return
-            elif chose == 'Reset':
-                print(f"pause_menu -> reset, unimplemented")
-                # TODO quit game... then restart with trip through start_menu?
-                self.__reset = True
-                return
+                return 'continue'
             elif chose == 'Save':
-                print(f"pause_menu -> save, unimplemented")
-                # TODO save game
-                # TODO display some indication whether succeeded
-                # continue, still in pause_menu
+                print(f"pause_menu -> save")
+                err = dat_save(game_data)
+                if err is not None:
+                    print(f'Save failed: {err}')
+                    # TODO display some indication whether succeeded
+                # regardless: continue, still in pause_menu
+            elif chose == 'Reset':
+                print(f"pause_menu -> reset")
+                return 'reset'
             else:
                 print(f"pause_menu <- unrecognized '{chose}'")
                 # continue, still in pause_menu
