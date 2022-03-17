@@ -14,7 +14,7 @@ class PlayerControls:
     def __init__(self, sound, game_data, memo, collision_walls):
         self.angle = 0
         self.__direction = 'east'       
-        self.cur_room = game_data.maze.ingress
+        self.cur_room = game_data.room
         self.x, self.y = convert_coords_to_pixel(self.cur_room.coords)
         self.__attacking = False
         self.__fight_alone = True
@@ -31,7 +31,7 @@ class PlayerControls:
         self.__arena = Arena(self, game_data.hero, memo)
 
         self.__rooms_in_sight = tuple()
-        self.__rooms_visited = set()
+        self.__rooms_visited = game_data.rooms_visited
         self.map_visited_old = set()
         self.show_map = False             
         self.side = 50
