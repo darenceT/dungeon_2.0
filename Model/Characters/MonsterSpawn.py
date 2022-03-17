@@ -43,19 +43,19 @@ class MonsterSpawn:
                 reference = {
                     '"Skeleton"': {
                         "names": ('"Henry Morgan"', '"Bjorn Ironside"', '"William Kid"', '"Edward Teach"', '"John Rackam"'),
-                        "stats": "100, 3, 0.8, 30, 50, 0.3, 30, 50",
+                        "stats": "100, 0.03, 0.8, 30, 50, 0.3, 4, 8",
                     },
                     '"Gremlin"': {
                         "names": ('"Inglebrat Cumberbund"', '"Bendintine Camberbert"', '"Cumberland Inglesmerch"', '"Anglebracket Candlearbra"', '"Crumblebun Bennington"'),
-                        "stats": "70, 5, 0.8, 15, 30, 0.4, 20, 40",
+                        "stats": "90, 0.05, 0.8, 15, 30, 0.4, 5, 7",
                     },
                     '"Ogre"': {
                         "names": ('"Durag"', '"Vrorob"', '"Wukur"', '"Blozug"', '"Nakorg"'),
-                        "stats": "200, 2, 0.6, 30, 60, 0.1, 30, 60",
+                        "stats": "150, 0.02, 0.6, 30, 60, 0.1, 6, 12",
                     },
                     '"MeanGirl"': {
                         "names": ('"Anna Wintour"', '"Regina George"', '"Joan Crawford"', '"Heather Duke"', '"Paris Geller"'),
-                        "stats": "100, 7, 0.9, 10, 30, 0.6, 10, 30",
+                        "stats": "600, 0.07, 0.9, 10, 30, 0.6, 10, 20",
                     },                
                 }
                 cursor.execute("CREATE TABLE monsterstats (name TEXT, mtype TEXT, hit_points INTEGER, attack_speed INTEGER, "

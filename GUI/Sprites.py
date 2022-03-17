@@ -202,7 +202,8 @@ class SpritesContainer:
                     self.sound.monster_play(sprite.name, off=True)
                     self.sound.monster_sounds = (sprite.name, True)
                     
-                    self.sound.defeat_monster()                
+                    self.sound.defeat_monster()
+                    print(f"\nYou defeated {sprite.object.mtype}!\n{sprite.object}")                
                     self.nearby_sprites.remove(sprite)
                     # remove monster object from room
                     self.player.cur_room.occupants = (sprite.object, True)
