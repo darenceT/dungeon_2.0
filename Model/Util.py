@@ -1,4 +1,6 @@
-from collections import namedtuple
+# from collections import namedtuple
+from typing import Optional, Any
+import pickle
 
 
 def seq_repr(obj, **kw):
@@ -75,9 +77,33 @@ def obj_repr(obj, seen: set = None, show_ids: bool = False, bare_str: bool = Fal
             attrs[k] = v
     return f'{nam}({oid}{map_repr(attrs, **kw, bare_str=True)})'
 
+__save_file = 'eg_save_load.pkl'
+
+def dat_save(dat: Any, file: str = __save_file) -> Optional[str]:
+    try:
+        with open(file=file, mode='wb') as f:
+            pickle.dump(obj=dat, file=f)
+    except Exception as e:
+        # print(f"load failed: {e}")
+        enam = e.__class__.__name__
+        return f'{enam}({e})'
+    return
+
+def dat_load(file: str = __save_file) -> tuple[Any, Optional[str]]:
+    try:
+        with open(file=file, mode='rb') as f:
+            dat = pickle.load(file=f)
+        return dat, None
+    except Exception as e:
+        # print(f"load failed: {e}")
+        enam = e.__class__.__name__
+        return None, f'{enam}({e})'
+
 
 if __name__ == '__main__':
-    def example():
+
+    def eg_obj_repr():
+
         class Example0:
             def __init__(self):
                 self.__f0 = "a"
@@ -116,6 +142,67 @@ if __name__ == '__main__':
         print(obj_repr(o, show_ids=True))
         print(obj_repr(o2, show_ids=True))
 
-    example()
+    class Outer:
+        def __init__(self, one: int = 1, two: int = 22):
+            self.one: int = one
+            self.two: int = two
+
+        def __str__(self):
+            clsnam = self.__class__.__name__
+            return f'{clsnam}(one:{self.one}, two:{self.two})'
+
+    def eg_save_load():
+
+        class Inner(Outer):
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, **kwargs)
+
+        def eg_save_one(dat, file: str = __save_file):
+            print(f'save <- {dat}')
+            err = dat_save(dat=dat, file=file)
+            if err is not None:
+                print(f'save failed: {err}')
+            else:
+                print(f'save okay (afaict)')
+                print(f'save rv: {err}')
+            return err
+
+        def eg_load_one(file: str = __save_file):
+            dat, err = dat_load(file=file)
+            if err is not None:
+                print(f'load failed: {err}')
+            else:
+                print(f'load okay (afaict)')
+                print(f'load -> {dat}')
+                print(f'load rv: ^^^, {err}')
+            return dat, err
+
+        def eg_save_load_one(dat, file: str = __save_file):
+            err = eg_save_one(dat=dat, file=file)
+            if err is None:
+                eg_load_one(file=file)
+
+        print('\nNormal save/load, default file...')
+        d = Outer(one=1, two=2)
+        eg_save_load_one(dat=d)
+
+        print('\nNormal save/load, alternate file...')
+        d = Outer(one=3, two=4)
+        f = 'alt_' + __save_file
+        eg_save_load_one(dat=d, file=f)
+        print('\nNormal load, same alternate file...')
+        eg_load_one(file=f)
+
+        print('\n(Fail expected) Non-existent alternate file...')
+        f = 'non_' + __save_file
+        eg_load_one(file=f)
+
+        # Pickling does not (currently) support instances of classes defined in local scope.
+        print('\n(Fail expected) Data includes locally defined class...')
+        d = Inner(one=5, two=6)
+        eg_save_load_one(dat=d)
+
+    # eg_obj_repr()
+    eg_save_load()
 
 # END
