@@ -21,6 +21,7 @@ class DungeonAdventure:
         """
         self.__maze = Dungeon(map_str=map_str)
         self.__room = self.maze.ingress
+        self.__rooms_visited = set()
         self.__hero = HeroFactory.create_hero(guild=guild, name=name, game=self)
         self.__continues: bool = True
 
@@ -84,6 +85,15 @@ class DungeonAdventure:
         :return:
         """
         self.__room = room
+
+    @property
+    def rooms_visited(self) -> Room:
+        """
+        Gets collection of rooms visited, used by 
+        GUI minimap and save game
+        :return:
+        """
+        return self.__rooms_visited
 
     @property
     def continues(self) -> bool:

@@ -457,7 +457,7 @@ Good luck, brave hero!
                 if err is not None:
                     print(f'Save failed: {err}')
                 else:
-                    saved, saved_pos = create_textline('Game progress saved !',
+                    saved, saved_pos = create_textline('Game  progress  saved',
                                                pos=(x, y - y_off * 2),
                                                size=20)
                     self.__messages.append((saved, saved_pos))

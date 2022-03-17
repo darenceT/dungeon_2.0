@@ -20,14 +20,13 @@ class Main:
     save_file = 'dungeon_save.pkl'
 
     def __init__(self):
-        self.sound = Sound()
-        self.screen = None
-        self.menu = None
-        self.game_data = None
-        self.dungeon = None
+        self.__sound = Sound()
+        self.__screen = None
+        self.__menu = None
+        self.__game_data = None
         self.world_coords = {}
         self.__mini_map_coords = set()
-        self.player_controls = None
+        self.__player_crtl = None
         self.hero = None
         self.drawing = None
         self.sprites = None
@@ -52,18 +51,18 @@ class Main:
         pygame.event.set_blocked(None)  # start by block everything
         pygame.event.set_allowed([pygame.QUIT, pygame.KEYDOWN])  # allow only those relevant
         pygame.display.set_caption('Dungeon Escape')
-        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
-        self.memo = Memo(self.screen)
-        self.menu = Menu(self.screen, self.sound)
+        self.__screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        self.memo = Memo(self.__screen)
+        self.__menu = Menu(self.__screen, self.__sound)
         self.__obtain_game_data()
 
         # TODO: decrease/narrow params passed
-        self.player_controls = PlayerControls(self.sound, self.game_data, self.memo, self.collision_walls)
-        self.sprites = SpritesContainer(self.screen, self.sound, self.game_data, self.player_controls)
-        self.drawing = Drawing(self.screen, self.sound, self.__mini_map_coords, self.player_controls, 
-                               self.hero, self.sprites, self.game_data.maze.egress.coords)
-        self.raycast = Raycast(self.player_controls, self.world_coords, self.drawing.textures)
-        self.player_controls.get_rooms_in_sight()  # initiate sprites for 1st room
+        self.__player_crtl = PlayerControls(self.__sound, self.__game_data, self.memo, self.collision_walls)
+        self.sprites = SpritesContainer(self.__screen, self.__sound, self.__game_data, self.__player_crtl)
+        self.drawing = Drawing(self.__screen, self.__sound, self.__mini_map_coords, self.__player_crtl, 
+                               self.hero, self.sprites, self.__game_data.maze.egress.coords)
+        self.raycast = Raycast(self.__player_crtl, self.world_coords, self.drawing.textures)
+        self.__player_crtl.get_rooms_in_sight()  # initiate sprites for 1st room
 
     @staticmethod
     def __validate_intro_dat(dat):
@@ -81,8 +80,8 @@ class Main:
         Helper function for load game, obtains:
         hero & dungeon maze (including its monsters & objects)
         """
-        while self.game_data is None:
-            op, dat = self.menu.intro_menu()
+        while self.__game_data is None:
+            op, dat = self.__menu.intro_menu()
             if op == 'new':
                 print('new game')
                 if not self.__validate_intro_dat(dat):
@@ -98,10 +97,9 @@ class Main:
                 raise ValueError(f"unrecognized op '{op}'")
             if dat is None:
                 continue
-            self.game_data = dat
-        self.dungeon = self.game_data.maze
-        self.hero = self.game_data.hero
-        print(self.dungeon)                                         # DELETE ###################### (or move to after winning)
+            self.__game_data = dat
+        self.hero = self.__game_data.hero
+        print(self.__game_data.maze)                                         # DELETE ###################### (or move to after winning)
         print(self.hero.name)                                        # DELETE ###########################
 
         def __parse_map(maze):
@@ -134,32 +132,32 @@ class Main:
                         self.__mini_map_coords.add((i * MAP_TILE, j * MAP_TILE))
                     elif '=' in char or char[0] == 'H':
                         self.world_coords[(i * TILE, j * TILE)] = 'door'             
-        __parse_map(self.dungeon)
+        __parse_map(self.__game_data.maze)
 
     def game_loop(self):
         """
         Game work-horse that loops through all major components of game
         to create real-time effect of GUI game
         """
-        self.sound.in_game()
+        self.__sound.in_game()
         clock = pygame.time.Clock()
         while self.hero.is_alive:
             clock.tick(FPS)
-            self.player_controls.movement() 
-            if self.player_controls.pause_on:
-                self.player_controls.pause_on = False
-                op = self.menu.pause_menu(game_data=self.game_data)
+            self.__player_crtl.movement() 
+            if self.__player_crtl.pause_on:
+                self.__player_crtl.pause_on = False
+                op = self.__menu.pause_menu(game_data=self.__game_data)
                 if op == 'continue':
                     print('Carry on as you were.')
                 elif op == 'reset':
                     print('Back to square one!')
-                    self.game_data = None
+                    self.__game_data = None
                     break
                 else:
                     # "This is bad, Peter. This is very, very bad."
                     print(f'pause_menu returned unrecognized op {op}')
                     break
-            elif self.player_controls.win_game:
+            elif self.__player_crtl.win_game:
                 break
             else:
                 self.drawing.background()
@@ -172,10 +170,10 @@ class Main:
                 self.memo.message_box()
                 self.drawing.weapon_and_ui(clock)
                 pygame.display.flip()
-        if self.player_controls.win_game:
-            self.menu.win_screen()
-        elif not self.menu.reset:
-            self.menu.lose_screen()
+        if self.__player_crtl.win_game:
+            self.__menu.win_screen()
+        elif not self.__menu.reset:
+            self.__menu.lose_screen()
             
 if __name__ == '__main__':
     try:
