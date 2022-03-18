@@ -1,4 +1,4 @@
-from .Monster import Monster
+from Model.Characters.Monster import Monster
 
 
 class Ogre(Monster):

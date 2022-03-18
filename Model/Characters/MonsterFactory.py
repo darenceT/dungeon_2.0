@@ -1,9 +1,13 @@
 from typing import Union
 
-from .Ogre import Ogre
-from .Skeleton import Skeleton
-from .Gremlin import Gremlin
-from .MeanGirl import MeanGirl
+# from .Ogre import Ogre
+# from .Skeleton import Skeleton
+# from .Gremlin import Gremlin
+# from .MeanGirl import MeanGirl
+from Model.Characters.Ogre import Ogre
+from Model.Characters.Skeleton import Skeleton
+from Model.Characters.Gremlin import Gremlin
+from Model.Characters.MeanGirl import MeanGirl
 
 
 class MonsterFactory:

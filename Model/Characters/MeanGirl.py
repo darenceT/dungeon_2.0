@@ -1,4 +1,5 @@
-from .Monster import Monster
+# from .Monster import Monster
+from Model.Characters.Monster import Monster
 
 
 class MeanGirl(Monster):
