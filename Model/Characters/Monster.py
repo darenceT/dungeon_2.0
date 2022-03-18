@@ -5,6 +5,9 @@ from Model.Characters.Healable import Healable
 
 
 class Monster(DungeonCharacter, Healable):
+    """
+    Base class for all monsters, inherits from DungeonCharacter and Healable
+    """
     def __init__(self, mtype, name, hit_points, attack_speed, chance_to_hit,
                  minimum_damage, maximum_damage, chance_to_heal, minimum_heal_points, maximum_heal_points):
         super().__init__(name, hit_points, hit_points, attack_speed, chance_to_hit,
