@@ -37,7 +37,7 @@ class DungeonCharacter(ABC):
     def hit_points(self) -> int:
         """
         Gets the current hit points
-        :return:
+        :return: hit_points
         """
         return self.__hit_points
 
@@ -56,8 +56,8 @@ class DungeonCharacter(ABC):
     @property
     def hit_points_max(self) -> int:
         """
-        Gets the current hit points
-        :return:
+        Gets max hit points
+        :return: hit_points_max
         """
         return self.__hit_points_max
 
@@ -77,7 +77,7 @@ class DungeonCharacter(ABC):
     def is_alive(self) -> bool:
         """
         Checks to see if our brave adventurer is still breathing, if current hit points greater than zero, returns True.
-        :return:
+        :return: boolean
         """
         return self.hit_points > 0
 
@@ -118,7 +118,7 @@ class DungeonCharacter(ABC):
         Checks to see if damage has lowered hit points to zero or below, if so, ends game. If not, returns new
         number of hit points after damage.
         :param damage: number of hit points to subtract after falling into pit
-        :return:
+        :return: hit_points
         """
         self.hit_points -= damage
         if self.hit_points <= 0:
@@ -128,6 +128,10 @@ class DungeonCharacter(ABC):
         
     @property
     def attack_speed(self):
+        """
+        Gets the attack speed
+        :return: attack_speed
+        """
         return self.__attack_speed
 
     @attack_speed.setter
@@ -144,6 +148,10 @@ class DungeonCharacter(ABC):
 
     @property
     def chance_to_hit(self):
+        """
+        Gets the chance to hit
+        :return: chance_to_hit
+        """
         return self.__chance_to_hit
 
     @chance_to_hit.setter
