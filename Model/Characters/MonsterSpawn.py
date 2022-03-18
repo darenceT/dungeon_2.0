@@ -55,7 +55,7 @@ class MonsterSpawn:
                     },
                     '"MeanGirl"': {
                         "names": ('"Anna Wintour"', '"Regina George"', '"Joan Crawford"', '"Heather Duke"', '"Paris Geller"'),
-                        "stats": "600, 0.07, 0.9, 10, 30, 0.6, 10, 20",
+                        "stats": "150, 0.07, 0.9, 10, 30, 0.6, 8, 10",
                     },                
                 }
                 cursor.execute("CREATE TABLE monsterstats (name TEXT, mtype TEXT, hit_points INTEGER, attack_speed INTEGER, "

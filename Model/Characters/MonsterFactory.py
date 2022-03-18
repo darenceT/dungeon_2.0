@@ -90,6 +90,9 @@ class MonsterFactory:
         :param monster_data: monster stats.
         :return: newly created MeanGirl.
         """
+        hit_points = 600        # temporary for boss
+        minimum_damage = 20
+        maximum_damage = 30
         return MeanGirl(mtype, name, hit_points, attack_speed,
                        chance_to_hit, minimum_damage, maximum_damage, chance_to_heal,
                        minimum_heal_points, maximum_heal_points)
