@@ -347,22 +347,9 @@ class DungeonAdventure:
             self.room.has_hero = False
         self.room = room
         self.room.has_hero = True
-        # Falling into pit occurs first. If fatal, do not find other contents.
-        # if room.has_pit:
-        #     self.fall_into_pit()
         if not self.hero.is_alive:
             return
-        # # Collect items
-        # if room.healing_potions:
-        #     self.find_healing_potion()
-        # if room.vision_potions:
-            # self.find_vision_potion()
-        # Pillars and Exit are each supposed to be sole item in room, if present.
-        # Ergo, cannot have both, so order of the following does not matter.
-        # if room.pillar:
-        #     self.find_pillar()
-        # if room.is_exit:
-        #     self.find_exit()
+
         # Drop breadcrumb AFTER finding Pillar or Exit, so announce differently.
         room.has_crumb = True
 

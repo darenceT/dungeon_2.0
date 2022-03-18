@@ -10,14 +10,13 @@ class Dungeon(Maze):
     Thin subclass Maze that handles autofilling of items, etc.
     """
     ITEM_CHANCE: int = 40  # percent chance given item type appears in room
-    MONSTER_CHANCE: int = 70 # percent as above but for monsters
-    MONSTER_MAX_COUNT: int = 5
 
     def __init__(self, *args, **kwargs):
         """ Create a Dungeon. Same usage as Maze constructor. """
         super().__init__(*args, **kwargs)
         self.validate_in_out()
-        self.add_pillars()
+        self.add_boss()
+        self.add_pillars_and_monsters()
         self.add_contents()
 
     def validate_in_out(self) -> None:
@@ -44,19 +43,22 @@ class Dungeon(Maze):
             raise ValueError("Dungeon maze must only have a single exit")
         return
 
-    def get_empty_rooms(self) -> list[Room]:
-        empties: list[Room] = []
-        for row in self.rooms:
-            for room in row:
-                if room.is_empty and not room.is_entrance and not room.is_exit:
-                    empties.append(room)
-        return empties
+    def add_boss(self) -> None:
+        """
+        Add boss Mean Girl at exit
+        """
+        self.egress.occupants = (MonsterSpawn.make('mgirl'), True)
 
-    def add_pillars(self) -> None:
+    def add_pillars_and_monsters(self) -> None:
         """ Check for Pillars, add ANY that are missing.
         :return: None
         :exception: ValueError, if validation fails, i.e. multiples of some Pillar.
         """
+        def __add_monster(room):
+            types = ('ogre', 'skeleton', 'gremlin')
+            mtype = types[randrange(3)]    
+            room.occupants = (MonsterSpawn.make(mtype), True)
+
         pillars = dict([(_p, []) for _p in Room.pillars])
         for row in self.rooms:
             for room in row:
@@ -64,7 +66,7 @@ class Dungeon(Maze):
                     _p = room.pillar
                     if _p not in pillars:
                         raise ValueError(f"Dungeon maze has unrecognized Pillar {repr(_p)}")
-                    pillars[_p].append(room)
+                    pillars[_p].append(room)              
         dups = [_p for _p in pillars if len(pillars[_p]) > 1]
         if len(dups) > 0:
             raise ValueError(f"Dungeon maze contains dups for Pillar {repr(dups[0])}")
@@ -81,20 +83,23 @@ class Dungeon(Maze):
             i = randrange(len(empties))
             room = empties.pop(i)
             room.pillar = pillar
+            __add_monster(room)
         return
+
+    def get_empty_rooms(self) -> list[Room]:
+        empties: list[Room] = []
+        for row in self.rooms:
+            for room in row:
+                if room.is_empty and not room.is_entrance and not room.is_exit:
+                    empties.append(room)
+        return empties
 
     def prep_room(self, room: Room) -> None:
         """ Add items to room, according to formula
         :param room: Room to have some random item(s) added.
         :return: None
         """
-
-        types = ('ogre', 'mgirl', 'skeleton', 'gremlin')
-        npc = types[randrange(4)]    
-        if randrange(100) < Dungeon.MONSTER_CHANCE and Dungeon.MONSTER_MAX_COUNT > 0:
-            Dungeon.MONSTER_MAX_COUNT -= 1
-            room.occupants = (MonsterSpawn.make(npc), False)
-        elif randrange(100) < Dungeon.ITEM_CHANCE:
+        if randrange(60) < Dungeon.ITEM_CHANCE:
             room.has_pit = True
         if randrange(100) < 40:
             room.healing_potions += 1

@@ -98,16 +98,16 @@ class SpriteObject:
                     shift={self.__scale}, scale={self.__scale})'''
 
 class SpritesContainer:
-    def __init__(self, screen, sound, game, player):
+    def __init__(self, sound, game, player):
         """
         Initial loading images of sprites
         Container of sprites for current and nearby rooms 
         images from www.pngegg.com
         """
-        self.__screen = screen
         self.__sound = sound
         self.__player = player
         self.__game = game
+        self.__exit_revealed = False
         self.__nearby_sprites = set()
         self.__sprite_still = {
             'H': pygame.image.load('GUI/img/h_potion.png').convert_alpha(),
@@ -118,7 +118,7 @@ class SpritesContainer:
         self.__sprite_animate = {
             'trap':{
                 'sprite': pygame.image.load('GUI/img/trap0.png').convert_alpha(),
-                'shift': 1.5,
+                'shift': 1.2,
                 'scale': 0.6,
                 'animation': deque([pygame.image.load(f'GUI/img/trap{i}.png').convert_alpha() for i in range(1, 3)]),
             },            
@@ -160,7 +160,16 @@ class SpritesContainer:
         Iterate through set of rooms in view to load sprites
         :return: None
         """
-        if self.__player.ready_for_new_sprites:
+        # single load of exit at defeating monster
+        if self.__player.cur_room.is_exit and self.__player.cur_room.occupants == [] \
+        and not self.__exit_revealed:
+            self.__nearby_sprites.add(SpriteObject(image=self.__sprite_still['exit'], 
+                                      name='exit', 
+                                      pos=self.__player.cur_room.coords, 
+                                      scale=1, 
+                                      shift=0))
+            self.__exit_revealed = True
+        elif self.__player.ready_for_new_sprites:
             self.__nearby_sprites = set()
             add = self.__nearby_sprites.add
             for room in self.__player.rooms_in_sight:
@@ -188,8 +197,8 @@ class SpritesContainer:
                                      animation=self.__sprite_animate['trap']['animation'].copy())) 
                 if room.pillar:
                     add(SpriteObject(self.__sprite_still['pillar'], 'pillar', room.coords))
-                if room.is_exit:
-                    add(SpriteObject(self.__sprite_still['exit'], 'exit', room.coords, scale=1, shift=0))
+                if room.is_exit and room.occupants == []: 
+                   add(SpriteObject(self.__sprite_still['exit'], 'exit', room.coords, scale=1, shift=0))
     
     def obtain_sprites(self, walls):
         """"
@@ -280,6 +289,7 @@ class SpritesContainer:
                 
                 # remove monster GUI and stop monster sound
                 if not sprite.object.is_alive:
+
                     # turn off monster specific sound
                     self.__sound.monster_play(sprite.name, off=True)
                     self.__sound.monster_sounds = (sprite.name, True)
@@ -287,9 +297,14 @@ class SpritesContainer:
                     self.__sound.defeat_monster()
                     print(f"\nYou defeated {sprite.object.mtype}!\n{sprite.object}")                
                     self.__nearby_sprites.remove(sprite)
+
                     # remove monster object from room
-                    self.__player.cur_room.occupants = (sprite.object, True)
+                    self.__player.cur_room.occupants = (sprite.object, False)
                     self.__player.fight_alone = True
+
+                    # load exit after defeating boss
+                    if sprite.object.name == 'mgirl':
+                        self.load_sprites()
             else:
                 self.__player.fight_alone = True
             

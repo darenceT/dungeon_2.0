@@ -58,7 +58,7 @@ class Main:
 
         # TODO: decrease/narrow params passed
         self.__player_crtl = PlayerControls(self.__sound, self.__game_data, self.memo, self.collision_walls)
-        self.sprites = SpritesContainer(self.__screen, self.__sound, self.__game_data, self.__player_crtl)
+        self.sprites = SpritesContainer(self.__sound, self.__game_data, self.__player_crtl)
         self.drawing = Drawing(self.__screen, self.__sound, self.__mini_map_coords, self.__player_crtl, 
                                self.hero, self.sprites, self.__game_data.maze.egress.coords)
         self.raycast = Raycast(self.__player_crtl, self.world_coords, self.drawing.textures)
@@ -98,9 +98,7 @@ class Main:
             if dat is None:
                 continue
             self.__game_data = dat
-        self.hero = self.__game_data.hero
-        print(self.__game_data.maze)                                         # DELETE ###################### (or move to after winning)
-        print(self.hero.name)                                        # DELETE ###########################
+        self.hero = self.__game_data.hero                                      
 
         def __parse_map(maze):
             """
@@ -170,6 +168,9 @@ class Main:
                 self.memo.message_box()
                 self.drawing.weapon_and_ui(clock)
                 pygame.display.flip()
+        
+        print(f'\nReveal of dungeon:\n{self.__game_data.maze}')  
+
         if self.__player_crtl.win_game:
             self.__menu.win_screen()
         elif not self.__menu.reset:

@@ -366,12 +366,12 @@ class Room:
     @occupants.setter
     def occupants(self, info):
         #TODO: add check for monster class type else error
-        npc, remove = info
+        npc, add = info
         if npc is not None:
-            if remove:
-                self.__occupants.remove(npc) 
+            if add:
+                self.__occupants.append(npc) 
             else:
-                self.__occupants.append(npc)
+                self.__occupants.remove(npc)
     
     @property
     def grid(self):
