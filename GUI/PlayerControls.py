@@ -225,8 +225,8 @@ class PlayerControls:
         if self.cur_room.coords != (next_x, next_y):
             self.cur_room = self.game_data.maze.rooms[next_y][next_x]
             
-            # win logic from sprites.object_locate() to detect hero near door
-            if self.cur_room.is_exit:
+            # win logic 
+            if self.cur_room.is_exit and self.cur_room.occupants == []:
                 pillars = 4-len(self.game_data.hero.pillars)
                 if pillars == 0:
                     self.__win_game = True
