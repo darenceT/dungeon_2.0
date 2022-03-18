@@ -3,7 +3,7 @@ from .MonsterFactory import MonsterFactory
 
 class MonsterSpawn:
     """
-    TODO docstrings
+    Initializes MonsterSpawn class. Creates the Monster database and sets initial values for monsters. Spawns a monster by producing a random row from the database.
     """
     def __init__(self):
         self.create_database()
@@ -30,7 +30,8 @@ class MonsterSpawn:
     @staticmethod
     def create_database():
             """
-            TODO docstrings
+            Checks to see if database already exists, if not, creates a table of monster statistics.
+            Queries the database and produces a random row.
             """
             connection = sqlite3.connect("monster.db")
             cursor = connection.cursor()
