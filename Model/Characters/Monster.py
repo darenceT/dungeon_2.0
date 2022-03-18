@@ -18,9 +18,17 @@ class Monster(DungeonCharacter, Healable):
 
     @property
     def mtype(self):
+        """
+        gets the monster type
+        :return: mtype
+        """
         return self.__mtype
 
     def __str__(self):
+        """
+        Returns a string representation of the monster's stats.
+        :return: string
+        """
         return f"""
 {self.mtype.capitalize()} named {self.name}
 Stats:
