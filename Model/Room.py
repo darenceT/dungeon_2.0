@@ -1,6 +1,10 @@
-from Item import *
-from Cell import Cell
-from Util import obj_repr
+from typing import Any
+
+from Model.Cell import Cell
+from Model.Characters.Monster import Monster
+from Model.Characters.MonsterFactory import MonsterFactory
+from Model.Item import *
+from Model.Util import obj_repr
 
 
 class Room(Cell):
@@ -13,6 +17,7 @@ class Room(Cell):
         self.__ingress: bool = False
         self.__egress: bool = False
         self.__contents: dict = {}
+        self.__occupants: list = []
 
     @property
     def contents(self):
@@ -34,19 +39,33 @@ class Room(Cell):
     def egress(self, val: bool):
         self.__egress = val
 
+    @property
+    def occupants(self):
+        return self.__occupants
+
+    @occupants.setter
+    def occupants(self, info):
+        # TODO: add check for monster class type else error
+        npc, remove = info
+        if npc is not None:
+            if remove:
+                self.__occupants.remove(npc)
+            else:
+                self.__occupants.append(npc)
+
     def can_have(self, obj: Any):
+        if isinstance(obj, type) and issubclass(obj, Monster):
+            return True
+        elif isinstance(obj, Monster):
+            return True
         if self.ingress or self.egress:
             return False
         else:
             if isinstance(obj, type):
                 if issubclass(obj, Item):
                     return True
-                # if issubclass(obj, Pillar):
-                #     return True
             elif isinstance(obj, Item):
                 return True
-            # elif isinstance(obj, Pillar):
-            #     return True
         return False
 
     def __getitem__(self, item: Any):
@@ -75,6 +94,11 @@ class Room(Cell):
                 return self.contents.get(Bomb)
             elif issubclass(i, Pillar):
                 return self.contents.get(Pillar)
+            elif issubclass(i, Monster):
+                # TODO Monster subclass
+                # return self.occupants.get(i)
+                # return self.occupants
+                return [o for o in self.occupants if isinstance(o, i)]
         elif isinstance(i, Pillar):
             pillar = self.contents.get(Pillar)
             if pillar and i is pillar:
@@ -85,6 +109,10 @@ class Room(Cell):
         return bool(self.__getitem__(obj))
 
     def can_add(self, obj: Any):
+        if isinstance(obj, type) and issubclass(obj, Monster):
+            return True
+        elif isinstance(obj, Monster):
+            return True
         if self.ingress or self.egress:
             return False
         else:
@@ -146,7 +174,12 @@ class Room(Cell):
                     self.make_add_one(VisionPotion, i)
                 elif issubclass(i, Bomb):
                     self.make_add_one(Bomb, i)
-            if isinstance(i, Pit):
+                # TODO get rid of separate __occupants, add Monster as __contents group
+                # elif issubclass(i, Monster):
+                #     self.make_add_one(Monster, i)
+                else:
+                    raise TypeError(f"room add, unrecognized class {i}")
+            elif isinstance(i, Pit):
                 self.add_only(Pit, i)
             elif isinstance(i, HealthPotion):
                 self.add_one(HealthPotion, i)
@@ -156,21 +189,44 @@ class Room(Cell):
                 self.add_one(Bomb, i)
             elif isinstance(i, Pillar):
                 self.add_only(Pillar, i)
+            elif isinstance(i, Monster):
+                # TODO get rid of separate __occupants, add Monster as __contents group
+                # self.add_one(Monster, i)
+                self.__occupants.append(i)
+                # Monsters have no owner; skip setting
+                continue
+            else:
+                raise TypeError(f"room add, instance of unrecognized type {type(i)}")
+            i.owner = self
 
-    def can_pop(self, obj: Any) -> bool:
+    @staticmethod
+    def can_pop(obj: Any) -> bool:
         if isinstance(obj, type):
             if isinstance(obj, Bomb):
                 return True
-            # Not allowed to pop abstract Potion, only its subclass
+            # Not allowed to "pop" abstract Potion, only its subclass
             if issubclass(obj, VisionPotion):
                 return True
             if issubclass(obj, HealthPotion):
                 return True
+            if issubclass(obj, Monster):
+                return True
+        if isinstance(obj, Monster):
+            return True
         return False
 
     def pop(self, obj: Any) -> Any:
         if not self.can_pop(obj):
             return None  # TODO raise exception and/or log error?
+        # Monsters
+        # TODO replace __occupants with a Monster group in __contents
+        if (isinstance(obj, type) and issubclass(obj, Monster)) or isinstance(obj, Monster):
+            have = self.occupants
+            if not have:
+                return None  # TODO log error? depends whether caller expected to first check has()
+            monster = have.pop()
+            return monster
+        # Items
         have = self.contents.get(obj)
         if not have:
             return None  # TODO log error? depends whether caller expected to first check has()
@@ -183,6 +239,10 @@ class Room(Cell):
 
 
 if __name__ == '__main__':
+
+    from Model.Characters.Gremlin import Gremlin
+    from Model.Characters.Ogre import Ogre
+    from Model.Characters.Skeleton import Skeleton
 
     def example():
         """Example code"""
@@ -232,6 +292,22 @@ if __name__ == '__main__':
             room.add(Encapsulation)
         except ValueError as e:
             print(f"cannot add Encapsulation: {e}")
+
+        # Can have zero to many Monsters
+        print(f'has a Monster? {room.has(Monster)}')
+        print(f"how many occupants? {len(room.occupants)}")
+        gremlin = Gremlin(mtype='gremlin', name='jacko')
+        ogre = Ogre(mtype='ogre', name='rocko')
+        room.add(gremlin, ogre)
+        # TODO replace __occupants with Monster group in __contents
+        # print(f"added 2, now have {len(room[Monster])}")
+        print('added 2')
+        print(f'has a Monster? {room.has(Monster)}')
+        print(f'has a Gremlin? {room.has(Gremlin)}')
+        print(f'has a Skeleton? {room.has(Skeleton)}')
+        print(f'occupants now ({len(room.occupants)})...')
+        for o in room.occupants:
+            print(o)
 
         print("after adding some more items...")
         print(room)

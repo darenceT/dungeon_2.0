@@ -2,13 +2,14 @@ from abc import ABCMeta
 from collections import namedtuple
 from typing import Any
 
-from Util import obj_repr
+from Model.Util import obj_repr
 
 
-class Item(metaclass=ABCMeta):
+class Item:  # (metaclass=ABCMeta):
     __portable: bool = True
 
     def __init__(self, owner: Any = None):
+        super().__init__()
         self.__owner = owner
 
     @property

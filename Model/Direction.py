@@ -1,6 +1,6 @@
 from typing import NamedTuple, Union
 
-from Util import obj_repr
+from Model.Util import obj_repr
 
 IntPair = tuple[int, int]
 
@@ -29,6 +29,11 @@ class Direction:
 
     @property
     def vect(self):
+        return self.__vect
+
+    @property
+    def vector(self):
+        """ Alias for `vect`. """
         return self.__vect
 
     def __str__(self):

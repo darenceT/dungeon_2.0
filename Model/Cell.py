@@ -1,6 +1,7 @@
 from typing import NamedTuple, Optional, Union
 
-from Box import *
+import Model.Compass
+from Model.Box import *
 
 
 IntPair = tuple[int, int]
@@ -51,6 +52,27 @@ class Cell(Box):
     def xy(self, val: Coordish):
         """Shorthand for coords setter."""
         self.coords = val
+
+    def neighbor(self, direction):
+        """ Get neighboring room in specified direction from self room.
+        :param direction: Direction of neighboring room wrt self room.
+        :return: Neighboring room, if there is one; otherwise None.
+        :exception: only raised for direction; attempting to fetch a hypothetical
+        neighbor that would lie outside the grid returns None.
+        """
+        _dir = Compass.dir(direction)
+        if _dir is None:
+            raise ValueError(f"neighbor got invalid direction {direction}")
+        _grid = self.grid
+        if _grid is None:
+            return None
+        x = self.coord_x + _dir.vect_x
+        y = self.coord_y + _dir.vect_y
+        if not 0 <= x < _grid.width or not 0 <= y < _grid.height:
+            # print(f"neighbor: room({self.coords}) {_dir.name} -!- ({x},{y}) outside grid")
+            return None
+        # print(f"neighbor: room({self.coords}) {_dir.name} --> ({x},{y})")
+        return _grid.room(x, y)
 
 
 if __name__ == '__main__':
