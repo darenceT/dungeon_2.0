@@ -39,12 +39,13 @@ class Arena:
             if self.__fight_timer < Arena.COOL_DOWN:
                 self.__fight_timer += 1
             else:
-                if self.__player_crtl.attacking and random() < self.__hit_chance:
-                    hero_dmg = randrange(self.__min_dmg, self.__max_dmg) * self.__attack_speed
-                    monster.hit_points -= hero_dmg
-                    print(f"{self.__hero.name} hit {monster.mtype} for {hero_dmg}")
-                else:
-                    print(f"{self.__hero.name} attack missed {monster.mtype}")
+                if self.__player_crtl.attacking:
+                    if random() < self.__hit_chance:
+                        hero_dmg = randrange(self.__min_dmg, self.__max_dmg) * self.__attack_speed
+                        monster.hit_points -= hero_dmg
+                        print(f"{self.__hero.name} hit {monster.mtype} for {hero_dmg}")
+                    else:
+                        print(f"{self.__hero.name} attack missed {monster.mtype}")
                 if random() > self.__block_chance and random() < monst_hit_chance:
                     monst_dmg = randrange(monst_min_dmg, monst_max_dmg) * monst_speed   
                     self.__hero.hit_points -= monst_dmg
@@ -64,7 +65,7 @@ class Arena:
 
             # create short delay before effects of special skill
             else:
-                if self.__sp_skill_timer < self.__cool_down:
+                if self.__sp_skill_timer < Arena.COOL_DOWN:
                     self.__sp_skill_timer += 1
                 else:
                     hero_sp_dmg, msg = self.__hero.special_skill()
