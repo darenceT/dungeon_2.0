@@ -3,7 +3,7 @@ from Model.Characters.Hero import Hero
 
 class Warrior(Hero):
     """
-    TODO docstrings
+    Initializes Warrior class. Warrior is a subclass of Hero.
     """
     def __init__(self, name: str = 'Xena',
                  hit_points: int = 125, hit_points_max: int = 150,
