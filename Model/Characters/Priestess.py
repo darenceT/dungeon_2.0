@@ -4,7 +4,7 @@ from Model.Characters.Healable import Healable
 
 class Priestess(Hero, Healable):
     """
-    TODO docstrings
+    Initializes Priestess class. Priestess is a subclass of Hero, with inherited healing ability from Healable.
     """
     def __init__(self, name: str = "Lena",
                  hit_points: int = 75, hit_points_max: int = 120,
