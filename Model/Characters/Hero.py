@@ -25,6 +25,10 @@ class Hero(DungeonCharacter):
         self.__pillars: set = set()  # empty
 
     def display_inventory(self):
+        """
+        prints string representation of all Hero inventory items and stats
+        :return: None
+        """
         print(f'name:          {self.name}',
               f'guild:         {self.guild}',
               f'hit points:    {self.hit_points} (max: {self.hit_points_max})',
@@ -39,11 +43,19 @@ class Hero(DungeonCharacter):
               sep='\n')
 
     @property
+    """
+    Gets Hero's Guild
+    :return: guild
+    """
     def guild(self):
         return self.__guild
 
     @property
     def special_mana(self):
+        """
+        Gets Hero's "mana," special property that determines if Hero is strong enough to use special skill
+        :return: specical_mana
+        """
         return self.__special_mana
     
     @special_mana.setter
@@ -68,7 +80,7 @@ class Hero(DungeonCharacter):
     def game(self):
         """
         Gets the current game
-        :return:
+        :return: game
         """
         return self.__game
 
@@ -81,13 +93,17 @@ class Hero(DungeonCharacter):
 
     @property
     def chance_to_block(self) -> float:
+        """
+        Gets hero's chance to block
+        :return: chance_to_block
+        """
         return self.__chance_to_block
 
     @property
     def healing_potions(self) -> int:
         """
         Gets number of healing potions
-        :return:
+        :return: healing_potions
         """
         return self.__healing_potions
 
@@ -96,7 +112,7 @@ class Hero(DungeonCharacter):
         """
         Sets number of healing potions
         :param val: current number of healing potions
-        :return:
+        :return: None
         """
         self.__healing_potions = val
 
@@ -104,7 +120,7 @@ class Hero(DungeonCharacter):
     def vision_potions(self) -> int:
         """
         Gets number of healing potions
-        :return:
+        :return: vision_potions
         """
         return self.__vision_potions
 
@@ -121,7 +137,7 @@ class Hero(DungeonCharacter):
     def pillars(self) -> set:
         """
         Gets current pillars
-        :return:
+        :return: pillars
         """
         return self.__pillars
 
@@ -129,6 +145,7 @@ class Hero(DungeonCharacter):
         """
         Check to see if hero has enough mana to use special skill
         Special case to check HP if hero is priestess
+        :return: ready (boolean)
         """
         if self.__guild == "priestess" and self.__special_mana >= 15:
             ready = self.hit_points_max - self.hit_points > 5
@@ -140,14 +157,14 @@ class Hero(DungeonCharacter):
         """
         Checks to see if a pillar has been collected, if so returns True
         :param pillar: One of the four pillars
-        :return:
+        :return: boolean
         """
         return bool(pillar in self.pillars)
 
     def gain_healing_potion(self, ):
         """
         Increases the number of healing potions when Adventurer discovers one.
-        :return:
+        :return: None
         """
         self.healing_potions += 1
 
@@ -156,7 +173,7 @@ class Hero(DungeonCharacter):
         Checks to see if Adventurer has any healing potions, if so, increases current hit points by 15 and subtracts
         1 from the number of healing potions in inventory.
         :param hit_points: number of hit points to increase after using vision potion
-        :return:
+        :return: healing_potions
         """
         if self.healing_potions <= 0:
             return -1
@@ -177,7 +194,7 @@ class Hero(DungeonCharacter):
         """
         Checks to see if adventurer has any vision potions, if so adjusts visible rooms and decreases number of
         vision potions in inventory by one.
-        :return:
+        :return: vision_potions
         """
         if self.vision_potions <= 0:
             return -1
@@ -189,11 +206,15 @@ class Hero(DungeonCharacter):
         """
         Adds pillar to set of discovered pillars
         :param pillar_name: name of pillar discovered by adventurer
-        :return:
+        :return: None
         """
         self.pillars.add(pillar_name)
 
     def __str__(self):
+        """
+        String representation of Hero name
+        :returns: string
+        """
         return f"{self.guild}({self.name})"
 
 
