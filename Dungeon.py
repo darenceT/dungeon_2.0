@@ -15,6 +15,7 @@ class Dungeon(Maze):
         """ Create a Dungeon. Same usage as Maze constructor. """
         super().__init__(*args, **kwargs)
         self.validate_in_out()
+        MonsterSpawn.create_database()
         self.add_boss()
         self.add_pillars_and_monsters()
         self.add_contents()
@@ -111,7 +112,6 @@ class Dungeon(Maze):
         To be clear, if ANY are present, assume was intentional, so add nothing.
         :return: None
         """
-        MonsterSpawn.create_database()
         for row in self.rooms:
             for room in row:
                 if not room.is_empty and not room.pillar:

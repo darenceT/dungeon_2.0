@@ -7,8 +7,8 @@ class Memo:
     Message box at bottom left corner, read-only. 
     """
     def __init__(self, screen):
-        self.screen = screen
-        self.lines = ['Find all 4 pillars to escape, good luck!']
+        self.__screen = screen
+        self.__lines = ['Find all 4 pillars to escape, good luck!']
 
     def new_message(self, message):
         """
@@ -20,22 +20,22 @@ class Memo:
         if len(message) > 40:
             raise ValueError('Message length cannot be longer than 45 characters')
         else:
-            self.lines.insert(0, message)
+            self.__lines.insert(0, message)
 
-        if len(self.lines) > 4: self.lines.pop()
+        if len(self.__lines) > 4: self.__lines.pop()
 
     def message_box(self):
         """
         Create background for message box
         :return: None
         """
-        size = (8, HALF_HEIGHT + 228, 274, 114)
-        border = (5, HALF_HEIGHT + 225, 280, 120)
-        pygame.draw.rect(self.screen, BLACK, border)
-        pygame.draw.rect(self.screen, WHITE, size)
-        self.display_messages()
+        size = (8, HALF_HEIGHT + 228, 276, 114)
+        border = (5, HALF_HEIGHT + 225, 282, 120)
+        pygame.draw.rect(self.__screen, BLACK, border)
+        pygame.draw.rect(self.__screen, WHITE, size)
+        self.__display_messages()
     
-    def display_messages(self):
+    def __display_messages(self):
         """
         Create GUI for text messages, roller-index formate.
         New message is slightly larger and red-colored, then 
@@ -44,10 +44,10 @@ class Memo:
         """
         index = 0
         y_offset = 30
-        while index < len(self.lines):
+        while index < len(self.__lines):
             txt_color = BLACK
             txt_size = 15
-            msg = self.lines[index]
+            msg = self.__lines[index]
             if index == 0: 
                 txt_color = DARK_RED
                 txt_size = 18
@@ -56,6 +56,6 @@ class Memo:
                                             font_type='GUI/font/Titillium.ttf', 
                                             size=txt_size,
                                             color=txt_color)
-            self.screen.blit(txt, text_pos)                                            
+            self.__screen.blit(txt, text_pos)                                            
             index += 1           
 
