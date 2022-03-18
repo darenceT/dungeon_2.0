@@ -3,7 +3,7 @@ from Model.Characters.Hero import Hero
 
 class Thief(Hero):
     """
-    TODO docstrings
+    Initalizes Thief class. Thief is a subclass of Hero.
     """
     def __init__(self, name: str = "Timmy",
                  hit_points: int = 75, hit_points_max: int = 120,
