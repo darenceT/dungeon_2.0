@@ -25,9 +25,9 @@ class Drawing:
         self.__special_time = 0
         self.__vision_pot_tick = 0
         self.__textures = {
-                         'ceiling': pygame.image.load('GUI/img/ceiling3.jpg').convert(),
-                         'door': pygame.image.load('GUI/img/door_portal.png').convert(),
-                         'wall': pygame.image.load('GUI/img/wall_default2.png').convert_alpha(),
+                         'ceiling': pygame.image.load('GUI/img/lava_sky3.png').convert(),
+                         'door': pygame.image.load('GUI/img/door_portal2.png').convert(),
+                         'wall': pygame.image.load('GUI/img/wall_d1.png').convert_alpha(),
                          'Hi': pygame.image.load('GUI/img/health_icon.png').convert_alpha(),
                          'Vi': pygame.image.load('GUI/img/vision_icon.png').convert_alpha(),
                          'Pi': pygame.image.load('GUI/img/pillar.png').convert_alpha(),

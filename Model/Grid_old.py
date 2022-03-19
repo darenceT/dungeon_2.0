@@ -1,4 +1,5 @@
-from Room import *
+from Model.Room_old import Room, RoomStr
+from Model.Compass import *
 
 Coords = tuple[int, int]
 

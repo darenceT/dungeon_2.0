@@ -1,5 +1,5 @@
 # from version 1.0. This will be retired, new version in Model
-
+from typing import Optional
 from Model.Compass import *
 
 Coords = tuple[int, int]

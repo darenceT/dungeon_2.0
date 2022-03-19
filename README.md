@@ -16,14 +16,18 @@ Hero specific special skills
 Monster classes    
 Sound Effects  
 Save/Load Menu (pickling)  
+
+As of 3/18/22, this project has been submitted for UW course with
+a few things unfinished including connecting new Model, unit tests, and debugging SQLite
+
 More to come...  
 
 [Software Requirement Specifications](https://github.com/darenceT/dungeon_2.0/blob/main/docs/Software_Requirements_Specifications.docx)
 
 [Repo for Dungeon 1.0](https://github.com/jenniferboutell/DungeonAdventure) which is different from this [project](https://github.com/darenceT/dungeon) by Darence
 
-<strong>Progress 3/15/22</strong>, almost complete!:  
-![progress 3/15/22 p1:](https://github.com/darenceT/dungeon_2.0/blob/main/docs/screenshotUpdate3_15_22.png) 
+<strong>Progress 3/18/22</strong>, almost complete!:  
+![progress 3/18/22 p1:](https://github.com/darenceT/dungeon_2.0/blob/main/docs/screenshotUpdate3_18_22.png) 
    
 <strong>Progress 3/6/22:</strong>  
 ![progress 3/6/22 p1:](https://github.com/darenceT/dungeon_2.0/blob/main/docs/4th%20Iteration/GUI_progress4th.png) 

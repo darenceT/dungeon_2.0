@@ -2,9 +2,9 @@
 from random import randrange
 from time import sleep
 
-# from Compass import *
-from Room import *
-from Grid import Grid
+from Model.Compass import * #
+from Model.Room_old import *
+from Model.Grid_old import Grid
 
 Coords = tuple[int, int]
 

@@ -76,7 +76,7 @@ class MonsterSpawn:
         connection = sqlite3.connect("monster.db")
         cursor = connection.cursor()
         """
-        connection = sqlite3.connect("monster.db")
+        connection = sqlite3.connect("Model\Characters\monster.db")
         cursor = connection.cursor()
 
         cursor.execute(''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='monsterstats' ''')
