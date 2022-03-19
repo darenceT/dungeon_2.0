@@ -16,10 +16,18 @@ class Item:  # (metaclass=ABCMeta):
 
     @property
     def owner(self):
+        """
+        Gets the item owner, this can be a room or a hero
+        :return: owner
+        """
         return self.__owner
 
     @owner.setter
     def owner(self, val: Any):
+        """
+        Sets the item owner, this can be a room or a hero
+        param: value
+        """
         self.__owner = val
 
     @property
