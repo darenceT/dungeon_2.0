@@ -25,7 +25,7 @@ class Cell(Box):
     @property
     def owner(self):
         """
-        Gets the cell owner
+        Gets the cell owner, this is the grid to which the cell belongs
         :return: cell owner
         """
         return self.__owner
@@ -33,7 +33,7 @@ class Cell(Box):
     @owner.setter
     def owner(self, val):
         """
-        Sets the cell owner
+        Sets the cell owner (Grid to which the cell belongs)
         :param: value of the cell owner
         """
         self.__owner = val
