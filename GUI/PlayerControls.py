@@ -44,38 +44,74 @@ class PlayerControls:
 
     @property
     def angle(self):
+        """
+        Gets angle
+        :return: angle
+        """
         return self.__angle
 
     @property
     def x(self):
+        """
+        Gets x coordinate
+        :return: x
+        """
         return self.__x
 
     @property
     def y(self):
+        """
+        Gets Y coordinate
+        :return: y
+        """
         return self.__y
 
     @property
     def cur_room(self):
+        """
+        Gets current room
+        :return: cur_room
+        """
         return self.__cur_room
 
     @property
     def pos(self):
+        """
+        Gets position
+        :return: x, y
+        """
         return (self.__x, self.__y)
 
     @property
     def rooms_visited(self):
+        """
+        Gets rooms visited
+        :return: rooms_visited
+        """
         return self.__rooms_visited
 
     @property
     def rooms_in_sight(self):
+        """
+        Gets rooms currently visible
+        :return: rooms_in_sight
+        """
         return self.__rooms_in_sight
 
     @property
     def ready_for_new_sprites(self):
+        """
+        Checks if ready for new sprites
+        :return: boolean
+        """
         return self.__ready_for_new_sprites
 
     @property
     def pause_on(self):
+        """
+        Checks if pause is turned on
+        :return: boolean
+        """
         return self.__pause_on
     
     @pause_on.setter
@@ -93,10 +129,18 @@ class PlayerControls:
 
     @property
     def attacking(self):
+        """
+        Checks if attacking
+        :return: boolean
+        """
         return self.__attacking
 
     @property
     def fight_alone(self):
+        """
+        checks if player is alone when fighting monster
+        :return: boolean
+        """
         return self.__fight_alone
 
     @fight_alone.setter
@@ -115,6 +159,10 @@ class PlayerControls:
 
     @property
     def special_skill_execute(self):
+        """
+        Checks to see if special skill can be executed
+        :return: boolean
+        """
         return self.__special_skill_execute
 
     @special_skill_execute.setter
@@ -134,6 +182,10 @@ class PlayerControls:
 
     @property
     def special_skill_animate(self):
+        """
+        Checks to see if special skill is animated
+        :return: boolean
+        """
         return self.__special_skill_animate
 
     @special_skill_animate.setter
@@ -153,6 +205,10 @@ class PlayerControls:
 
     @property
     def vision_pot_used(self):
+        """
+        Checks if vision potion has been used
+        :return: boolean
+        """
         return self.__vision_pot_used
 
     @vision_pot_used.setter
@@ -171,14 +227,26 @@ class PlayerControls:
             
     @property
     def arena(self):
+        """
+        Gets arena for fight
+        :return: arena
+        """
         return self.__arena
 
     @property
     def new_pillar(self):
+        """
+        Gets new pillar
+        :return: new_pillar
+        """
         return self.__new_pillar
 
     @new_pillar.setter
     def new_pillar(self, pillar=None):
+        """
+        Sets new pillar
+        :param: pillar
+        """
         # if isinstance(pillar, Pillar):
         self.__new_pillar = pillar
         # else:
@@ -186,18 +254,34 @@ class PlayerControls:
 
     @property
     def show_map(self):
+        """
+        Checks if map is showing or not
+        :return: boolean
+        """
         return self.__show_map
 
     @property
     def side(self):
+        """
+        Gets side
+        :return: side (integer)
+        """
         return self.__side
 
     @property
     def collision_list(self):
+        """
+        Gets collision list
+        :return: collision list
+        """
         return self.__collision_list
 
     @property
     def win_game(self):
+        """
+        Checks if game has been won
+        :return: boolean
+        """
         return self.__win_game
 
     def detect_collision(self, dx, dy):
