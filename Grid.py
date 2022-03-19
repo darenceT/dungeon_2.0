@@ -20,7 +20,7 @@ class GridStr:
 
     def __init__(self, grid, style=None):
         """
-        TODO: Docs
+        Initializes the grid class, this underlays the maze
         :param grid:
         :param style:
         """
