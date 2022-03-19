@@ -1,5 +1,5 @@
 import sqlite3
-from .MonsterFactory import MonsterFactory
+from Model.Characters.MonsterFactory import MonsterFactory
 
 class MonsterSpawn:
     """
@@ -28,11 +28,51 @@ class MonsterSpawn:
                                     maximum_heal_points = monster_data['maximum_heal_points'])
 
     @staticmethod
+    def create_database_prior():
+        """
+        Creates Sqlite3 database (if it does not already exist) and creates monsterstats table. Inserts initial
+        stats for each type of monster into monsterstats table. If table already exists, drops table and then recreates it 
+        for a new game.
+        """
+        connection = sqlite3.connect("monster.db")
+
+        cursor = connection.cursor()
+        dropstatement = "DROP TABLE IF EXISTS monsterstats"
+        cursor.execute(dropstatement)
+        cursor.execute("CREATE TABLE monsterstats (name TEXT, mtype TEXT, hit_points INTEGER, attack_speed DECIMAL, "
+                    "chance_to_hit DECIMAL,  minimum_damage INTEGER, maximum_damage INTEGER, chance_to_heal DECIMAL, "
+                    "minimum_heal_points INTEGER, maximum_heal_points INTEGER)")
+        cursor.execute("INSERT INTO monsterstats VALUES ('Henry Morgan', 'Skeleton', 100, 0.03, 0.8, 30, 50, 0.3, 5, 8)")
+        cursor.execute("INSERT INTO monsterstats VALUES ('Bjorn Ironside', 'Skeleton', 100, 0.03, 0.8, 30, 50, 0.3, 5, 8)")
+        cursor.execute("INSERT INTO monsterstats VALUES ('William Kid', 'Skeleton', 100, 0.03, 0.8, 30, 50, 0.3, 5, 8)")
+        cursor.execute("INSERT INTO monsterstats VALUES ('Edward Teach', 'Skeleton', 100, 0.03, 0.8, 30, 50, 0.3, 5, 8)")
+        cursor.execute("INSERT INTO monsterstats VALUES ('John Rackam', 'Skeleton', 100, 0.03, 0.8, 30, 50, 0.3, 5, 8)")
+        cursor.execute("INSERT INTO monsterstats VALUES ('Inglebrat Cumberbund', 'Gremlin', 70, 0.05, 0.8, 15, 30, 0.4, 6, 9)")
+        cursor.execute("INSERT INTO monsterstats VALUES ('Bendintine Camberbert', 'Gremlin', 70, 0.05, 0.8, 15, 30, 0.4, 6, 9)")
+        cursor.execute("INSERT INTO monsterstats VALUES ('Cumberland Inglesmerch', 'Gremlin', 70, 0.05, 0.8, 15, 30, 0.4, 6, 9)")
+        cursor.execute("INSERT INTO monsterstats VALUES ('Anglebracket Candlearbra', 'Gremlin', 70, 0.05, 0.8, 15, 30, 0.4, 6, 9)")
+        cursor.execute("INSERT INTO monsterstats VALUES ('Crumblebun Bennington', 'Gremlin', 70, 0.05, 0.8, 15, 30, 0.4, 6, 9)")
+        cursor.execute("INSERT INTO monsterstats VALUES ('Durag', 'Ogre', 200, 0.02, 0.6, 30, 60, 0.1, 8, 11)")
+        cursor.execute("INSERT INTO monsterstats VALUES ('Vrorob', 'Ogre', 200, 0.02, 0.6, 30, 60, 0.1, 8, 11)")
+        cursor.execute("INSERT INTO monsterstats VALUES ('Wukur', 'Ogre', 200, 0.02, 0.6, 30, 60, 0.1, 8, 11)")
+        cursor.execute("INSERT INTO monsterstats VALUES ('Blozug', 'Ogre', 200, 0.02, 0.6, 30, 60, 0.1, 8, 11)")
+        cursor.execute("INSERT INTO monsterstats VALUES ('Nakorg', 'Ogre', 200, 0.02, 0.6, 30, 60, 0.1, 8, 11)")
+        cursor.execute("INSERT INTO monsterstats VALUES ('Anna Wintour', 'MeanGirl', 600, 0.07, 0.9, 10, 30, 0.6, 10, 30)")
+        cursor.execute("INSERT INTO monsterstats VALUES ('Regina George', 'MeanGirl', 600, 0.07, 0.9, 10, 30, 0.6, 10, 30)")
+        cursor.execute("INSERT INTO monsterstats VALUES ('Joan Crawford', 'MeanGirl', 600, 0.07, 0.9, 10, 30, 0.6, 10, 30)")
+        cursor.execute("INSERT INTO monsterstats VALUES ('Heather Duke', 'MeanGirl', 600, 0.07, 0.9, 10, 30, 0.6, 10, 30)")
+        cursor.execute("INSERT INTO monsterstats VALUES ('Paris Geller', 'MeanGirl', 600, 0.07, 0.9, 10, 30, 0.6, 10, 30)")
+        connection.commit()
+        connection.close()
+
+    @staticmethod
     def create_database():
             """
+            Alternate process for creating database. Will skip if database already exists.
+            Refactored using dictionary to avoid duplicate code.
+            
             Checks to see if database already exists, if not, creates a table of monster statistics.
             Queries the database and produces a random row.
-            """
             connection = sqlite3.connect("monster.db")
             cursor = connection.cursor()
 
@@ -59,7 +99,7 @@ class MonsterSpawn:
                         "stats": "150, 0.07, 0.9, 10, 30, 0.6, 8, 10",
                     },                
                 }
-                cursor.execute("CREATE TABLE monsterstats (name TEXT, mtype TEXT, hit_points INTEGER, attack_speed INTEGER, "
+                cursor.execute("CREATE TABLE monsterstats (name TEXT, mtype TEXT, hit_points INTEGER, attack_speed DECIMAL, "
                             "chance_to_hit DECIMAL,  minimum_damage INTEGER, maximum_damage INTEGER, chance_to_heal DECIMAL, "
                             "minimum_heal_points INTEGER, maximum_heal_points INTEGER)")
 
