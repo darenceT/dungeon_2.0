@@ -21,7 +21,9 @@ class CompassDirection(Direction):
 
 def __is_pow2(val: int):
     """
-    TODO: Docstring
+    a utility function that determines whether a 
+    number is a power of 2, which for a positive integer, 
+    also determines whether exactly a single bit is set in its binary representation
     """
     return (val + (val >> 1)) & ~val == val >> 1
 
