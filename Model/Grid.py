@@ -6,12 +6,18 @@ from Util import obj_repr
 
 
 class Dimens(NamedTuple):
+    """
+    class establishing height & width of maze
+    """
     width: int
     height: int
 
 Dimenish = Union[IntPair, Dimens]
 
 class Bounds(NamedTuple):
+    """
+    Class establishing boundaries of maze - originating coordinates and dimensions
+    """
     orig: Coords
     size: Dimens
 
@@ -21,7 +27,7 @@ class Grid:
     def __init__(self, size: Dimenish, cell_type: type = Cell, _cells: Optional[list] = None,
                  ):
         """
-        TODO docs
+        Establishes a grid of cells as the basis of the maze.
 
         Deprecaated params, only for transitioning from v1.0:
         width: integer - number of cells across
@@ -71,7 +77,7 @@ class Grid:
     def width(self) -> Optional[int]:
         """
         Returns width of grid
-        :return:
+        :return: width
         """
         if self.size is not None:
             return self.size.width
@@ -80,7 +86,7 @@ class Grid:
     def height(self) -> Optional[int]:
         """
         Returns height of grid
-        :return:
+        :return: height
         """
         if self.size is not None:
             return self.size.height
@@ -109,7 +115,11 @@ class Grid:
         return grid
 
     def crop_bounds(self, size: Dimenish, orig: Coordish) -> Bounds:
-        """TODO docs"""
+        """
+        Crops a selected section from the maze
+        :param: size (dimensions, coordinates)
+        :return: bounds (new bounds after cropping)
+        """
         # default, validate, convert
         if orig is None:
             orig = Coords(0, 0)
