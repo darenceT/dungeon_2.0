@@ -31,7 +31,7 @@ def test_thief_special_skill():
     t = Thief()
     results = t.special_skill()
     expected = (80, 'Your Surprise Attack: Triple Daggers!')
-    assert (results == expected)
+    assert results == expected
 
 def test_thief_not_alive():
     t = Thief()
@@ -68,7 +68,7 @@ def test_priestess_special_skill_message():
     t = Priestess()
     results = t.special_skill()
     expected = (0, 'You healed yourself by 20 points!')
-    assert (results == expected)
+    assert results == expected
 
 def test_priestess_special_skill_heal():
     t = Priestess()
@@ -108,7 +108,7 @@ def test_warrior_special_skill():
     t = Warrior()
     results = t.special_skill()
     expected = (100, 'Aiyaaaaaaaa, Crushing Blow!')
-    assert (results == expected)
+    assert results == expected
 
 def test_warrior_not_alive():
     t = Warrior()
