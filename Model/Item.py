@@ -11,7 +11,7 @@ class Item:  # (metaclass=ABCMeta):
     Class representing the (non character) items in the maze
     """
     def __init__(self, owner: Any = None):
-        super().__init__()
+        # super().__init__()
         self.__owner = owner
 
     @property
@@ -46,16 +46,15 @@ class Item:  # (metaclass=ABCMeta):
         return obj_repr(self)
 
 
-class Pit(Item):
+class Trap(Item):
     """
     The trap that our hero may fall into and take damage
     """
     __portable = False  # override Item default
-
     __damage: int = 10
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @property
     def damage(self):
@@ -66,14 +65,25 @@ class Pit(Item):
         return self.__damage
 
 
+class Pit(Trap):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
+class Snare(Trap):
+    """ Another subclass of Trap, not (yet) implemented in game. """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
 class Bomb(Item):
     """
     For possible future implementation: a bomb that can do damage to the hero
     """
     __damage: int = 10
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @property
     def damage(self):
@@ -84,13 +94,13 @@ class Bomb(Item):
         return self.__damage
 
 
-class Potion(Item, metaclass=ABCMeta):
+class Potion(Item):  # , metaclass=ABCMeta):
     """ Abstract base class for potions.
      At present, nothing to distinguish it from Item base class,
      except as a logical superclass of only the Potion classes.
      """
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
 
 class VisionPotion(Potion):
@@ -99,8 +109,8 @@ class VisionPotion(Potion):
     """
     __radius: int = 1
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @property
     def radius(self):
@@ -117,8 +127,8 @@ class HealthPotion(Potion):
     """
     __points: int = 10
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @property
     def points(self):
@@ -146,8 +156,8 @@ class Pillar(Item):
     ]
     __instances = []
 
-    def __init__(self, name: str):
-        super().__init__()
+    def __init__(self, name: str, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         for inst in Pillar.__instances:
             if name == inst.name:
                 raise ValueError(f"Pillar '{name}' already instantiated")
@@ -196,7 +206,7 @@ if __name__ == '__main__':
     def example():
         print('instantiates various stuff...')
         stuff = dict()
-        stuff[Pit] = Pit()
+        stuff[Trap] = Pit()
         stuff[Bomb] = [Bomb(), Bomb()]
         stuff[VisionPotion] = [VisionPotion()]
         stuff[HealthPotion] = [HealthPotion()]
@@ -219,7 +229,7 @@ if __name__ == '__main__':
         print(owner)
 
         print('their owner, after updating Pit instance with its owner...')
-        owner.stuff[Pit].owner = owner
+        owner.stuff[Trap].owner = owner
         print(owner)
 
         print("The Pillars of OO...")
