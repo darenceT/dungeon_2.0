@@ -21,30 +21,58 @@ class Room(Cell):
 
     @property
     def contents(self):
+        """
+        Gets room contents
+        :return: contents
+        """
         return self.__contents
 
     @property
     def ingress(self):
+        """
+        Gets ingress property - is it the entrance?
+        :returns: boolean
+        """
         return self.__ingress
 
     @ingress.setter
     def ingress(self, val: bool):
+        """
+        Sets ingress property
+        param: boolean
+        """
         self.__ingress = val
 
     @property
     def egress(self):
+        """
+        Gets egress property - is it the exit?
+        :returns: boolean
+        """
         return self.__egress
 
     @egress.setter
     def egress(self, val: bool):
+        """
+        Sets the egress property
+        :param: boolean
+        """
         self.__egress = val
 
     @property
     def occupants(self):
+        """
+        Gets list of occupants
+        :return: occupants (list)
+        """
         return self.__occupants
 
     @occupants.setter
     def occupants(self, info):
+        """
+        Sets room occupants
+        :param: info
+        """
         # TODO: add check for monster class type else error
         npc, remove = info
         if npc is not None:
@@ -54,6 +82,11 @@ class Room(Cell):
                 self.__occupants.append(npc)
 
     def can_have(self, obj: Any):
+        """
+        Checks to see if the room can have an object
+        :param: object
+        :return: boolean
+        """
         if isinstance(obj, type) and issubclass(obj, Monster):
             return True
         elif isinstance(obj, Monster):
@@ -69,6 +102,11 @@ class Room(Cell):
         return False
 
     def __getitem__(self, item: Any):
+        """
+        Get item to populate room
+        :param: item
+        :return: get item if can have
+        """
         i = item
         if not self.can_have(i):
             # TODO raising exception mauybe too extreme, but at least log somewhere
@@ -106,9 +144,17 @@ class Room(Cell):
         return None
 
     def has(self, obj: Any):
+        """
+        Does a room contain a particular item?
+        :return: boolean
+        """
         return bool(self.__getitem__(obj))
 
     def can_add(self, obj: Any):
+        """
+        Can a room add a particular item?
+        :return: boolean
+        """
         if isinstance(obj, type) and issubclass(obj, Monster):
             return True
         elif isinstance(obj, Monster):
@@ -131,12 +177,20 @@ class Room(Cell):
         return False
 
     def add_only(self, group: type, obj: Any):
+        """
+        Get only those items room can add
+        :param: group, object
+        """
         if self.contents.get(group):
             raise ValueError(f"room already has a {group.__name__}")
         self.contents[group] = obj
         obj.owner = self
 
     def make_add_only(self, group: type, cls: type):
+        """
+        Assign those items that can be added to a group
+        :param: group, cls
+        """
         if self.contents.get(group):
             raise ValueError(f"room already has a {group.__name__}")
         obj = cls()
@@ -144,6 +198,10 @@ class Room(Cell):
         obj.owner = self
 
     def add_one(self, group: type, obj: Any):
+        """
+        Add one item to room by appending to room contents
+        :param: group, object
+        """
         if not self.contents.get(group):
             self.contents[group] = [obj]
         else:
@@ -151,6 +209,10 @@ class Room(Cell):
         obj.owner = self
 
     def make_add_one(self, group: type, cls: type):
+        """
+        Assign the item to a group
+        :param: group, cls
+        """
         obj = cls()
         self.add_one(group, obj)
 
@@ -201,6 +263,10 @@ class Room(Cell):
 
     @staticmethod
     def can_pop(obj: Any) -> bool:
+        """
+        Can the room item be popped?
+        :return: boolean
+        """
         if isinstance(obj, type):
             if isinstance(obj, Bomb):
                 return True
@@ -216,6 +282,11 @@ class Room(Cell):
         return False
 
     def pop(self, obj: Any) -> Any:
+        """
+        Pop item from room contents
+        :param: object
+        :return: item
+        """
         if not self.can_pop(obj):
             return None  # TODO raise exception and/or log error?
         # Monsters
@@ -235,6 +306,10 @@ class Room(Cell):
         return item
 
     def __repr__(self) -> str:
+        """
+        Representation of room
+        :return: obj_repr
+        """
         return obj_repr(self)
 
 
