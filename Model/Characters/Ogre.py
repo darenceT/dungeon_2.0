@@ -10,3 +10,7 @@ class Ogre(Monster):
                  maximum_heal_points=60):
         super().__init__(mtype, name, hit_points, attack_speed, chance_to_hit,
                          minimum_damage, maximum_damage, chance_to_heal, minimum_heal_points, maximum_heal_points)
+
+if __name__ == '__main__':
+    o = Ogre(mtype="ogre", name="joe")
+    print(o)

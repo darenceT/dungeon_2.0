@@ -1,8 +1,9 @@
+from Model.Characters.DungeonCharacter import DungeonCharacter
+from Model.Characters.Healable import Healable
 from Model.Characters.Thief import Thief
 from Model.Characters.Priestess import Priestess
 from Model.Characters.Warrior import Warrior
 from Model.Characters.Hero import Hero
-from Model.Characters.DungeonCharacter import DungeonCharacter
 
 # Thief
 
@@ -50,6 +51,10 @@ def test_validate_priestess_inherit_hero():
 def test_validate_priestess_inherit_DungeonCharacter():
     t = Priestess()
     assert isinstance(t, DungeonCharacter)
+
+def test_validate_priestess_inherit_Healable():
+    t = Priestess()
+    assert isinstance(t, Healable)
 
 def test_validate_priestess_guild():
     t = Priestess()
