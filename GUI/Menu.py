@@ -306,20 +306,20 @@ class Menu:
 Welcome to Dungeon Escape, brave Hero!
 
 The 4 pillars of object-oriented programming have been captured
-by the evil Sorcerer King Ca-Pul, and the world has been plunged
-into an age of darkness and endless scripts. Ca-Pu has placed
+by the evil Sorcerer King Ca-Paul, and the world has been plunged
+into an age of darkness and endless scripts. Ca-Paul has placed
 the pillars under guard by fearsome monsters: 
 Ogres, Skeletons, Gremlins, and worst of all--Mean Girls.
 
 Your task--should you dare to accept it--is to locate the 
-four pillars and find the exit to Ca-Pul's dungeon before
+four pillars and find the exit to Ca-Paul's dungeon before
 the monsters drain you of all of your health points.
 
-Take heart! For you will find that not all in Ca-Pul's realm 
+Take heart! For you will find that not all in Ca-Paul's realm 
 are in league with his evil scheme. Within the dungeon, 
 neutral wizards have placed Vision potions and Healing potions
 for your use. You have also been granted a special ability, 
-which you may use to vanquish Ca-Pul's evil brethren.        
+which you may use to vanquish Ca-Paul's evil brethren.        
 """
         
         text2 = """
