@@ -7,6 +7,9 @@ DirObj = ForwardRef('CompassDirection')
 DirAny = Union[DirObj, str, int]
 
 class CompassDirection(Direction):
+    """
+    Initializes the CompassDirection class, which establishes the four cardinall values of the compass.
+    """
     def __init__(self, mask: int = 0, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.__mask = mask
@@ -17,6 +20,9 @@ class CompassDirection(Direction):
 
 
 def __is_pow2(val: int):
+    """
+    TODO: Docstring
+    """
     return (val + (val >> 1)) & ~val == val >> 1
 
 def __diag(dir1: CompassDirection, dir2: CompassDirection):
@@ -43,6 +49,9 @@ Northwest = __diag(North, West)
 Southwest = __diag(South, West)
 
 class Compass:
+    """
+    The Compass class establishes all of the possible compass directions and their aliases
+    """
     dirs: tuple = (North, South, East, West)
     diags: tuple = (Northeast, Southeast, Northwest, Southwest)
     xdirs: tuple = (*dirs, *diags)
