@@ -19,8 +19,9 @@ class Room(Cell):
     @property
     def contents(self):
         """
-        Gets room contents
-        :return: contents
+        Gets room contents, grouped by general type
+        :return: dictionary of room contents. keys in dict are parents of logical hierarchies:
+        Potion, Bomb, Trap, Pillar, Monster. values are lists of instances.
         """
         return self.__contents
 
@@ -59,7 +60,7 @@ class Room(Cell):
     @property
     def occupants(self):
         """
-        Gets list of occupants
+        Gets list of non-Hero occupants.
         :return: occupants (list)
         """
         return self[Monster]
@@ -67,7 +68,7 @@ class Room(Cell):
     @occupants.setter
     def occupants(self, info):
         """
-        Sets room occupants
+        Adds room non-Hero occupants. (DEPRECATED)
         :param: info
         """
         # TODO: add check for monster class type else error
@@ -83,6 +84,11 @@ class Room(Cell):
 
     @staticmethod
     def _group(obj: Any):
+        """
+        Maps an object or object type to the appropriate group in Room.contents.
+        :param obj: a class or object. Generally, something under either Item or Monster.
+        :return: class, which is key in contents dict; or None if obj not valid to add
+        """
         is_cls = isinstance(obj, type)
         for group in (Trap, Potion, Bomb, Pillar, Monster):
             if is_cls:
@@ -95,7 +101,7 @@ class Room(Cell):
     def can_have(self, obj: Any):
         """
         Checks to see if the room can have an object
-        :param: object
+        :param obj: a class or object. Generally, something under either Item or Monster.
         :return: boolean
         """
         if isinstance(obj, type) and issubclass(obj, Monster):
@@ -113,7 +119,13 @@ class Room(Cell):
         return False
 
     def get_all(self, obj: Any):
+        """
+        Fetch all contents of a certain type, or a specific object.
+        :param obj: a class or object. Generally, something under either Item or Monster.
+        :return: list of items; will be empty, even for invalid obj
+        """
         group = self._group(obj=obj)
+
         # Raw list or singleton (if any) for group
         glist = self.contents.get(group)
         if glist is None:
@@ -133,6 +145,7 @@ class Room(Cell):
             if obj not in glist:
                 return []
             return [obj]
+
         # Stuff that can_has() would have prevented
         elif isinstance(obj, type):
             raise ValueError(f'Room get_all: unecognized type {obj}')
@@ -140,6 +153,11 @@ class Room(Cell):
             raise ValueError(f'Room get_all: instance of unecognized type {type(obj)}')
 
     def get_one(self, obj: Any):
+        """
+        Fetch any one instance of a specified type, or a specific object, if present.
+        :param obj: a class or object. Generally, something under either Item or Monster.
+        :return: one Item or Monster instance, or None if not present
+        """
         glist = self.get_all(obj=obj)
         if glist is None or not isinstance(glist, list):
             return glist
@@ -258,20 +276,14 @@ class Room(Cell):
                 else:
                     self.add_one(i)
 
-    @staticmethod
-    def can_pop(obj: Any) -> bool:
+    def can_pop(self, obj: Any) -> bool:
         """
         Can the room item be popped?
+        Pillars and Traps cannot!
         :return: boolean
         """
-        if isinstance(obj, type):
-            if isinstance(obj, Bomb):
-                return True
-            if issubclass(obj, Potion):
-                return True
-            if issubclass(obj, Monster):
-                return True
-        elif isinstance(obj, Monster):
+        group = self._group(obj)
+        if group in (Bomb, Potion, Monster):
             return True
         return False
 
@@ -281,9 +293,12 @@ class Room(Cell):
         :param: object
         :return: item
         """
+        is_cls = isinstance(obj, type)
         if not self.can_pop(obj):
-            return None  # XXX
-        # print(f'pop obj {obj}...')
+            if is_cls:
+                raise TypeError(f'Room pop: target is invalid type {obj}')
+            else:
+                raise TypeError(f'Room pop: target instance is invalid type {type(obj)}')
         group = self._group(obj)
         found = self.get_one(obj)
         if found:
@@ -339,15 +354,28 @@ if __name__ == '__main__':
         print(f'has a Health Potion? {room.has(HealthPotion)}')
         print(f'has a Vision Potion? {room.has(VisionPotion)}')
         print(f"how many? {len(room[VisionPotion])}")
+        print("add 2 more VisionPotions...")
         room.add(VisionPotion)
         obj = VisionPotion()
         room.add(obj)
-        print(f"added 2 more, now have {len(room[VisionPotion])}")
+        print(f"now have ({len(room[VisionPotion])})")
+        print(f"pop 1 VisionPotion...")
         obj = room.pop(VisionPotion)
-        print(f"popped 1: {obj}")
+        print(f"popped: {obj}")
         print(f"how many now? {len(room[VisionPotion])}")
+        print(f"add 1 VisionPotion...")
+        obj = VisionPotion()
+        print(obj_repr(obj, show_ids=True))
+        room.add(obj)
+        print(f"then pop that specific instance...")
+        obj2 = room.pop(obj)
+        print(f"popped: {obj_repr(obj2, show_ids=True)}")
+        print(f"try popping that specific instance again...")
+        obj2 = room.pop(obj)
+        print(f"popped: {obj_repr(obj2, show_ids=True)}")
+
+        print(f"added 1 Health Potion...")
         room.add(HealthPotion)
-        print(f"added 1 Health Potion")
         print(f"how many total Potions now? {len(room[Potion])}")
 
         print("after adding some more items...")
