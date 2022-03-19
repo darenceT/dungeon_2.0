@@ -6,6 +6,9 @@ IntPair = tuple[int, int]
 
 
 class Vect(NamedTuple):
+    """
+    Class establishing x, y vectors
+    """
     x: int
     y: int
 
@@ -14,6 +17,9 @@ Vectish = Union[IntPair, Vect]
 
 
 class Direction:
+    """ 
+    Class establishing direction of travel, direction abbreviation, direction name, and vector (traveling from and to direction)
+    """
     def __init__(self, abbr: str, name: str, vect: Vectish):
         self.__abbr = abbr
         self.__name = name
@@ -21,14 +27,26 @@ class Direction:
 
     @property
     def abbr(self):
+        """
+        Get abbreviation of direction
+        :return: direction abbreviation
+        """
         return self.__abbr
 
     @property
     def name(self):
+        """
+        Get name of direction
+        :return: direction name
+        """
         return self.__name
 
     @property
     def vect(self):
+        """
+        Get vector
+        :return: vector
+        """
         return self.__vect
 
     @property
@@ -37,9 +55,17 @@ class Direction:
         return self.__vect
 
     def __str__(self):
+        """
+        Sets string representation of direction
+        :return: name (string)
+        """
         return self.name
 
     def __repr__(self):
+        """
+        Gets representation of direction object
+        :return: obj_repr
+        """
         return obj_repr(self)
 
 
