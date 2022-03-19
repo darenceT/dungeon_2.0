@@ -43,11 +43,11 @@ class Hero(DungeonCharacter):
               sep='\n')
 
     @property
-    """
-    Gets Hero's Guild
-    :return: guild
-    """
     def guild(self):
+        """
+        Gets Hero's Guild
+        :return: guild
+        """
         return self.__guild
 
     @property

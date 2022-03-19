@@ -59,3 +59,16 @@ class Memo:
             self.__screen.blit(txt, text_pos)                                            
             index += 1           
 
+    def __boss_messages(self):
+        """
+        Messages spewed out by boss during fight
+        TODO: future implementation
+        """
+        text = {
+            1: f"Stop trying to make Object Oriented Programming Happen",
+            2: f"You can\'t sit with us <hero name>.",
+            3: f"Is that really what you're wearing <Hero Name>?",
+            4: f"As if, <Hero Name>",
+            5: f"WhatEVER, <hero name>!"
+        }
+          
