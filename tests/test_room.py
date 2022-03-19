@@ -2,7 +2,7 @@ from Model.Room import Room
 from Model.Cell import Cell
 from Model.Box import Box
 from Model.Item import *
-
+from Model.Characters.Ogre import Ogre
 
 # room creation
 def test_create_room_object():
@@ -46,12 +46,17 @@ def test_remove_one_item_from_room():
     r = Room()
     p = VisionPotion()
     r.add(p)
-    r.pop(VisionPotion)
+    r.pop(p)
     assert r.has(VisionPotion) is False
-    
-    
+    # TODO unit test in progress
     # assert len(r.contents) == 0
     # r.add(HealthPotion)
     # r.pop(HealthPotion)
     # assert r.has(HealthPotion) == False
     # assert len(r.contents) == 0 
+
+def test_add_monster_to_room():
+    r = Room()
+    m = Ogre('ogre', "Boo")
+    # TODO unit test in progress
+    # assert r.has(Ogre) is True
