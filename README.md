@@ -26,11 +26,11 @@ Requirements:
 Python 3.9+  
 Pygame 2.1.0  
 
-[Software Requirement Specifications](https://github.com/darenceT/dungeon_2.0/blob/main/docs/Software_Requirements_Specification.pdf)
+[Software Requirement Specifications](https://github.com/darenceT/dungeon_2.0/blob/main/docs/Software%20Requirements%20Specification.pdf)
 
 [Repo for Dungeon 1.0](https://github.com/jenniferboutell/DungeonAdventure) which is different from this [project](https://github.com/darenceT/dungeon) by Darence
 
-<strong>Progress 3/18/22</strong>, almost complete!:  
+<strong>Progress 3/18/22</strong>, completed, please git clone and play!:  
 ![progress 3/18/22 p1:](https://github.com/darenceT/dungeon_2.0/blob/main/docs/screenshotUpdate3_18_22.png) 
    
 <strong>Progress 3/6/22:</strong>  
