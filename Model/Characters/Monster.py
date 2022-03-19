@@ -1,5 +1,3 @@
-# from .DungeonCharacter import DungeonCharacter
-# from .Healable import Healable
 from Model.Characters.DungeonCharacter import DungeonCharacter
 from Model.Characters.Healable import Healable
 
