@@ -1,71 +1,57 @@
-# import pytest
-from Room import Room
-from Grid import Grid, GridStr
+from Model.Room import Room
+from Model.Cell import Cell
+from Model.Box import Box
+from Model.Item import *
 
 
-def test_room_bare_empty():
+# room creation
+def test_create_room_object():
     r = Room()
-    assert f"{r}" == ''.join([
-        "+-----+\n",
-        "|     |\n",
-        "+-----+\n",
-    ])
+    assert isinstance(r, Room)
 
+def test_validate_room_as_cell_type():
+    r = Room()
+    assert isinstance(r, Cell)
 
-def test_grid_room():
-    g = Grid(3, 4)
-    assert g.room(2, 3) is g.rooms[3][2]
+def test_validate_room_as_box_type():
+    r = Room()
+    assert isinstance(r, Box)
 
+# add objects to room
+def test_room_is_empty():
+    r = Room()
+    assert len(r.contents) == 0
+    assert len(r.occupants) == 0
 
-def test_grid_sub():
-    g1 = Grid(4, 5)
-    # dbg_print(f"g1...\n{g1}")
-    g2 = Grid(2, 3, from_grid=g1, from_coords=(2, 1))
-    # dbg_print(f"g2...\n{g2}")
-    assert [g2.width, g2.height] == [2, 3]
-    assert g2.room(0, 0) is g1.room(2, 1)
-    assert g2.room(1, 2) is g1.room(3, 3)
+def test_add_single_items_to_room():
+    r = Room()
+    r.add(Pit)
+    assert r.has(Pit) == True
+    assert len(r.contents) == 1
+    r.add(HealthPotion)
+    assert r.has(HealthPotion) == True 
+    assert len(r.contents) == 2
+    assert r.has(Pillar) == False
 
+def test_add_multiple_items_to_room():
+    r = Room()
+    r.add(Pit, HealthPotion, VisionPotion)
+    assert r.has(Pit) is True
+    assert r.has(HealthPotion) is True
+    assert r.has(VisionPotion) is True
+    assert r.has(Pillar) is False
+    assert r.has(Bomb) is False
 
-def test_gridstr_1x1_empty():
-    g = Grid(1, 1)
-    gs = GridStr(g, style=Room.styles.coords)
-    assert str(gs) == ''.join([
-        "+-----+\n",
-        "| 0,0 |\n",
-        "+-----+\n",
-    ])
-
-
-def test_gridstr_1x2_empty():
-    g = Grid(1, 2)
-    gs = GridStr(g, style=Room.styles.coords)
-    assert str(gs) == ''.join([
-        "+-----+\n",
-        "| 0,0 |\n",
-        "+-----+\n",
-        "| 0,1 |\n",
-        "+-----+\n",
-    ])
-
-
-def test_gridstr_2x1_empty():
-    g = Grid(2, 1)
-    gs = GridStr(g, style=Room.styles.coords)
-    assert str(gs) == ''.join([
-        "+-----+-----+\n",
-        "| 0,0 | 1,0 |\n",
-        "+-----+-----+\n",
-    ])
-
-
-def test_gridstr_2x1_tomstyle():
-    g = Grid(2, 1)
-    gs = GridStr(g, style=Room.styles.tom)
-    assert str(gs) == ''.join([
-        "*************\n",
-        "*     *     *\n",
-        "*************\n",
-    ])
-
-# END
+def test_remove_one_item_from_room():
+    r = Room()
+    p = VisionPotion()
+    r.add(p)
+    r.pop(VisionPotion)
+    assert r.has(VisionPotion) is False
+    
+    
+    # assert len(r.contents) == 0
+    # r.add(HealthPotion)
+    # r.pop(HealthPotion)
+    # assert r.has(HealthPotion) == False
+    # assert len(r.contents) == 0 
