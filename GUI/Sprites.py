@@ -23,10 +23,18 @@ class SpriteObject:
 
     @property
     def image(self):
+        """
+        Gets sprite image
+        :return: image
+        """
         return self.__image
 
     @image.setter
     def image(self, animate_image):
+        """
+        Sets sprite image
+        :param: animate_image
+        """
         #TODO add error check for pygame.image type
         if isinstance(animate_image, pygame.Surface):
             self.__image = animate_image
@@ -35,30 +43,58 @@ class SpriteObject:
 
     @property
     def name(self):
+        """
+        Gets sprite name
+        :return: name
+        """
         return self.__name
 
     @property
     def x(self):
+        """
+        Gets sprite x coordinate
+        :return: x
+        """
         return self.__x
 
     @property
     def y(self):
+        """
+        Gets sprite y coordinate
+        :return: y
+        """
         return self.__y
 
     @property
     def object(self):
+        """
+        Gets sprite object
+        :return: object
+        """
         return self.__object
 
     @property
     def shift(self):
+        """
+        Gets sprite shift
+        :return: shift
+        """
         return self.__shift
 
     @property
     def scale(self):
+        """
+        Gets sprite scale
+        :return: scale
+        """
         return self.__scale
 
     @property
     def visible_health(self):
+        """
+        Checks if sprite health is visible
+        :return: boolean
+        """
         return self.__visible_health
 
     @visible_health.setter
@@ -76,23 +112,42 @@ class SpriteObject:
 
     @property
     def animation(self):
+        """
+        Gets sprite animation
+        :return: animation
+        """
         return self.__animation
 
     @property
     def animate_count(self):
+        """
+        Gets sprite animation frame count
+        :return: animate_count (integer)
+        """
         return self.__animate_count
 
     @animate_count.setter
     def animate_count(self, num):
+        """
+        Sets sprite animation frame count
+        :param: num (Integer)
+        """
         if isinstance(num, int):
             self.__animate_count = num
         else:
             raise TypeError('Only int accepted for animate count')
 
     def __str__(self): 
+        """
+        String representation of sprite
+        :return: string
+        """
         return f'{self.__name} SpriteObject'
 
     def __repr__(self):
+        """
+        Graphical representation of sprite
+        """
         return f'''SpriteObject({self.__image}, {self.__name}, 
                     {convert_pixel_to_coords((self.__x, self.__y))}, object={self.__object}, 
                     shift={self.__scale}, scale={self.__scale})'''
@@ -150,6 +205,10 @@ class SpritesContainer:
 
     @property
     def nearby_sprites(self):
+        """
+        Get nearby sprites
+        :return: nearby sprites
+        """
         return self.__nearby_sprites
         
     def load_sprites(self):
