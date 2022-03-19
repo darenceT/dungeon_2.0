@@ -21,7 +21,7 @@ class PlayerControls:
         self.__special_skill_execute = False
         self.__special_skill_animate = False
         self.__vision_pot_used = False 
-        
+    
         self.__room_change = True     # set initial to True to for initial 1 time loading of nearby sprites
         self.__ready_for_new_sprites = True
         self.__sound = sound
@@ -191,10 +191,6 @@ class PlayerControls:
     @property
     def side(self):
         return self.__side
-
-    # @property
-    # def rect(self):
-    #     return self.__rect
 
     @property
     def collision_list(self):
