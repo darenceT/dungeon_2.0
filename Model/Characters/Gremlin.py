@@ -3,7 +3,7 @@ from .Monster import Monster
 
 class Gremlin(Monster):
     """
-    TODO docstrings
+     Initializes Gremlin, a subclass of Monster. Default field values provided for testing, but values are pulled from database.
     """
     def __init__(self, mtype, name, hit_points=70, attack_speed=5, chance_to_hit=0.8,
                  minimum_damage=15, maximum_damage=30, chance_to_heal=0.4, minimum_heal_points=20,
