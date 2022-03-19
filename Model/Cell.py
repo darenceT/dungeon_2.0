@@ -18,29 +18,40 @@ class Cell(Box):
     Represents the smallest unit of floor area.
     """
     def __init__(self, owner=None, coords: Optional[Coordish] = None):
-        """TODO docs"""
         super().__init__()
         self.__owner = owner
         self.__coords: Optional[Coords] = coords
 
     @property
     def owner(self):
-        """TODO docs"""
+        """
+        Gets the cell owner
+        :return: cell owner
+        """
         return self.__owner
 
     @owner.setter
     def owner(self, val):
-        """TODO docs"""
+        """
+        Sets the cell owner
+        :param: value of the cell owner
+        """
         self.__owner = val
 
     @property
     def coords(self):
-        """TODO docs"""
+        """
+        Gets the cell coordinates
+        :return: cell coordinates
+        """
         return self.__coords
 
     @coords.setter
     def coords(self, val: Coordish):
-        """TODO docs"""
+        """
+        Sets the cell coordinates
+        :param: value of coordinates
+        """
         self.__coords = Coords(*val)
 
     @property
