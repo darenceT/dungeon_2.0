@@ -67,49 +67,52 @@ class MonsterSpawn:
 
     @staticmethod
     def create_database():
-            """
-            Alternate process for creating database. Will skip if database already exists.
-            Refactored using dictionary to avoid duplicate code.
-            
-            Checks to see if database already exists, if not, creates a table of monster statistics.
-            Queries the database and produces a random row.
-            connection = sqlite3.connect("monster.db")
-            cursor = connection.cursor()
+        """
+        Alternate process for creating database. Will skip if database already exists.
+        Refactored using dictionary to avoid duplicate code.
+        
+        Checks to see if database already exists, if not, creates a table of monster statistics.
+        Queries the database and produces a random row.
+        connection = sqlite3.connect("monster.db")
+        cursor = connection.cursor()
+        """
+        connection = sqlite3.connect("monster.db")
+        cursor = connection.cursor()
 
-            cursor.execute(''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='monsterstats' ''')
-            
-            if cursor.fetchone()[0] == 1: 
-                print('MonsterStats table already exists, skipping database creation')
-            else :
-                reference = {
-                    '"Skeleton"': {
-                        "names": ('"Henry Morgan"', '"Bjorn Ironside"', '"William Kid"', '"Edward Teach"', '"John Rackam"'),
-                        "stats": "100, 0.03, 0.8, 30, 50, 0.3, 4, 8",
-                    },
-                    '"Gremlin"': {
-                        "names": ('"Inglebrat Cumberbund"', '"Bendintine Camberbert"', '"Cumberland Inglesmerch"', '"Anglebracket Candlearbra"', '"Crumblebun Bennington"'),
-                        "stats": "90, 0.05, 0.8, 15, 30, 0.4, 5, 7",
-                    },
-                    '"Ogre"': {
-                        "names": ('"Durag"', '"Vrorob"', '"Wukur"', '"Blozug"', '"Nakorg"'),
-                        "stats": "150, 0.02, 0.6, 30, 60, 0.1, 6, 12",
-                    },
-                    '"MeanGirl"': {
-                        "names": ('"Anna Wintour"', '"Regina George"', '"Joan Crawford"', '"Heather Duke"', '"Paris Geller"'),
-                        "stats": "150, 0.07, 0.9, 10, 30, 0.6, 8, 10",
-                    },                
-                }
-                cursor.execute("CREATE TABLE monsterstats (name TEXT, mtype TEXT, hit_points INTEGER, attack_speed DECIMAL, "
-                            "chance_to_hit DECIMAL,  minimum_damage INTEGER, maximum_damage INTEGER, chance_to_heal DECIMAL, "
-                            "minimum_heal_points INTEGER, maximum_heal_points INTEGER)")
+        cursor.execute(''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='monsterstats' ''')
+        
+        if cursor.fetchone()[0] == 1: 
+            print('MonsterStats table already exists, skipping database creation')
+        else :
+            reference = {
+                '"Skeleton"': {
+                    "names": ('"Henry Morgan"', '"Bjorn Ironside"', '"William Kid"', '"Edward Teach"', '"John Rackam"'),
+                    "stats": "100, 0.03, 0.8, 30, 50, 0.3, 4, 8",
+                },
+                '"Gremlin"': {
+                    "names": ('"Inglebrat Cumberbund"', '"Bendintine Camberbert"', '"Cumberland Inglesmerch"', '"Anglebracket Candlearbra"', '"Crumblebun Bennington"'),
+                    "stats": "90, 0.05, 0.8, 15, 30, 0.4, 5, 7",
+                },
+                '"Ogre"': {
+                    "names": ('"Durag"', '"Vrorob"', '"Wukur"', '"Blozug"', '"Nakorg"'),
+                    "stats": "150, 0.02, 0.6, 30, 60, 0.1, 6, 12",
+                },
+                '"MeanGirl"': {
+                    "names": ('"Anna Wintour"', '"Regina George"', '"Joan Crawford"', '"Heather Duke"', '"Paris Geller"'),
+                    "stats": "150, 0.07, 0.9, 10, 30, 0.6, 8, 10",
+                },                
+            }
+            cursor.execute("CREATE TABLE monsterstats (name TEXT, mtype TEXT, hit_points INTEGER, attack_speed DECIMAL, "
+                        "chance_to_hit DECIMAL,  minimum_damage INTEGER, maximum_damage INTEGER, chance_to_heal DECIMAL, "
+                        "minimum_heal_points INTEGER, maximum_heal_points INTEGER)")
 
-                for mtype, data in reference.items():
-                    for name in data["names"]:
-                        cursor.execute(f"INSERT INTO monsterstats VALUES ({name}, {mtype}, {data['stats']})")
+            for mtype, data in reference.items():
+                for name in data["names"]:
+                    cursor.execute(f"INSERT INTO monsterstats VALUES ({name}, {mtype}, {data['stats']})")
 
-                connection.commit()
-                connection.close()
-                print("New MonsterStats table created.")
+            connection.commit()
+            connection.close()
+            print("New MonsterStats table created.")
 
 if __name__ == '__main__':
     print("Greetings from Monster Spawn!\n\n")
