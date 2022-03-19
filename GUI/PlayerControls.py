@@ -12,10 +12,10 @@ class PlayerControls:
     room_change boolean to trigger loading of sprites
     """
     def __init__(self, sound, game_data, memo, collision_walls):
-        self.angle = 0
+        self.__angle = 0
         self.__direction = 'east'       
-        self.cur_room = game_data.room
-        self.x, self.y = convert_coords_to_pixel(self.cur_room.coords)
+        self.__cur_room = game_data.room
+        self.__x, self.__y = convert_coords_to_pixel(self.__cur_room.coords)
         self.__attacking = False
         self.__fight_alone = True
         self.__special_skill_execute = False
@@ -26,26 +26,41 @@ class PlayerControls:
         self.__ready_for_new_sprites = True
         self.__sound = sound
         self.__pause_on = False
-        self.game_data = game_data
-        self.memo = memo
+        self.__game_data = game_data
+        self.__memo = memo
         self.__arena = Arena(self, game_data.hero, memo)
 
         self.__rooms_in_sight = tuple()
         self.__rooms_visited = game_data.rooms_visited
-        self.map_visited_old = set()
-        self.show_map = False             
-        self.side = 50
-        self.rect = pygame.Rect(*self.pos, self.side, self.side)
+        self.__show_map = False             
+        self.__side = 50
+        self.__rect = pygame.Rect(*self.pos, self.__side, self.__side)
         #TODO below to make monsters impassible
         #self.collision_sprites = [pygame.Rect(*obj.pos, obj.side, obj.side) for obj in
                                   #self.sprites.list_of_objects if obj.blocked]
-        self.collision_list = collision_walls #+ self.collision_sprites
+        self.__collision_list = collision_walls #+ self.collision_sprites
         self.__new_pillar = None
         self.__win_game = False
 
     @property
+    def angle(self):
+        return self.__angle
+
+    @property
+    def x(self):
+        return self.__x
+
+    @property
+    def y(self):
+        return self.__y
+
+    @property
+    def cur_room(self):
+        return self.__cur_room
+
+    @property
     def pos(self):
-        return (self.x, self.y)
+        return (self.__x, self.__y)
 
     @property
     def rooms_visited(self):
@@ -170,6 +185,22 @@ class PlayerControls:
         #     raise TypeError('Only Pillar object accepted outside PlayerControls')
 
     @property
+    def show_map(self):
+        return self.__show_map
+
+    @property
+    def side(self):
+        return self.__side
+
+    # @property
+    # def rect(self):
+    #     return self.__rect
+
+    @property
+    def collision_list(self):
+        return self.__collision_list
+
+    @property
     def win_game(self):
         return self.__win_game
 
@@ -184,14 +215,14 @@ class PlayerControls:
         :return: None
         Credit: https://github.com/StanislavPetrovV/Raycasting-3d-game-tutorial/blob/master/part%20%232/ray_casting.py
         """
-        next_rect = self.rect.copy()
+        next_rect = self.__rect.copy()
         next_rect.move_ip(dx, dy)
-        hit_indexes = next_rect.collidelistall(self.collision_list)
+        hit_indexes = next_rect.collidelistall(self.__collision_list)
 
         if len(hit_indexes):
             delta_x = delta_y = 0
             for hit_index in hit_indexes:
-                hit_rect = self.collision_list[hit_index]
+                hit_rect = self.__collision_list[hit_index]
                 if dx > 0:
                     delta_x += next_rect.right - hit_rect.left
                 else:
@@ -207,8 +238,8 @@ class PlayerControls:
                 dy = 0
             elif delta_y > delta_x:
                 dx = 0
-        self.x += dx
-        self.y += dy
+        self.__x += dx
+        self.__y += dy
 
     def movement(self):
         """
@@ -217,17 +248,17 @@ class PlayerControls:
         :return: None
         """
         self.__keys_control()
-        self.rect.center = self.x, self.y
-        self.angle %= DOUBLE_PI
+        self.__rect.center = self.__x, self.__y
+        self.__angle %= DOUBLE_PI
 
         # update room location
-        next_x, next_y = convert_pixel_to_coords((self.x, self.y))
-        if self.cur_room.coords != (next_x, next_y):
-            self.cur_room = self.game_data.maze.rooms[next_y][next_x]
+        next_x, next_y = convert_pixel_to_coords((self.__x, self.__y))
+        if self.__cur_room.coords != (next_x, next_y):
+            self.__cur_room = self.__game_data.maze.rooms[next_y][next_x]
             
             # win logic 
-            if self.cur_room.is_exit and self.cur_room.occupants == []:
-                pillars = 4-len(self.game_data.hero.pillars)
+            if self.__cur_room.is_exit and self.__cur_room.occupants == []:
+                pillars = 4-len(self.__game_data.hero.pillars)
                 if pillars == 0:
                     self.__win_game = True
                     return
@@ -236,13 +267,13 @@ class PlayerControls:
                         raise ValueError('Should win game instead of display 0 pillars remaining') 
                     else:
                         plur = 's!' if pillars > 1 else '!'
-                        self.memo.new_message(f'You need to find {4-len(self.game_data.hero.pillars)} more pillar{plur}')
-            elif self.__new_pillar and self.cur_room is not None:
-                self.memo.new_message(f'You found pillar {self.__new_pillar}!')
+                        self.__memo.new_message(f'You need to find {4-len(self.__game_data.hero.pillars)} more pillar{plur}')
+            elif self.__new_pillar and self.__cur_room is not None:
+                self.__memo.new_message(f'You found pillar {self.__new_pillar}!')
                 self.__new_pillar = None
 
             # move hero to new room, refresh nearby sprites
-            self.game_data.enter_room(self.cur_room)
+            self.__game_data.enter_room(self.__cur_room)
             self.__room_change = True
         else:
             self.__room_change = False
@@ -255,10 +286,10 @@ class PlayerControls:
         obtain coordinates of anticipated next room in addition to current room.
         List of these rooms will be used to loading sprites in field of vision.
         """
-        direction = direction_of_vision(self.angle)
+        direction = direction_of_vision(self.__angle)
         if direction != self.__direction or self.__room_change:
             self.__direction = direction
-            x, y = self.cur_room.coords
+            x, y = self.__cur_room.coords
             next_x, next_y = x, y
             if direction == 'north':
                 next_y -= 1
@@ -269,11 +300,11 @@ class PlayerControls:
             else:            # east
                 next_x += 1
             
-            cur_room = self.game_data.maze.rooms[y][x]
-            max_x = self.game_data.maze.width
-            max_y = self.game_data.maze.height
+            cur_room = self.__game_data.maze.rooms[y][x]
+            max_x = self.__game_data.maze.width
+            max_y = self.__game_data.maze.height
             if -1 < next_x < max_x and -1 < next_y < max_y:
-                next_room = self.game_data.maze.rooms[next_y][next_x]
+                next_room = self.__game_data.maze.rooms[next_y][next_x]
                 self.__rooms_in_sight = (cur_room, next_room)
             else:
                 self.__rooms_in_sight = (cur_room,)
@@ -296,18 +327,18 @@ class PlayerControls:
                 exit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_h:
-                    if self.game_data.hero.healing_potions:
-                        self.memo.new_message('You used a healing potion!')
+                    if self.__game_data.hero.healing_potions:
+                        self.__memo.new_message('You used a healing potion!')
                         self.__sound.health_potion()
-                    self.game_data.hero.use_healing_potion()
+                    self.__game_data.hero.use_healing_potion()
                 elif event.key == pygame.K_v:
-                    if self.game_data.hero.vision_potions:
+                    if self.__game_data.hero.vision_potions:
                         self.__vision_pot_used = True
-                        self.memo.new_message('Vision potion used, check your map!')
+                        self.__memo.new_message('Vision potion used, check your map!')
                         self.__sound.vision_potion()
-                    self.game_data.hero.use_vision_potion()
+                    self.__game_data.hero.use_vision_potion()
                 elif event.key == pygame.K_r:
-                    if self.game_data.hero.can_use_special():
+                    if self.__game_data.hero.can_use_special():
                         self.__special_skill_animate = True
                         self.__special_skill_execute = True
                         if self.__fight_alone:
@@ -315,11 +346,11 @@ class PlayerControls:
                 elif event.key == pygame.K_SPACE:
                     self.__pause_on = True
                 elif event.key == pygame.K_TAB:
-                    self.show_map = True if not self.show_map else False
+                    self.__show_map = True if not self.__show_map else False
 
         # for continuous key input
-        sin_a = math.sin(self.angle)
-        cos_a = math.cos(self.angle)
+        sin_a = math.sin(self.__angle)
+        cos_a = math.cos(self.__angle)
         keys = pygame.key.get_pressed()
             
         if keys[pygame.K_w] or keys[pygame.K_UP]:
@@ -339,9 +370,9 @@ class PlayerControls:
             dy = PLAYER_SPEED * cos_a
             self.detect_collision(dx, dy)
         if keys[pygame.K_LEFT]:
-            self.angle -= 0.04
+            self.__angle -= 0.04
         if keys[pygame.K_RIGHT]:
-            self.angle += 0.04
+            self.__angle += 0.04
 
         self.__attacking = True if keys[pygame.K_e] else False
 

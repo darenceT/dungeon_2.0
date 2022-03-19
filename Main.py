@@ -1,6 +1,4 @@
 import pygame
-import pickle
-
 from DungeonAdventure import DungeonAdventure
 from GUI.Raycast3D import Raycast
 from GUI.Settings import *
@@ -24,14 +22,14 @@ class Main:
         self.__screen = None
         self.__menu = None
         self.__game_data = None
-        self.world_coords = {}
+        self.__world_coords = {}
         self.__mini_map_coords = set()
         self.__player_crtl = None
-        self.hero = None
-        self.drawing = None
-        self.sprites = None
-        self.raycast = None
-        self.collision_walls = []
+        self.__hero = None
+        self.__drawing = None
+        self.__sprites = None
+        self.__raycast = None
+        self.__collision_walls = []
         self.__load_game()   
 
     @property
@@ -52,16 +50,16 @@ class Main:
         pygame.event.set_allowed([pygame.QUIT, pygame.KEYDOWN])  # allow only those relevant
         pygame.display.set_caption('Dungeon Escape')
         self.__screen = pygame.display.set_mode((WIDTH, HEIGHT))
-        self.memo = Memo(self.__screen)
+        self.__memo = Memo(self.__screen)
         self.__menu = Menu(self.__screen, self.__sound)
         self.__obtain_game_data()
 
         # TODO: decrease/narrow params passed
-        self.__player_crtl = PlayerControls(self.__sound, self.__game_data, self.memo, self.collision_walls)
-        self.sprites = SpritesContainer(self.__sound, self.__game_data, self.__player_crtl)
-        self.drawing = Drawing(self.__screen, self.__sound, self.__mini_map_coords, self.__player_crtl, 
-                               self.hero, self.sprites, self.__game_data.maze.egress.coords)
-        self.raycast = Raycast(self.__player_crtl, self.world_coords, self.drawing.textures)
+        self.__player_crtl = PlayerControls(self.__sound, self.__game_data, self.__memo, self.__collision_walls)
+        self.__sprites = SpritesContainer(self.__sound, self.__game_data, self.__player_crtl)
+        self.__drawing = Drawing(self.__screen, self.__sound, self.__mini_map_coords, self.__player_crtl, 
+                               self.__hero, self.__sprites, self.__game_data.maze.egress.coords)
+        self.__raycast = Raycast(self.__player_crtl, self.__world_coords, self.__drawing.textures)
         self.__player_crtl.get_rooms_in_sight()  # initiate sprites for 1st room
 
     @staticmethod
@@ -98,7 +96,7 @@ class Main:
             if dat is None:
                 continue
             self.__game_data = dat
-        self.hero = self.__game_data.hero                                      
+        self.__hero = self.__game_data.hero                                      
 
         def __parse_map(maze):
             """
@@ -125,11 +123,11 @@ class Main:
             for j, line in enumerate(map_parsed):
                 for i, char in enumerate(line):                                                                        
                     if char == '---' or '+' in char or '|' in char:
-                        self.collision_walls.append(pygame.Rect(i * TILE, j * TILE, TILE, TILE))
-                        self.world_coords[(i * TILE, j * TILE)] = 'wall'
+                        self.__collision_walls.append(pygame.Rect(i * TILE, j * TILE, TILE, TILE))
+                        self.__world_coords[(i * TILE, j * TILE)] = 'wall'
                         self.__mini_map_coords.add((i * MAP_TILE, j * MAP_TILE))
                     elif '=' in char or char[0] == 'H':
-                        self.world_coords[(i * TILE, j * TILE)] = 'door'             
+                        self.__world_coords[(i * TILE, j * TILE)] = 'door'             
         __parse_map(self.__game_data.maze)
 
     def game_loop(self):
@@ -139,7 +137,7 @@ class Main:
         """
         self.__sound.in_game()
         clock = pygame.time.Clock()
-        while self.hero.is_alive:
+        while self.__hero.is_alive:
             clock.tick(FPS)
             self.__player_crtl.movement() 
             if self.__player_crtl.pause_on:
@@ -158,18 +156,19 @@ class Main:
             elif self.__player_crtl.win_game:
                 break
             else:
-                self.drawing.background()
-                self.sprites.load_sprites()
+                self.__drawing.background()
+                self.__sprites.load_sprites()
 
-                walls = self.raycast.view_3D()
-                objects = self.sprites.obtain_sprites(walls)
-                self.drawing.world(walls + objects)
+                walls = self.__raycast.view_3D()
+                objects = self.__sprites.obtain_sprites(walls)
+                self.__drawing.world(walls + objects)
 
-                self.memo.message_box()
-                self.drawing.weapon_and_ui(clock)
+                self.__memo.message_box()
+                self.__drawing.weapon_and_ui(clock)
                 pygame.display.flip()
         
-        print(f'\nReveal of dungeon:\n{self.__game_data.maze}')  
+        if self.__game_data:
+            print(f'\nReveal of dungeon:\n{self.__game_data.maze}')  
 
         if self.__player_crtl.win_game:
             self.__menu.win_screen()
