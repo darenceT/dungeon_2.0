@@ -1,72 +1,116 @@
+# from version 1.0. This will be retired, new version in Model
+
 from typing import Optional, Union, ForwardRef
 
-from Model.Util import obj_repr
-from Model.Direction import Direction
-
+Coords = tuple[int, int]
 DirObj = ForwardRef('CompassDirection')
 DirAny = Union[DirObj, str, int]
 
-class CompassDirection(Direction):
+
+class CompassDirection:
     """
-    Initializes the CompassDirection class, which establishes the four cardinall values of the compass.
+    Defines the characteristics of each individual compass direction
     """
-    def __init__(self, mask: int = 0, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.__mask = mask
+    def __init__(self, name: str, mask: int, vector: Coords, abbr: str = None):
+        """
+        TODO docs
+        :param name: String, Name of direction
+        :param mask: Integer, mask representation of direction
+        :param vector: Change in coordinates for next room in provided direction
+        :param abbr: String, abbreviation for Direction
+        """
+        self.__name: str = name.capitalize()
+        self.__abbr: str = self.name[0]
+        if abbr is not None:
+            self.__abbr = abbr.upper()
+        self.__mask: int = mask
+        self.__vector: Coords = vector
+
+    def diag(self, dir2):
+        """
+        Allows for diagonal movement with two provided directions
+        :param dir2:
+        :return:
+        """
+        if self.mask & ~self.mask != 0 or dir2.mask & ~dir2.mask != 0:
+            raise ValueError(f"can only create diagonal direction from two perpendicular directions")
+        return CompassDirection(name=self.name + dir2.name,
+                                abbr=self.abbr + dir2.abbr,
+                                mask=self.mask | dir2.mask,
+                                vector=(self.vector[0] + dir2.vector[0], self.vector[1] + dir2.vector[1]))
 
     @property
-    def mask(self):
+    def name(self) -> str:
+        """
+        Returns name of direction
+        :return:
+        """
+        return self.__name
+
+    @property
+    def abbr(self) -> str:
+        """
+        Returns abbreviation for direction
+        :return:
+        """
+        return self.__abbr
+
+    @property
+    def mask(self) -> int:
+        """
+        Returns direction mask
+        :return:
+        """
         return self.__mask
 
+    @property
+    def vector(self) -> Coords:
+        """
+        Returns direction vector
+        :return:
+        """
+        return self.__vector
 
-def __is_pow2(val: int):
-    """
-    a utility function that determines whether a 
-    number is a power of 2, which for a positive integer, 
-    also determines whether exactly a single bit is set in its binary representation
-    """
-    return (val + (val >> 1)) & ~val == val >> 1
+    @property
+    def vect_x(self) -> int:
+        """
+        Returns direction vector on x axis
+        :return:
+        """
+        return self.__vector[0]
 
-def __diag(dir1: CompassDirection, dir2: CompassDirection):
-    """
-    Allows for diagonal movement with two provided directions
-    :param dir2:
-    :return:
-    """
-    if not __is_pow2(dir1.mask) or not __is_pow2(dir2.mask):
-        raise ValueError(f"can only create diagonal direction from two primary directions")
-    # FIXME also should check are not N+S nor E+W
-    return CompassDirection(abbr=''.join([dir1.abbr, dir2.abbr]),
-                     name=''.join([dir1.name, dir2.name.lower()]),
-                     mask=dir1.mask | dir2.mask,
-                     vect=(dir1.vector[0] + dir2.vector[0], dir1.vector[1] + dir2.vector[1]))
+    @property
+    def vect_y(self) -> int:
+        """
+        Returns direction vector on y axis
+        :return:
+        """
+        return self.__vector[1]
 
-North = CompassDirection(abbr='N', name='North', mask=0b1000, vect=(0, 1))
-South = CompassDirection(abbr='S', name='South', mask=0b0100, vect=(0, -1))
-West = CompassDirection(abbr='W', name='West', mask=0b0010, vect=(-1, 0))
-East = CompassDirection(abbr='E', name='East', mask=0b0001, vect=(1, 0))
-Northeast = __diag(North, East)
-Southeast = __diag(South, East)
-Northwest = __diag(North, West)
-Southwest = __diag(South, West)
+    @property
+    def opposite(self) -> DirObj:
+        """
+        Returns opposite of direction
+        :return:
+        """
+        return Compass.opposites.get(self)
+
 
 class Compass:
     """
-    The Compass class establishes all of the possible compass directions and their aliases
+    Class that sets characteristics of all directions
     """
-    dirs: tuple = (North, South, East, West)
-    diags: tuple = (Northeast, Southeast, Northwest, Southwest)
-    xdirs: tuple = (*dirs, *diags)
+    north = CompassDirection(name='North', mask=0b1000, vector=(0, -1))
+    south = CompassDirection(name='South', mask=0b0100, vector=(0, +1))
+    west = CompassDirection(name='West', mask=0b0010, vector=(-1, 0))
+    east = CompassDirection(name='East', mask=0b0001, vector=(+1, 0))
+    dirs: list = [north, south, west, east]
 
-    # Aliases to the globally defined instances
-    north = North
-    south = South
-    east = East
-    west = West
-    northwest = Northwest
-    southwest = Southwest
-    northeast = Northeast
-    southeast = Southeast
+    northwest = north.diag(west)
+    southwest = south.diag(west)
+    northeast = north.diag(east)
+    southeast = south.diag(east)
+    diags: list = [northwest, southwest, northeast, southeast]
 
     # Map each direction to its opposite.
     # Could be done programmatically, but whatever. Eight lines.
@@ -103,13 +147,13 @@ class Compass:
         masks[_d.mask] = _d
 
     @staticmethod
-    def opposite(val: DirAny) -> Optional[CompassDirection]:
+    def opposite(dir: DirAny) -> Optional[CompassDirection]:
         """
         Returns opposites of all directions
-        :param val:
+        :param dir:
         :return:
         """
-        return Compass.opposites.get(Compass.dir(val))
+        return Compass.opposites.get(Compass.dir(dir))
 
     @staticmethod
     def name2dir(name: str) -> Optional[CompassDirection]:
@@ -130,6 +174,20 @@ class Compass:
         if 0 < mask < len(Compass.masks):
             return Compass.masks[mask]
         return None
+
+    @staticmethod
+    def dir(val: DirAny) -> Optional[CompassDirection]:
+        """ Lookup direction by bitmask (integer).
+        :param val: Value corresponding to one direction.
+        :return: CompassDirection instance, or None.
+        """
+        if isinstance(val, CompassDirection) and val in Compass.dirs:
+            return val
+        if isinstance(val, int):
+            return Compass.mask2dir(val)
+        if isinstance(val, str):
+            return Compass.name2dir(val)
+        raise TypeError(f"Compass.dir() does not accept that type")
 
     @staticmethod
     def dirs2mask(dirs: list[DirAny]) -> int:
@@ -154,49 +212,27 @@ class Compass:
                 out.append(_d2)
         return out
 
-    @staticmethod
-    def dir(val: DirAny) -> Optional[CompassDirection]:
-        """ Lookup direction by bitmask (integer).
-        :param val: Value corresponding to one direction.
-        :return: CompassDirection instance, or None.
-        """
-        if isinstance(val, CompassDirection) and val in Compass.dirs:
-            return val
-        if isinstance(val, int):
-            return Compass.mask2dir(val)
-        if isinstance(val, str):
-            return Compass.name2dir(val)
-        raise TypeError(f"Compass.dir() does not accept that type")
 
-    def __getitem__(self, item):
-        if isinstance(item, str):
-            if len(item) == 1 or len(item) == 2:
-                item = item.upper()
-                for d in Compass.xdirs:
-                    if item == d.abbr:
-                        return d
-            elif len(item) > 2:
-                item = item.capitalize()
-                for d in Compass.xdirs:
-                    if item == d.name:
-                        return d
-        return None
+North = Compass.north
+South = Compass.south
+West = Compass.west
+East = Compass.east
 
 
 if __name__ == '__main__':
-    def example():
-        x: Compass = Compass()
-        print('Four primary dirs...')
-        for d in x.dirs:
-            print(f'{d}: {obj_repr(d)}')
-        print('Four secondary dirs...')
-        for d in x.diags:
-            print(f'{d}: {obj_repr(d)}')
-        print('Case-insensitive name lookup...')
-        for s in ('N n north North NORTH NoRtH southWest foo'.split(' ')):
-            d = x[s]
-            print(f"{s} -> {d}")
+    print(f"Greetings from Compass!")
 
-    example()
+    def show_dirs(dir_list):
+        for _d in dir_list:
+            _mask = f"{_d.mask:04b}({_d.mask})"  # max width 8
+            _vec = str(_d.vector)  # max width 8
+            _opp = _d.opposite.name
+            print(f"name:{_d.name:6} abbr:{_d.abbr} mask:{_mask:8} vector:{_vec:8} opposite:{_opp}")
+
+    print(f"\nPrimary directions:")
+    show_dirs(Compass.dirs)
+    print(f"\nDiagonal directions:")
+    show_dirs(Compass.diags)
 
 # END
+

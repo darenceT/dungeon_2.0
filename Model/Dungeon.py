@@ -1,6 +1,6 @@
-from Room import Room
-from Grid import Grid
-from Maze import Maze
+from Model.Room_old import Room
+from Model.Grid_old import Grid
+from Model.Maze import Maze
 from Model.Characters.MonsterSpawn import MonsterSpawn
 from random import randrange
 

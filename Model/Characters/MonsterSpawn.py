@@ -13,7 +13,7 @@ class MonsterSpawn:
         """
         TODO docstrings
         """
-        conn = sqlite3.connect("monster.db")
+        conn = sqlite3.connect("Model\Characters\monster.db")
         conn.row_factory = sqlite3.Row
         cur = conn.cursor()
         cur.execute("SELECT * FROM monsterstats ORDER BY RANDOM() LIMIT 1")
@@ -34,7 +34,7 @@ class MonsterSpawn:
         stats for each type of monster into monsterstats table. If table already exists, drops table and then recreates it 
         for a new game.
         """
-        connection = sqlite3.connect("monster.db")
+        connection = sqlite3.connect("Model\Characters\monster.db")
 
         cursor = connection.cursor()
         dropstatement = "DROP TABLE IF EXISTS monsterstats"

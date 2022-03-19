@@ -1,8 +1,8 @@
-from Compass import Compass, CompassDirection
-from Room import Room
-from Grid import Grid
-from Maze import Maze
-from Dungeon import Dungeon
+from Model.Dungeon import Dungeon
+from Model.Room_old import Room
+from Model.Compass import Compass, CompassDirection
+from Model.Grid_old import Grid
+from Model.Maze import Maze
 from Model.Characters.Hero import Hero
 from Model.Characters.HeroFactory import HeroFactory
 
