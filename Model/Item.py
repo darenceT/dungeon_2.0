@@ -7,7 +7,9 @@ from Model.Util import obj_repr
 
 class Item:  # (metaclass=ABCMeta):
     __portable: bool = True
-
+    """
+    Class representing the (non character) items in the maze
+    """
     def __init__(self, owner: Any = None):
         super().__init__()
         self.__owner = owner
@@ -22,13 +24,24 @@ class Item:  # (metaclass=ABCMeta):
 
     @property
     def portable(self):
+        """
+        Gets portable property, is item portable? Set to true by default so hero can collect items
+        :return: portable
+        """
         return self.__portable
 
     def __repr__(self):
+        """
+        Gets representation of item
+        :return: obj_repr
+        """
         return obj_repr(self)
 
 
 class Pit(Item):
+    """
+    The trap that our hero may fall into and take damage
+    """
     __portable = False  # override Item default
 
     __damage: int = 10
@@ -38,10 +51,17 @@ class Pit(Item):
 
     @property
     def damage(self):
+        """
+        Get damage caused by trap
+        :return: damage
+        """
         return self.__damage
 
 
 class Bomb(Item):
+    """
+    For possible future implementation: a bomb that can do damage to the hero
+    """
     __damage: int = 10
 
     def __init__(self):
@@ -49,6 +69,10 @@ class Bomb(Item):
 
     @property
     def damage(self):
+        """
+        Get damage caused by bomb
+        :return: damage
+        """
         return self.__damage
 
 
@@ -62,6 +86,9 @@ class Potion(Item, metaclass=ABCMeta):
 
 
 class VisionPotion(Potion):
+    """
+    A potion that allows the hero to see a larger portion of the map
+    """
     __radius: int = 1
 
     def __init__(self):
@@ -69,10 +96,17 @@ class VisionPotion(Potion):
 
     @property
     def radius(self):
+        """
+        Gets the radius of vision
+        :return: radius
+        """
         return self.__radius
 
 
 class HealthPotion(Potion):
+    """
+    A potion that allows the hero to heal and recover some hit points
+    """
     __points: int = 10
 
     def __init__(self):
@@ -80,6 +114,10 @@ class HealthPotion(Potion):
 
     @property
     def points(self):
+        """
+        Gets healing points
+        :return: points
+        """
         return self.__points
 
 
@@ -116,13 +154,25 @@ class Pillar(Item):
 
     @property
     def abbr(self):
+        """
+        Gets pillar abbreviation
+        :return: abbr
+        """
         return self.__abbr
 
     @property
     def name(self):
+        """
+        Gets pillar name
+        :return: name
+        """
         return self.__name
 
     def __repr__(self):
+        """
+        Gets string representation of pillar
+        :return: string (Pillar and pillar name)
+        """
         return f"{self.__class__.__name__}({self.name})"
 
 
