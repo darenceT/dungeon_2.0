@@ -1,7 +1,7 @@
-from typing import NamedTuple, Optional, Union
+from typing import Any, NamedTuple  # Optional, Union via Compass
 
-import Model.Compass
-from Model.Box import *
+from Model.Compass import *
+from Model.Box import Box
 
 
 IntPair = tuple[int, int]
@@ -23,7 +23,7 @@ class Cell(Box):
         self.__coords: Optional[Coords] = coords
 
     @property
-    def owner(self):
+    def owner(self) -> Any:
         """
         Gets the cell owner, this is the grid to which the cell belongs
         :return: cell owner
@@ -31,7 +31,7 @@ class Cell(Box):
         return self.__owner
 
     @owner.setter
-    def owner(self, val):
+    def owner(self, val) -> None:
         """
         Sets the cell owner (Grid to which the cell belongs)
         :param: value of the cell owner
@@ -39,7 +39,15 @@ class Cell(Box):
         self.__owner = val
 
     @property
-    def coords(self):
+    def grid(self) -> Any:
+        """
+        Alias for owner(). (DEPRECATED)
+        :return: value of cell owner
+        """
+        return self.owner
+
+    @property
+    def coords(self) -> Optional[Coords]:
         """
         Gets the cell coordinates
         :return: cell coordinates
@@ -47,7 +55,7 @@ class Cell(Box):
         return self.__coords
 
     @coords.setter
-    def coords(self, val: Coordish):
+    def coords(self, val: Coordish) -> None:
         """
         Sets the cell coordinates
         :param: value of coordinates
@@ -55,16 +63,36 @@ class Cell(Box):
         self.__coords = Coords(*val)
 
     @property
-    def xy(self):
+    def xy(self) -> Optional[Coords]:
         """Shorthand for coords getter."""
         return self.coords
 
     @xy.setter
-    def xy(self, val: Coordish):
+    def xy(self, val: Coordish) -> None:
         """Shorthand for coords setter."""
         self.coords = val
 
-    def neighbor(self, direction):
+    @property
+    def coord_x(self) -> Optional[int]:
+        """
+        Returns X coordinate of room, if any (DEPRECATED)
+        :return:
+        """
+        if self.coords is not None:
+            return self.coords.x
+        return None
+
+    @property
+    def coord_y(self) -> Optional[int]:
+        """
+        Returns Y coordinate of room, if any (DEPRECATED)
+        :return:
+        """
+        if self.coords is not None:
+            return self.coords.y
+        return None
+
+    def neighbor(self, direction) -> Any:
         """ Get neighboring room in specified direction from self room.
         :param direction: Direction of neighboring room wrt self room.
         :return: Neighboring room, if there is one; otherwise None.
@@ -74,16 +102,8 @@ class Cell(Box):
         _dir = Compass.dir(direction)
         if _dir is None:
             raise ValueError(f"neighbor got invalid direction {direction}")
-        _grid = self.grid
-        if _grid is None:
-            return None
-        x = self.coord_x + _dir.vect_x
-        y = self.coord_y + _dir.vect_y
-        if not 0 <= x < _grid.width or not 0 <= y < _grid.height:
-            # print(f"neighbor: room({self.coords}) {_dir.name} -!- ({x},{y}) outside grid")
-            return None
-        # print(f"neighbor: room({self.coords}) {_dir.name} --> ({x},{y})")
-        return _grid.room(x, y)
+        nbr = self[_dir]
+        return nbr
 
 
 if __name__ == '__main__':
