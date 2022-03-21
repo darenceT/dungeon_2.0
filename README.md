@@ -19,9 +19,7 @@ Save/Load Menu (pickling)
   
 As of 3/18/22, this project has been submitted for UW course with  
 a few things unfinished including connecting refactored files in Model, unit tests, and debugging SQLite  
-  
-More to come...  
-  
+    
 Requirements:  
 Python 3.9+  
 Pygame 2.1.0  
