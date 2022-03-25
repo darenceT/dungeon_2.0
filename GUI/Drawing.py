@@ -1,3 +1,4 @@
+from pathlib import Path
 import pygame
 
 # from .Memo import Memo
@@ -25,21 +26,21 @@ class Drawing:
         self.__special_time = 0
         self.__vision_pot_tick = 0
         self.__textures = {
-                         'ceiling': pygame.image.load('GUI/img/lava_sky3.png').convert(),
-                         'door': pygame.image.load('GUI/img/door_portal2.png').convert(),
-                         'wall': pygame.image.load('GUI/img/wall_d1.png').convert_alpha(),
-                         'Hi': pygame.image.load('GUI/img/health_icon.png').convert_alpha(),
-                         'Vi': pygame.image.load('GUI/img/vision_icon.png').convert_alpha(),
-                         'Pi': pygame.image.load('GUI/img/pillar.png').convert_alpha(),
-                         'exit': pygame.image.load('GUI/img/exit_icon.png').convert_alpha(),
-                         f'{self.__hero.guild}w0': pygame.image.load(f'GUI/img/{self.__hero.guild}wep0.png').convert_alpha(),
-                         f'{self.__hero.guild}w1': pygame.image.load(f'GUI/img/{self.__hero.guild}wep1.png').convert_alpha(),
-                         f'{self.__hero.guild}w2': pygame.image.load(f'GUI/img/{self.__hero.guild}wep2.png').convert_alpha(),
-                         f'{self.__hero.guild}w3': pygame.image.load(f'GUI/img/{self.__hero.guild}wep3.png').convert_alpha(),
-                         f'{self.__hero.guild}s0': pygame.image.load(f'GUI/img/{self.__hero.guild}sp0.png').convert_alpha(),
-                         f'{self.__hero.guild}s1': pygame.image.load(f'GUI/img/{self.__hero.guild}sp1.png').convert_alpha(),
-                         f'{self.__hero.guild}s2': pygame.image.load(f'GUI/img/{self.__hero.guild}sp2.png').convert_alpha(),
-                         f'{self.__hero.guild}s3': pygame.image.load(f'GUI/img/{self.__hero.guild}sp3.png').convert_alpha(),
+                         'ceiling': pygame.image.load(Path('GUI/img/lava_sky3.png')).convert(),
+                         'door': pygame.image.load(Path('GUI/img/door_portal2.png')).convert(),
+                         'wall': pygame.image.load(Path('GUI/img/wall_d1.png')).convert_alpha(),
+                         'Hi': pygame.image.load(Path('GUI/img/health_icon.png')).convert_alpha(),
+                         'Vi': pygame.image.load(Path('GUI/img/vision_icon.png')).convert_alpha(),
+                         'Pi': pygame.image.load(Path('GUI/img/pillar.png')).convert_alpha(),
+                         'exit': pygame.image.load(Path('GUI/img/exit_icon.png')).convert_alpha(),
+                         f'{self.__hero.guild}w0': pygame.image.load(Path(f'GUI/img/{self.__hero.guild}wep0.png')).convert_alpha(),
+                         f'{self.__hero.guild}w1': pygame.image.load(Path(f'GUI/img/{self.__hero.guild}wep1.png')).convert_alpha(),
+                         f'{self.__hero.guild}w2': pygame.image.load(Path(f'GUI/img/{self.__hero.guild}wep2.png')).convert_alpha(),
+                         f'{self.__hero.guild}w3': pygame.image.load(Path(f'GUI/img/{self.__hero.guild}wep3.png')).convert_alpha(),
+                         f'{self.__hero.guild}s0': pygame.image.load(Path(f'GUI/img/{self.__hero.guild}sp0.png')).convert_alpha(),
+                         f'{self.__hero.guild}s1': pygame.image.load(Path(f'GUI/img/{self.__hero.guild}sp1.png')).convert_alpha(),
+                         f'{self.__hero.guild}s2': pygame.image.load(Path(f'GUI/img/{self.__hero.guild}sp2.png')).convert_alpha(),
+                         f'{self.__hero.guild}s3': pygame.image.load(Path(f'GUI/img/{self.__hero.guild}sp3.png')).convert_alpha(),
                         #  'wall': pygame.image.load('GUI/img/wall_vision2.png').convert_alpha()
                          }
 
