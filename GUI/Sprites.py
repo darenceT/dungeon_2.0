@@ -1,3 +1,4 @@
+from pathlib import Path
 import pygame
 from collections import deque
 from .Settings import *
@@ -165,41 +166,41 @@ class SpritesContainer:
         self.__exit_revealed = False
         self.__nearby_sprites = set()
         self.__sprite_still = {
-            'H': pygame.image.load('GUI/img/h_potion.png').convert_alpha(),
-            'V': pygame.image.load('GUI/img/v_potion.png').convert_alpha(),
-            'pillar': pygame.image.load('GUI/img/pillar.png').convert_alpha(),
-            'exit': pygame.image.load('GUI/img/exit.png').convert_alpha(),
+            'H': pygame.image.load(Path('GUI/img/h_potion.png')).convert_alpha(),
+            'V': pygame.image.load(Path('GUI/img/v_potion.png')).convert_alpha(),
+            'pillar': pygame.image.load(Path('GUI/img/pillar.png')).convert_alpha(),
+            'exit': pygame.image.load(Path('GUI/img/exit.png')).convert_alpha(),
         }
         self.__sprite_animate = {
             'trap':{
-                'sprite': pygame.image.load('GUI/img/trap0.png').convert_alpha(),
+                'sprite': pygame.image.load(Path('GUI/img/trap0.png')).convert_alpha(),
                 'shift': 1.2,
                 'scale': 0.6,
-                'animation': deque([pygame.image.load(f'GUI/img/trap{i}.png').convert_alpha() for i in range(1, 3)]),
+                'animation': deque([pygame.image.load(Path(f'GUI/img/trap{i}.png')).convert_alpha() for i in range(1, 3)]),
             },            
             'ogre':{
-                'sprite': pygame.image.load('GUI/img/ogre0.png').convert_alpha(),
+                'sprite': pygame.image.load(Path('GUI/img/ogre0.png')).convert_alpha(),
                 'shift': 0.3,
                 'scale': 0.8,
-                'animation': deque([pygame.image.load(f'GUI/img/ogre{i}.png').convert_alpha() for i in range(1, 4)]),
+                'animation': deque([pygame.image.load(Path(f'GUI/img/ogre{i}.png')).convert_alpha() for i in range(1, 4)]),
             },
             'mgirl':{
-                'sprite': pygame.image.load('GUI/img/mgirl0.png').convert_alpha(),
+                'sprite': pygame.image.load(Path('GUI/img/mgirl0.png')).convert_alpha(),
                 'shift': 0.3,
                 'scale': 0.8,
-                'animation': deque([pygame.image.load(f'GUI/img/mgirl{i}.png').convert_alpha() for i in range(1, 4)]),
+                'animation': deque([pygame.image.load(Path(f'GUI/img/mgirl{i}.png')).convert_alpha() for i in range(1, 4)]),
             },
             'gremlin':{
-                'sprite': pygame.image.load('GUI/img/gremlin0.png').convert_alpha(),
+                'sprite': pygame.image.load(Path('GUI/img/gremlin0.png')).convert_alpha(),
                 'shift': 0.3,
                 'scale': 0.8,
-                'animation': deque([pygame.image.load(f'GUI/img/gremlin{i}.png').convert_alpha() for i in range(1, 4)]),
+                'animation': deque([pygame.image.load(Path(f'GUI/img/gremlin{i}.png')).convert_alpha() for i in range(1, 4)]),
             },
             'skeleton':{
-                'sprite': pygame.image.load('GUI/img/skeleton0.png').convert_alpha(),
+                'sprite': pygame.image.load(Path('GUI/img/skeleton0.png')).convert_alpha(),
                 'shift': 0.5,
                 'scale': 0.8,
-                'animation': deque([pygame.image.load(f'GUI/img/skeleton{i}.png').convert_alpha() for i in range(1, 4)]),
+                'animation': deque([pygame.image.load(Path(f'GUI/img/skeleton{i}.png')).convert_alpha() for i in range(1, 4)]),
             },
         }
 

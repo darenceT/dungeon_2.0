@@ -78,16 +78,16 @@ class Menu:
         if move not in move_reference:
             return
         num = self.__select_number
-        print(f"move_cursor <- {num}:'{choices[num]}' + {move}")
+        # print(f"move_cursor <- {num}:'{choices[num]}' + {move}")
         chg = move_reference[move]
         num += chg
         if num < 1:
-            print(f"move_cursor -> wrap to bottom")
+            # print(f"move_cursor -> wrap to bottom")
             num = len(choices)
         elif num > len(choices):
-            print(f"move_cursor -> wrap to top")
+            # print(f"move_cursor -> wrap to top")
             num = 1
-        print(f"move_cursor -> {num}:'{choices[num]}")
+        # print(f"move_cursor -> {num}:'{choices[num]}")
         self.__select_number = num
         self.__cursor.rect.centery = self.Y_POS + self.Y_OFFSET * (self.__select_number - 1)
 
@@ -113,7 +113,7 @@ class Menu:
         pygame.event.clear()
         while True:
             event = pygame.event.wait()
-            print(f'menu_controls <- event: {event}')
+            # print(f'menu_controls <- event: {event}')
             if event.type == pygame.QUIT or \
                     (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 pygame.quit()
@@ -124,7 +124,7 @@ class Menu:
                     chose = choices[num]
                 else:
                     chose = None
-                print(f"menu_controls -> {num}'{chose}'")
+                # print(f"menu_controls -> {num}'{chose}'")
                 return chose
             if choices and len(choices) > 1 and event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
@@ -541,7 +541,7 @@ Good luck, brave hero!
             chose = self.__menu_controls(choices)
             self.__draw()
             if chose == 'Exit':
-                print(f"win_screen -> exit")
+                # print(f"win_screen -> exit")
                 pygame.quit()
                 exit()
             elif chose == 'Reset':
